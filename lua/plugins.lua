@@ -95,4 +95,11 @@ return require('packer').startup(function()
     after = 'cmp-nvim-lsp',
   })
 
+  -- great ui for lsp
+  use {
+    'glepnir/lspsaga.nvim',
+    after = 'nvim-lspconfig',
+    config = function() require('config.lspsaga') end,
+  }
+
 end)
