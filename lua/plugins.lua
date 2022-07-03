@@ -49,4 +49,51 @@ return require('packer').startup(function()
     'nvim-treesitter/nvim-treesitter-textobjects'
   }
 
+  use({
+    'neovim/nvim-lspconfig',
+    config = function()
+      require('config.lspconf')
+    end,
+    requires = {
+      { 'williamboman/nvim-lsp-installer' },
+      {
+        'jose-elias-alvarez/null-ls.nvim',
+        requires = {{'neovim/nvim-lspconfig'}, {'nvim-lua/plenary.nvim'}},
+        config = function()
+          require('config.lsp.providers.null_ls')
+        end,
+        after = 'nvim-lspconfig',
+      },
+      {
+        'ray-x/lsp_signature.nvim',
+        config = function()
+          require('config.lsp-signature')
+        end,
+        after = 'nvim-lspconfig',
+      },
+    },
+    -- event = 'BufWinEnter',
+  })
+
+  -- autocompletion
+  use({
+    'hrsh7th/nvim-cmp',
+    config = function()
+      require('config.cmp')
+    end,
+    requires = {
+      { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+      { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+      {
+        'L3MON4D3/LuaSnip',
+        requires = {
+          'rafamadriz/friendly-snippets',
+        },
+      },
+    },
+    event = 'InsertEnter',
+  })
+
 end)

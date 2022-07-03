@@ -48,3 +48,5 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require('go').setup()
+
+opt.completeopt = 'menu,menuone,noselect'
