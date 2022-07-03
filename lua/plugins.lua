@@ -72,7 +72,7 @@ return require('packer').startup(function()
         after = 'nvim-lspconfig',
       },
     },
-    event = 'BufWinEnter',
+    -- event = 'BufWinEnter',
   })
 
   -- autocompletion
@@ -93,7 +93,7 @@ return require('packer').startup(function()
         },
       },
     },
-    -- event = 'InsertEnter',
+    event = 'InsertEnter',
   })
 
 end)
