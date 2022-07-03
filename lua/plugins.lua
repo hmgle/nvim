@@ -49,31 +49,51 @@ return require('packer').startup(function()
     'nvim-treesitter/nvim-treesitter-textobjects'
   }
 
-  use {
-    'hrsh7th/nvim-cmp',
-    requires = {
-      { 'hrsh7th/cmp-buffer', after = 'nvim-cmp', },
-      { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp', },
-      { 'hrsh7th/cmp-path', after = 'nvim-cmp', },
-      { 'saadparwaiz1/cmp_luasnip', after = 'LuaSnip', },
-    },
-    config = function() require('config.cmp') end,
-  }
-
-  use 'L3MON4D3/LuaSnip'
-  use 'rafamadriz/friendly-snippets'
-
-  use 'williamboman/nvim-lsp-installer'
-
-  use {
+  use({
     'neovim/nvim-lspconfig',
     config = function()
-      require('lsp')
-      vim.defer_fn(function()
-        vim.cmd("silent! e%")
-      end, 0)
+      require('config.lspconf')
     end,
-    after = 'cmp-nvim-lsp',
-  }
+    requires = {
+      { 'williamboman/nvim-lsp-installer' },
+      {
+        'jose-elias-alvarez/null-ls.nvim',
+        requires = {{'neovim/nvim-lspconfig'}, {'nvim-lua/plenary.nvim'}},
+        config = function()
+          require('config.lsp.providers.null_ls')
+        end,
+        after = 'nvim-lspconfig',
+      },
+      {
+        'ray-x/lsp_signature.nvim',
+        config = function()
+          require('config.lsp-signature')
+        end,
+        after = 'nvim-lspconfig',
+      },
+    },
+    event = 'BufWinEnter',
+  })
+
+  -- autocompletion
+  use({
+    'hrsh7th/nvim-cmp',
+    config = function()
+      require('config.cmp')
+    end,
+    requires = {
+      { 'hrsh7th/cmp-buffer', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-nvim-lsp', after = 'nvim-cmp' },
+      { 'hrsh7th/cmp-path', after = 'nvim-cmp' },
+      { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
+      {
+        'L3MON4D3/LuaSnip',
+        requires = {
+          'rafamadriz/friendly-snippets',
+        },
+      },
+    },
+    -- event = 'InsertEnter',
+  })
 
 end)

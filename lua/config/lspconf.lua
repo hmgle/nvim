@@ -1,3 +1,14 @@
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = 'rounded',
+})
+
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+  border = 'rounded',
+})
+
+
+require('config.lsp.providers')
+
 -- try to import lspconfig
 local lspconfig = require("lspconfig")
 if not lspconfig then
@@ -42,3 +53,8 @@ local function on_attach(_, bufnr)
     buf_set_keymap("n", "[d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
     buf_set_keymap("n", "]d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 end
+
+lspconfig.gopls.setup{
+  cmd = { 'gopls', '-remote=auto' },
+  on_attach = on_attach,
+}
