@@ -54,7 +54,11 @@ local function on_attach(_, bufnr)
     buf_set_keymap("n", "]d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 end
 
+-- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
 lspconfig.gopls.setup{
   cmd = { 'gopls', '-remote=auto' },
   on_attach = on_attach,
+  capabilities = capabilities,
 }
