@@ -102,4 +102,20 @@ return require('packer').startup(function()
     config = function() require('config.lspsaga') end,
   }
 
+  use {
+    'folke/tokyonight.nvim',
+    config = function()
+      vim.g.tokyonight_style = "day"
+      vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
+
+      -- Change the "hint" color to the "orange" color, and make the "error" color bright red
+      vim.g.tokyonight_colors = { hint = "orange", error = "#ff0000" }
+      vim.cmd[[colorscheme tokyonight]]
+    end,
+  }
+
+  use {
+    'RRethy/vim-illuminate'
+  }
+
 end)
