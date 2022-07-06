@@ -9,6 +9,7 @@ saga.init_lsp_saga({
     scroll_down = "<C-f>",
     scroll_up = "<C-b>", -- quit can be a table
   },
+  code_action_lightbulb = {
+    enable = false,
+  },
 })
-
-saga.init_lsp_saga()
