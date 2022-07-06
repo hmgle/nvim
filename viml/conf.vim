@@ -50,3 +50,6 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 au FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua set colorcolumn=81
+
+" https://www.reddit.com/r/neovim/comments/olp9lr/elegant_map_for_togglequikfixlist/
+nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid") != 0? "cclose" : "botright copen")."<cr>"

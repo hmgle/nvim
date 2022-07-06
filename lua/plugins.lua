@@ -118,7 +118,7 @@ return require('packer').startup(function()
     'glepnir/lspsaga.nvim',
     after = 'nvim-lspconfig',
     config = function() require('config.lspsaga') end,
-    disable = false,
+    disable = true,
   }
 
   use {
@@ -135,7 +135,7 @@ return require('packer').startup(function()
       require('config.telescope')
     end,
     event = 'BufWinEnter',
-    disable = true,
+    disable = false,
   }
 
   use {
