@@ -1,13 +1,15 @@
--- shortcuts
-local g = vim.g -- global variables
-local opt = vim.opt -- editor options
+local map = require('utils').map
 
--- set config path
-g.configdir = "$XDG_CONFIG_HOME/nvim"
+vim.g.mapleader = ','
 
-vim.api.nvim_set_keymap('', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>", {})
-vim.api.nvim_set_keymap('', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>", {})
-vim.api.nvim_set_keymap('', 's', "<cmd>lua require'hop'.hint_char1({ current_line_only = false })<cr>", {})
+vim.g.NERDTreeWinSize = 24
+map('n', '<c-w><c-e>', ':NERDTreeTabsToggle<CR>')
+
+map('n', '<leader>tt', ':TagbarToggle<CR>')
+
+map('', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>")
+map('', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>")
+map('', 's', "<cmd>lua require'hop'.hint_char1({ current_line_only = false })<cr>")
 
 require'nvim-treesitter.configs'.setup {
   textobjects = {
@@ -31,11 +33,7 @@ require'nvim-treesitter.configs'.setup {
         ["[M"] = "@class.outer",
       },
     },
-  },
-}
 
-require'nvim-treesitter.configs'.setup {
-  textobjects = {
     lsp_interop = {
       enable = true,
       border = 'none',
@@ -47,6 +45,4 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
-require('go').setup()
-
-opt.completeopt = 'menu,menuone,noselect'
+vim.opt.completeopt = 'menu,menuone,noselect'

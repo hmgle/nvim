@@ -32,21 +32,39 @@ return require('packer').startup(function()
     end
   }
 
-  use 'ianva/vim-youdao-translater'
+  use {
+    'ianva/vim-youdao-translater',
+    config = function()
+      local map = require('utils').map
+      map('v', '<leader>ee', ':<C-u>Ydv<CR>')
+      map('n', '<leader>ee', ':<C-u>Ydc<CR>')
+      map('n', '<leader>yd', ':<C-u>Yde<CR>')
+    end
+  }
   use 'jremmen/vim-ripgrep'
   use 'dyng/ctrlsf.vim'
   use 'ap/vim-buftabline'
 
-  use({ "Yggdroot/LeaderF", run = ":LeaderfInstallCExtension" })
-
-  use 'ray-x/go.nvim'
-
   use {
-    'nvim-treesitter/nvim-treesitter'
+    "Yggdroot/LeaderF",
+    config = function()
+      vim.g.Lf_ShortcutF = '<c-p>'
+      vim.g.Lf_UseCache = 0
+      local map = require('utils').map('', '<leader>f', ':LeaderfFunction!<cr>')
+    end,
+    run = ":LeaderfInstallCExtension"
   }
 
   use {
-    'nvim-treesitter/nvim-treesitter-textobjects'
+    'ray-x/go.nvim',
+    config = function()
+      require('go').setup()
+    end
+  }
+
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    'nvim-treesitter/nvim-treesitter-textobjects',
   }
 
   -- autocompletion
@@ -100,6 +118,24 @@ return require('packer').startup(function()
     'glepnir/lspsaga.nvim',
     after = 'nvim-lspconfig',
     config = function() require('config.lspsaga') end,
+    disable = false,
+  }
+
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/popup.nvim',
+      'nvim-lua/plenary.nvim',
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        run = 'make',
+      },
+    },
+    config = function()
+      require('config.telescope')
+    end,
+    event = 'BufWinEnter',
+    disable = true,
   }
 
   use {
@@ -112,6 +148,25 @@ return require('packer').startup(function()
       vim.g.tokyonight_colors = { hint = "orange", error = "#ff0000" }
       vim.cmd[[colorscheme tokyonight]]
     end,
+    disable = true
+  }
+
+  use {
+    'EdenEast/nightfox.nvim',
+    config = function()
+      vim.cmd("colorscheme dayfox")
+    end,
+    disable = false
+  }
+
+  use {
+    'savq/melange',
+    config = function()
+      vim.o.termguicolors = true
+      vim.o.background = 'light'
+      vim.cmd("colorscheme melange")
+    end,
+    disable = true
   }
 
   use {
