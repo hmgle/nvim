@@ -50,7 +50,7 @@ return require('packer').startup(function()
     config = function()
       vim.g.Lf_ShortcutF = '<c-p>'
       vim.g.Lf_UseCache = 0
-      local map = require('utils').map('', '<leader>f', ':LeaderfFunction!<cr>')
+      local map = require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
     end,
     run = ":LeaderfInstallCExtension"
   }
@@ -171,6 +171,14 @@ return require('packer').startup(function()
 
   use {
     'RRethy/vim-illuminate'
+  }
+
+  use {
+    'kosayoda/nvim-lightbulb',
+    requires = 'antoinemadec/FixCursorHold.nvim',
+    config = function()
+      require('config.lightbulb')
+    end,
   }
 
 end)

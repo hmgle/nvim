@@ -16,7 +16,7 @@ local default_mappings = {
 
 local opts_cursor = {
   initial_mode = 'normal',
-  sorting_strategy = 'descending',
+  sorting_strategy = 'ascending', -- ascending | descending
   layout_strategy = 'cursor',
   results_title = false,
   layout_config = {
@@ -27,11 +27,11 @@ local opts_cursor = {
 
 local opts_vertical = {
   initial_mode = 'normal',
-  sorting_strategy = 'descending',
+  sorting_strategy = 'ascending',
   layout_strategy = 'vertical',
   results_title = false,
   layout_config = {
-    width = 0.3,
+    width = 0.5,
     height = 0.5,
     prompt_position = 'top',
     mirror = true,
@@ -43,10 +43,9 @@ local opts_flex = {
   layout_config = {
     width = 0.7,
     height = 0.7,
+    prompt_position = 'top',
   },
 }
-
-
 
 telescope.setup({
   defaults = {
@@ -198,3 +197,8 @@ telescope.setup({
 })
 
 telescope.load_extension('fzf')
+
+
+local map = require('utils').map
+map('n', '<leader>ff', ':Telescope current_buffer_fuzzy_find<CR>')
+map('n', '<leader>fl', ':Telescope live_grep<CR>')
