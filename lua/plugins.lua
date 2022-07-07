@@ -50,7 +50,7 @@ return require('packer').startup(function()
     config = function()
       vim.g.Lf_ShortcutF = '<c-p>'
       vim.g.Lf_UseCache = 0
-      local map = require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
+      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
     end,
     run = ":LeaderfInstallCExtension"
   }
