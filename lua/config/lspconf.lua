@@ -1,3 +1,5 @@
+local u = require('utils')
+
 vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = 'rounded',
 })
@@ -75,11 +77,11 @@ local function setup_lsp()
   }
 
   for _, server in ipairs(installed_servers) do
-    local lsp_options = default_options
+    local opt = {}
 
     -- for lua
     if server.name == "sumneko_lua" then
-      lsp_options.settings = {
+      opt.settings = {
         Lua = {
           diagnostics = {
             -- Get the language server to recognize the 'vim', 'use' global
@@ -99,15 +101,15 @@ local function setup_lsp()
     -- [https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428]
     if server.name == "clangd" then
       capabilities.offsetEncoding = { "utf-16" }
-      lsp_options.capabilities = capabilities
+      opt.capabilities = capabilities
     end
 
     -- for gopls (go)
     if server.name == "gopls" then
-      lsp_options.cmd = { 'gopls', '-remote=auto' }
+      opt.cmd = { 'gopls', '-remote=auto' }
     end
 
-    lspconfig[server.name].setup(lsp_options)
+    lspconfig[server.name].setup(u.merge(default_options, opt))
   end
 end
 
