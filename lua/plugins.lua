@@ -4,6 +4,7 @@ vim.cmd [[packadd packer.nvim]]
 return require('packer').startup(function()
   use 'wbthomason/packer.nvim'
   use 'lewis6991/impatient.nvim'
+  use 'nathom/filetype.nvim'
 
   use {
     'preservim/tagbar',
@@ -171,7 +172,11 @@ return require('packer').startup(function()
   }
 
   use {
-    'RRethy/vim-illuminate'
+    'RRethy/vim-illuminate',
+    config = function ()
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
+    end
   }
 
   use {
