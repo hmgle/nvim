@@ -82,6 +82,9 @@ return require('packer').startup(function()
       { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
       {
         'L3MON4D3/LuaSnip',
+        config = function ()
+          require("luasnip.loaders.from_vscode").lazy_load()
+        end,
         requires = {
           'rafamadriz/friendly-snippets',
         },
