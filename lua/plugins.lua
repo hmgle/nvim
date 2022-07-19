@@ -3,6 +3,8 @@ vim.cmd [[packadd packer.nvim]]
 
 return require('packer').startup(function()
   use 'wbthomason/packer.nvim'
+  use 'lewis6991/impatient.nvim'
+  use 'nathom/filetype.nvim'
 
   use {
     'preservim/tagbar',
@@ -32,21 +34,45 @@ return require('packer').startup(function()
     end
   }
 
-  use 'ianva/vim-youdao-translater'
+  use {
+    'ianva/vim-youdao-translater',
+    config = function()
+      local map = require('utils').map
+      map('v', '<leader>ee', ':<C-u>Ydv<CR>')
+      map('n', '<leader>ee', ':<C-u>Ydc<CR>')
+      map('n', '<leader>yd', ':<C-u>Yde<CR>')
+    end
+  }
   use 'jremmen/vim-ripgrep'
   use 'dyng/ctrlsf.vim'
   use 'ap/vim-buftabline'
 
-  use({ "Yggdroot/LeaderF", run = ":LeaderfInstallCExtension" })
-
-  use 'ray-x/go.nvim'
-
   use {
-    'nvim-treesitter/nvim-treesitter'
+    "Yggdroot/LeaderF",
+    config = function()
+      vim.g.Lf_ShortcutF = '<c-p>'
+      vim.g.Lf_UseCache = 0
+      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
+    end,
+    run = ":LeaderfInstallCExtension"
   }
 
   use {
-    'nvim-treesitter/nvim-treesitter-textobjects'
+    'ray-x/go.nvim',
+    config = function()
+      require('go').setup()
+    end
+  }
+
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    config = function ()
+      require('config.treesitter')
+    end
+  }
+
+  use {
+    'nvim-treesitter/nvim-treesitter-textobjects',
   }
 
   -- autocompletion
@@ -62,6 +88,9 @@ return require('packer').startup(function()
       { 'saadparwaiz1/cmp_luasnip', after = 'nvim-cmp' },
       {
         'L3MON4D3/LuaSnip',
+        config = function ()
+          require("luasnip.loaders.from_vscode").lazy_load()
+        end,
         requires = {
           'rafamadriz/friendly-snippets',
         },
@@ -100,6 +129,24 @@ return require('packer').startup(function()
     'glepnir/lspsaga.nvim',
     after = 'nvim-lspconfig',
     config = function() require('config.lspsaga') end,
+    disable = true,
+  }
+
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/popup.nvim',
+      'nvim-lua/plenary.nvim',
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        run = 'make',
+      },
+    },
+    config = function()
+      require('config.telescope')
+    end,
+    event = 'BufWinEnter',
+    disable = false,
   }
 
   use {
@@ -112,10 +159,62 @@ return require('packer').startup(function()
       vim.g.tokyonight_colors = { hint = "orange", error = "#ff0000" }
       vim.cmd[[colorscheme tokyonight]]
     end,
+    disable = true
   }
 
   use {
-    'RRethy/vim-illuminate'
+    'EdenEast/nightfox.nvim',
+    config = function()
+      vim.cmd("colorscheme dayfox")
+    end,
+    disable = false
+  }
+
+  use {
+    'savq/melange',
+    config = function()
+      vim.o.termguicolors = true
+      vim.o.background = 'light'
+      vim.cmd("colorscheme melange")
+    end,
+    disable = true
+  }
+
+  use {
+    'RRethy/vim-illuminate',
+    config = function ()
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
+    end
+  }
+
+  use {
+    'kosayoda/nvim-lightbulb',
+    requires = 'antoinemadec/FixCursorHold.nvim',
+    config = function()
+      require('config.lightbulb')
+    end,
+  }
+
+  use {
+    'p00f/nvim-ts-rainbow',
+    config = function ()
+      require("nvim-treesitter.configs").setup {
+        rainbow = {
+          enable = true,
+          -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+          extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+          max_file_lines = nil, -- Do not enable for files with more than n lines, int
+          -- colors = {}, -- table of hex strings
+          -- termcolors = {} -- table of colour name strings
+        }
+      }
+    end
+  }
+
+  use {
+    "windwp/nvim-autopairs",
+    config = function() require("nvim-autopairs").setup {} end
   }
 
 end)

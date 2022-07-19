@@ -15,4 +15,4 @@ lsp_installer.settings({
   },
 })
 
-lsp_installer.setup()
+lsp_installer.setup {}
