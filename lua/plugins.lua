@@ -164,9 +164,9 @@ return require('packer').startup(function()
 
   use {
     'EdenEast/nightfox.nvim',
-    config = function()
-      vim.cmd("colorscheme dayfox")
-    end,
+    -- config = function()
+    --   vim.cmd("colorscheme dayfox")
+    -- end,
     disable = false
   }
 
@@ -178,6 +178,15 @@ return require('packer').startup(function()
       vim.cmd("colorscheme melange")
     end,
     disable = true
+  }
+
+  use {
+    'sainnhe/gruvbox-material',
+    config = function()
+      vim.o.termguicolors = true
+      vim.o.background = 'light'
+      vim.cmd("colorscheme gruvbox-material")
+    end
   }
 
   use {
@@ -215,6 +224,17 @@ return require('packer').startup(function()
   use {
     "windwp/nvim-autopairs",
     config = function() require("nvim-autopairs").setup {} end
+  }
+
+  use {
+    'jeetsukumaran/vim-indentwise',
+    config = function()
+      local map = require('utils').map
+      map('v', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
+      map('n', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
+      map('v', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
+      map('n', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
+    end
   }
 
 end)
