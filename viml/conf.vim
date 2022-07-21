@@ -57,3 +57,7 @@ nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid")
 
 nnoremap <C-d> "=strftime("%Y-%m-%d")<CR>P
 inoremap <C-d> <C-R>=strftime("%Y-%m-%d")<CR>
+
+if exists('$TMUX')
+    au VimResized * wincmd =
+endif
