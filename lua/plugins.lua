@@ -237,4 +237,8 @@ return require('packer').startup(function()
     end
   }
 
+  use {
+    'qxxxb/vim-searchhi'
+  }
+
 end)
