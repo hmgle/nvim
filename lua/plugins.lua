@@ -238,7 +238,11 @@ return require('packer').startup(function()
   }
 
   use {
-    'qxxxb/vim-searchhi'
+    'qxxxb/vim-searchhi',
+    config = function ()
+      local map = require('utils').map
+      map('n', '*', '<Plug>(searchhi-*)')
+    end
   }
 
 end)
