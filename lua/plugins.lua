@@ -185,6 +185,9 @@ return require('packer').startup(function()
     config = function()
       vim.o.termguicolors = true
       vim.o.background = 'light'
+      vim.g.gruvbox_material_better_performance = 1
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_current_word = 'bold'
       vim.cmd("colorscheme gruvbox-material")
     end
   }
