@@ -150,6 +150,18 @@ return require('packer').startup(function()
   }
 
   use {
+    "AckslD/nvim-neoclip.lua",
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+    },
+    config = function()
+      require('neoclip').setup()
+      require('utils').map('n', '<leader>y', ':Telescope neoclip<CR>')
+      require('telescope').load_extension('neoclip')
+    end,
+  }
+
+  use {
     'folke/tokyonight.nvim',
     config = function()
       vim.g.tokyonight_style = "day"
