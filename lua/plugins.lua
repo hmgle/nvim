@@ -104,7 +104,8 @@ return require('packer').startup(function()
       require('config.lspconf')
     end,
     requires = {
-      { 'williamboman/nvim-lsp-installer' },
+      { 'williamboman/mason.nvim' },
+      { 'williamboman/mason-lspconfig.nvim' },
       {
         'jose-elias-alvarez/null-ls.nvim',
         requires = {{'neovim/nvim-lspconfig'}, {'nvim-lua/plenary.nvim'}},

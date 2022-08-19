@@ -17,8 +17,8 @@ if not lspconfig then
   return
 end
 
-local lspinstaller = require("nvim-lsp-installer")
-if not lspinstaller then
+local masonlspconf = require("mason-lspconfig")
+if not masonlspconf then
   return
 end
 
@@ -65,7 +65,7 @@ end
 
 -- Setup lspconfig.
 local function setup_lsp()
-  local installed_servers = lspinstaller.get_installed_servers()
+  local installed_servers = masonlspconf.get_installed_servers()
   -- don't setup servers if atleast one server is installed, or it will throw an error
   if #installed_servers == 0 then return end
 
@@ -80,7 +80,7 @@ local function setup_lsp()
     local opt = {}
 
     -- for lua
-    if server.name == "sumneko_lua" then
+    if server == "sumneko_lua" then
       opt.settings = {
         Lua = {
           diagnostics = {
@@ -99,17 +99,17 @@ local function setup_lsp()
 
     -- for clangd (c/c++)
     -- [https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428]
-    if server.name == "clangd" then
+    if server == "clangd" then
       capabilities.offsetEncoding = { "utf-16" }
       opt.capabilities = capabilities
     end
 
     -- for gopls (go)
-    if server.name == "gopls" then
+    if server == "gopls" then
       opt.cmd = { 'gopls', '-remote=auto' }
     end
 
-    lspconfig[server.name].setup(u.merge(default_options, opt))
+    lspconfig[server].setup(u.merge(default_options, opt))
   end
 end
 
