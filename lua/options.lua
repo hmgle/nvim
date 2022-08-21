@@ -13,3 +13,4 @@ map('', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.H
 map('', 's', "<cmd>lua require'hop'.hint_char1({ current_line_only = false })<cr>")
 
 vim.opt.completeopt = 'menu,menuone,noselect'
+vim.opt.mouse = 'a'

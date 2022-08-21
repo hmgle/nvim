@@ -104,7 +104,8 @@ return require('packer').startup(function()
       require('config.lspconf')
     end,
     requires = {
-      { 'williamboman/nvim-lsp-installer' },
+      { 'williamboman/mason.nvim' },
+      { 'williamboman/mason-lspconfig.nvim' },
       {
         'jose-elias-alvarez/null-ls.nvim',
         requires = {{'neovim/nvim-lspconfig'}, {'nvim-lua/plenary.nvim'}},
@@ -150,6 +151,18 @@ return require('packer').startup(function()
   }
 
   use {
+    "AckslD/nvim-neoclip.lua",
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+    },
+    config = function()
+      require('neoclip').setup()
+      require('utils').map('n', '<leader>y', ':Telescope neoclip<CR>')
+      require('telescope').load_extension('neoclip')
+    end,
+  }
+
+  use {
     'folke/tokyonight.nvim',
     config = function()
       vim.g.tokyonight_style = "day"
@@ -164,9 +177,9 @@ return require('packer').startup(function()
 
   use {
     'EdenEast/nightfox.nvim',
-    config = function()
-      vim.cmd("colorscheme dayfox")
-    end,
+    -- config = function()
+    --   vim.cmd("colorscheme dayfox")
+    -- end,
     disable = false
   }
 
@@ -181,10 +194,22 @@ return require('packer').startup(function()
   }
 
   use {
+    'sainnhe/gruvbox-material',
+    config = function()
+      vim.o.termguicolors = true
+      vim.o.background = 'light'
+      vim.g.gruvbox_material_better_performance = 1
+      vim.g.gruvbox_material_enable_italic = 1
+      vim.g.gruvbox_material_current_word = 'bold'
+      vim.cmd("colorscheme gruvbox-material")
+    end
+  }
+
+  use {
     'RRethy/vim-illuminate',
     config = function ()
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
-      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".goto_next_reference()', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".goto_prev_reference()', {noremap=true})
     end
   }
 
@@ -215,6 +240,44 @@ return require('packer').startup(function()
   use {
     "windwp/nvim-autopairs",
     config = function() require("nvim-autopairs").setup {} end
+  }
+
+  use {
+    'jeetsukumaran/vim-indentwise',
+    config = function()
+      local map = require('utils').map
+      map('v', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
+      map('n', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
+      map('v', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
+      map('n', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
+    end
+  }
+
+  use {
+    'qxxxb/vim-searchhi',
+    config = function ()
+      local map = require('utils').map
+      map('n', '*', '<Plug>(searchhi-*)')
+    end
+  }
+
+  use {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+      local opt = { expr = true, remap = true }
+      -- Toggle using count
+      vim.keymap.set('n', '<leader>cc', "v:count == 0 ? '<Plug>(comment_toggle_current_linewise)' : '<Plug>(comment_toggle_linewise_count)'", opt)
+      vim.keymap.set('n', '<leader>cb', "v:count == 0 ? '<Plug>(comment_toggle_current_blockwise)' : '<Plug>(comment_toggle_blockwise_count)'", opt)
+
+      -- Toggle in Op-pending mode
+      vim.keymap.set('n', '<leader>cgc', '<Plug>(comment_toggle_linewise)')
+      vim.keymap.set('n', '<leader>cgb', '<Plug>(comment_toggle_blockwise)')
+
+      -- Toggle in VISUAL mode
+      vim.keymap.set('x', '<leader>cc', '<Plug>(comment_toggle_linewise_visual)')
+      vim.keymap.set('x', '<leader>cb', '<Plug>(comment_toggle_blockwise_visual)')
+    end
   }
 
 end)
