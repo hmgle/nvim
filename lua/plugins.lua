@@ -208,8 +208,8 @@ return require('packer').startup(function()
   use {
     'RRethy/vim-illuminate',
     config = function ()
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".goto_next_reference()', {noremap=true})
-      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".goto_prev_reference()', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".goto_next_reference()<CR>', {noremap=true})
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".goto_prev_reference()<CR>', {noremap=true})
     end
   }
 
