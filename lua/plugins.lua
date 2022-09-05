@@ -9,6 +9,9 @@ return require('packer').startup(function()
   use {
     'preservim/tagbar',
     cmd = 'TagbarToggle',
+    config = function ()
+      vim.g.tagbar_silent = 1
+    end
   }
   use 'godlygeek/tabular'
   use 'tpope/vim-sleuth'
