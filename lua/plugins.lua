@@ -204,7 +204,6 @@ return require('packer').startup(function()
       vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_current_word = 'bold'
-      vim.cmd("colorscheme gruvbox-material")
     end
   }
 
