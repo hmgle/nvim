@@ -69,7 +69,7 @@ local function setup_lsp()
   -- don't setup servers if atleast one server is installed, or it will throw an error
   if #installed_servers == 0 then return end
 
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
   local default_options = {
     on_attach = on_attach,
