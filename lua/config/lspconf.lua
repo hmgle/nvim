@@ -59,6 +59,8 @@ local function on_attach(client, bufnr)
   buf_set_keymap("n", "gl", "<cmd>Telescope diagnostics<CR>", opts)
   buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
   buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+
+  require 'illuminate'.on_attach(client)
 end
 
 -- Setup lspconfig.
@@ -67,7 +69,7 @@ local function setup_lsp()
   -- don't setup servers if atleast one server is installed, or it will throw an error
   if #installed_servers == 0 then return end
 
-  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
   local default_options = {
     on_attach = on_attach,

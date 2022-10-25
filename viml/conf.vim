@@ -61,3 +61,14 @@ inoremap <C-d> <C-R>=strftime("%Y-%m-%d")<CR>
 if exists('$TMUX')
     au VimResized * wincmd =
 endif
+
+
+function! s:gruvbox_material_custom() abort
+    hi Search guibg=None guifg=#ff2222
+    hi CurrentSearch guibg=None guifg=#ff0000 gui=bold
+endfunction
+
+augroup GruvboxMaterialCustom
+    autocmd!
+    autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
+augroup END

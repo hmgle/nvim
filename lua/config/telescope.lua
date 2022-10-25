@@ -202,3 +202,4 @@ telescope.load_extension('fzf')
 local map = require('utils').map
 map('n', '<leader>ff', ':Telescope current_buffer_fuzzy_find<CR>')
 map('n', '<leader>fl', ':Telescope live_grep<CR>')
+map('n', '<C-w>d', '<cmd>lua require"telescope.builtin".lsp_definitions({jump_type="split"})<CR>')
