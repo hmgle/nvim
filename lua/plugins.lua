@@ -258,14 +258,6 @@ return require('packer').startup(function()
   }
 
   use {
-    'qxxxb/vim-searchhi',
-    config = function ()
-      local map = require('utils').map
-      map('n', '*', '<Plug>(searchhi-*)')
-    end
-  }
-
-  use {
     'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup()
