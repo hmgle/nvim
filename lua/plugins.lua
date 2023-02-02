@@ -167,16 +167,11 @@ return require('packer').startup(function()
 
   use {
     "gbprod/yanky.nvim",
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+    },
     config = function()
-      require('yanky').setup ()
-      require('telescope').load_extension('yank_history')
-      require('utils').map('n', '<leader>y', ':Telescope yank_history<CR>')
-      vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-      vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-      vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-      vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
-      vim.keymap.set("n", "<c-j>", "<Plug>(YankyCycleForward)")
-      vim.keymap.set("n", "<c-k>", "<Plug>(YankyCycleBackward)")
+      require('config.yanky')
     end,
   }
 
