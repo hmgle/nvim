@@ -16,7 +16,14 @@ return require('packer').startup(function()
   use 'godlygeek/tabular'
   use 'tpope/vim-sleuth'
   use 'tpope/vim-fugitive'
-  use 'tpope/vim-surround'
+  use {
+    'kylechui/nvim-surround',
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
+  }
   use 'tpope/vim-abolish'
   use 'tpope/vim-repeat'
 
