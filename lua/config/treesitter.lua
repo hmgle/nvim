@@ -30,6 +30,7 @@ require'nvim-treesitter.configs'.setup {
       goto_next_start = {
         ["]]"] = "@function.outer",
         ["]m"] = "@class.outer",
+        [")"] = "@block.outer",
       },
       goto_next_end = {
         ["]["] = "@function.outer",
@@ -38,16 +39,11 @@ require'nvim-treesitter.configs'.setup {
       goto_previous_start = {
         ["[["] = "@function.outer",
         ["[m"] = "@class.outer",
+        ["("] = "@block.outer",
       },
       goto_previous_end = {
         ["[]"] = "@function.outer",
         ["[M"] = "@class.outer",
-      },
-      goto_next_start = {
-        [")"] = "@block.outer",
-      },
-      goto_previous_start = {
-        ["("] = "@block.outer",
       },
     },
 
