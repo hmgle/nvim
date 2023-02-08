@@ -160,27 +160,25 @@ return require('packer').startup(function()
     disable = false,
   }
 
-  -- use {
-  --   "AckslD/nvim-neoclip.lua",
-  --   requires = {
-  --     {'nvim-telescope/telescope.nvim'},
-  --   },
-  --   config = function()
-  --     require('neoclip').setup()
-  --     require('utils').map('n', '<leader>y', ':Telescope neoclip<CR>')
-  --     require('telescope').load_extension('neoclip')
-  --   end,
-  -- }
-
   use {
-    "gbprod/yanky.nvim",
+    "AckslD/nvim-neoclip.lua",
     requires = {
       {'nvim-telescope/telescope.nvim'},
     },
     config = function()
-      require('config.yanky')
+      require('config.neoclip')
     end,
   }
+
+  -- use {
+  --   "gbprod/yanky.nvim",
+  --   requires = {
+  --     {'nvim-telescope/telescope.nvim'},
+  --   },
+  --   config = function()
+  --     require('config.yanky')
+  --   end,
+  -- }
 
   use {
     'folke/tokyonight.nvim',
