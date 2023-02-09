@@ -168,17 +168,18 @@ return require('packer').startup(function()
     config = function()
       require('config.neoclip')
     end,
+    disable = true,
   }
 
-  -- use {
-  --   "gbprod/yanky.nvim",
-  --   requires = {
-  --     {'nvim-telescope/telescope.nvim'},
-  --   },
-  --   config = function()
-  --     require('config.yanky')
-  --   end,
-  -- }
+  use {
+    "gbprod/yanky.nvim",
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+    },
+    config = function()
+      require('config.yanky')
+    end,
+  }
 
   use {
     'folke/tokyonight.nvim',

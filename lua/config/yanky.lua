@@ -27,12 +27,10 @@ yanky.setup {
       mappings = {
         default = mapping.put("p"),
         i = {
-          ["<c-j>"] = actions.move_selection_next,
-          ["<c-k>"] = actions.move_selection_previous,
-          ["<cr>"] = mapping.put("p"),
-          ["<c-p>"] = mapping.put("P"),
+          ["<c-p>"] = mapping.put("p"),
+          ["<c-P>"] = mapping.put("P"),
           ["<c-x>"] = mapping.delete(),
-          ["<c-r>"] = mapping.set_register(utils.get_default_register()),
+          ["<cr>"] = mapping.set_register(utils.get_default_register()),
         },
         n = {
           j = actions.move_selection_next,
@@ -63,5 +61,4 @@ vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
 vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
 vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
 vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-vim.keymap.set("n", "<c-m>", "<Plug>(YankyCycleBackward)")
 vim.keymap.set("n", "<leader>y", ":Telescope yank_history<CR>")
