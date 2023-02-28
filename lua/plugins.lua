@@ -88,6 +88,7 @@ return require('packer').startup(function()
   -- autocompletion
   use({
     'hrsh7th/nvim-cmp',
+    commit = 'cfafe0a1ca8933f7b7968a287d39904156f2c57d',
     config = function()
       require('config.cmp')
     end,
