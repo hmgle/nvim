@@ -3,6 +3,10 @@ local actions = require('telescope.actions')
 local u = require('utils')
 
 local default_mappings = {
+  i = {
+    ["<C-j>"] = actions.move_selection_next,
+    ["<C-k>"] = actions.move_selection_previous,
+  },
   n = {
     ['Q'] = actions.smart_add_to_qflist + actions.open_qflist,
     ['q'] = actions.smart_send_to_qflist + actions.open_qflist,
@@ -67,6 +71,12 @@ telescope.setup({
     },
     prompt_position = 'top',
     sorting_strategy = 'ascending',
+    mappings = {
+      i = {
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous,
+      },
+    },
     default_mappings = {
       i = {
         ["<C-j>"] = actions.move_selection_next,
@@ -150,16 +160,6 @@ telescope.setup({
       sort_mru = true,
       preview_title = false,
     }),
-    lsp_code_actions = u.merge(opts_cursor, {
-      prompt_title = 'Code Actions',
-    }),
-    lsp_range_code_actions = u.merge(opts_vertical, {
-      prompt_title = 'Code Actions',
-    }),
-    lsp_document_diagnostics = u.merge(opts_vertical, {
-      prompt_title = 'Document Diagnostics',
-      mappings = default_mappings,
-    }),
     lsp_implementations = u.merge(opts_cursor, {
       prompt_title = 'Implementations',
       mappings = default_mappings,
@@ -193,6 +193,9 @@ telescope.setup({
       prompt_title = '✨ Grep String ✨',
       mappings = default_mappings,
     }),
+    current_buffer_fuzzy_find = {
+      mappings = default_mappings,
+    },
   },
 })
 

@@ -16,7 +16,14 @@ return require('packer').startup(function()
   use 'godlygeek/tabular'
   use 'tpope/vim-sleuth'
   use 'tpope/vim-fugitive'
-  use 'tpope/vim-surround'
+  use {
+    'kylechui/nvim-surround',
+    config = function()
+      require("nvim-surround").setup({
+        -- Configuration here, or leave empty to use defaults
+      })
+    end
+  }
   use 'tpope/vim-abolish'
   use 'tpope/vim-repeat'
 
@@ -81,6 +88,7 @@ return require('packer').startup(function()
   -- autocompletion
   use({
     'hrsh7th/nvim-cmp',
+    commit = 'cfafe0a1ca8933f7b7968a287d39904156f2c57d',
     config = function()
       require('config.cmp')
     end,
@@ -159,9 +167,18 @@ return require('packer').startup(function()
       {'nvim-telescope/telescope.nvim'},
     },
     config = function()
-      require('neoclip').setup()
-      require('utils').map('n', '<leader>y', ':Telescope neoclip<CR>')
-      require('telescope').load_extension('neoclip')
+      require('config.neoclip')
+    end,
+    disable = true,
+  }
+
+  use {
+    "gbprod/yanky.nvim",
+    requires = {
+      {'nvim-telescope/telescope.nvim'},
+    },
+    config = function()
+      require('config.yanky')
     end,
   }
 
@@ -213,7 +230,7 @@ return require('packer').startup(function()
     config = function ()
       vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', {noremap=true})
       vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', {noremap=true})
-      vim.g.Illuminate_useDeprecated = 1
+      -- vim.g.Illuminate_useDeprecated = 1
     end
   }
 
@@ -233,7 +250,7 @@ return require('packer').startup(function()
           enable = true,
           -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
           extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-          max_file_lines = nil, -- Do not enable for files with more than n lines, int
+          max_file_lines = 1000, -- Do not enable for files with more than n lines, int
           -- colors = {}, -- table of hex strings
           -- termcolors = {} -- table of colour name strings
         }
