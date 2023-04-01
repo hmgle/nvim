@@ -309,4 +309,12 @@ return require('packer').startup(function()
     end
   }
 
+  -- clipboard over ssh through tmux
+  use {
+    'ojroques/nvim-osc52',
+    config = function()
+      require('config.osc52')
+    end
+  }
+
 end)
