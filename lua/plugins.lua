@@ -314,7 +314,8 @@ return require('packer').startup(function()
     'ojroques/nvim-osc52',
     config = function()
       require('config.osc52')
-    end
+    end,
+    disable = true,
   }
 
 end)
