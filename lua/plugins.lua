@@ -315,7 +315,7 @@ return require('packer').startup(function()
     config = function()
       require('config.osc52')
     end,
-    disable = true,
+    disable = false,
   }
 
 end)
