@@ -293,4 +293,29 @@ return require('packer').startup(function()
     end
   }
 
+  use {
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require("which-key").setup {
+        triggers_nowait = {
+          -- marks
+          "`",
+          "'",
+          "<c-r>",
+        },
+      }
+    end
+  }
+
+  -- clipboard over ssh through tmux
+  use {
+    'ojroques/nvim-osc52',
+    config = function()
+      require('config.osc52')
+    end,
+    disable = true,
+  }
+
 end)

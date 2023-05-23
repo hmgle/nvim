@@ -48,7 +48,7 @@ local function on_attach(client, bufnr)
   buf_set_keymap("n", "<leader>gf", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   buf_set_keymap("n", "<leader>ca", "<cmd>lua vim.lsp.buf.code_action({apply = true})<CR>", opts)
   buf_set_keymap("v", "<leader>ca", "<cmd>vim.lsp.buf.range_code_action()<CR>", opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
+  buf_set_keymap('n', '<leader>k', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
   buf_set_keymap("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
   buf_set_keymap("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
 

@@ -65,7 +65,7 @@ endif
 
 function! s:gruvbox_material_custom() abort
     hi Search guibg=None guifg=#ff2222
-    hi CurrentSearch guibg=None guifg=#ff0000 gui=bold
+    hi CurSearch guibg=None guifg=#ff0000 gui=bold
 endfunction
 
 augroup GruvboxMaterialCustom
