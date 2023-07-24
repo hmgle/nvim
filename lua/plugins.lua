@@ -155,7 +155,6 @@ return require('packer').startup(function()
     config = function()
       require('config.telescope')
     end,
-    event = 'BufWinEnter',
     disable = false,
   }
 
