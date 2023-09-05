@@ -61,6 +61,7 @@ local function on_attach(client, bufnr)
   buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
 
   require 'illuminate'.on_attach(client)
+  require'virtualtypes'.on_attach(client)
 end
 
 -- Setup lspconfig.

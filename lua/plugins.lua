@@ -14,6 +14,7 @@ return require('packer').startup(function()
   use 'godlygeek/tabular'
   use 'tpope/vim-sleuth'
   use 'tpope/vim-fugitive'
+  use 'jubnzv/virtual-types.nvim'
   use {
     'kylechui/nvim-surround',
     config = function()
