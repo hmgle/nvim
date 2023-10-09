@@ -1,4 +1,5 @@
 require("basic")
+vim.cmd("source $HOME/.config/nvim/viml/conf.vim")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -15,8 +16,6 @@ require("options")
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", {
   -- defaults = { lazy = true },
-  install = { colorscheme = { "gruvbox-material" } },
+  -- install = { colorscheme = { "gruvbox-material" } },
   -- checker = { enabled = true },
 })
-
-vim.cmd("source $HOME/.config/nvim/viml/conf.vim")
