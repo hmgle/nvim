@@ -31,6 +31,7 @@ return {
 
   {
     'phaazon/hop.nvim',
+    event = "VeryLazy",
     branch = 'v1', -- optional but strongly recommended
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
@@ -84,6 +85,7 @@ return {
   {
     'hrsh7th/nvim-cmp',
     commit = 'cfafe0a1ca8933f7b7968a287d39904156f2c57d',
+    event = "VeryLazy",
     config = function()
       require('config.cmp')
     end,
@@ -106,6 +108,7 @@ return {
 
   {
     'neovim/nvim-lspconfig',
+    event = { "BufRead", "BufNewFile" },
     config = function()
       require('config.lspconf')
     end,
@@ -114,21 +117,17 @@ return {
       { 'williamboman/mason-lspconfig.nvim' },
       {
         'jose-elias-alvarez/null-ls.nvim',
-        dependencies = {{'neovim/nvim-lspconfig'}, {'nvim-lua/plenary.nvim'}},
         config = function()
           require('config.lsp.providers.null_ls')
         end,
-        dependencies = 'nvim-lspconfig',
       },
       {
         'ray-x/lsp_signature.nvim',
         config = function()
           require('config.lsp-signature')
         end,
-        dependencies = 'nvim-lspconfig',
       },
     },
-    dependencies = 'cmp-nvim-lsp',
   },
 
   -- great ui for lsp
@@ -288,6 +287,7 @@ return {
 
   {
     "folke/which-key.nvim",
+    event = "VeryLazy",
     config = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
