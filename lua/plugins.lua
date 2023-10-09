@@ -88,10 +88,10 @@ return {
       require('config.cmp')
     end,
     dependencies = {
-      { 'hrsh7th/cmp-buffer', dependencies = 'nvim-cmp' },
-      { 'hrsh7th/cmp-nvim-lsp', dependencies = 'nvim-cmp' },
-      { 'hrsh7th/cmp-path', dependencies = 'nvim-cmp' },
-      { 'saadparwaiz1/cmp_luasnip', dependencies = 'nvim-cmp' },
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-path',
+      'saadparwaiz1/cmp_luasnip',
       {
         'L3MON4D3/LuaSnip',
         config = function ()
@@ -147,10 +147,6 @@ return {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
       }
-      -- {
-      --   'nvim-telescope/telescope-fzf-native.nvim',
-      --   build = 'make',
-      -- },
     },
     config = function()
       require('config.telescope')
