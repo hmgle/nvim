@@ -308,4 +308,11 @@ return {
     end,
     enabled = false,
   },
+
+  {
+    'akinsho/toggleterm.nvim', version = "*",
+    config = function ()
+      require('config.toggleterm')
+    end
+  },
 }
