@@ -68,6 +68,12 @@ return {
     ft = { "go" },
     config = function()
       require('go').setup()
+      vim.cmd([[
+      augroup go.filetype
+      autocmd!
+        autocmd FileType go setlocal omnifunc=v:lua.vim.lsp.omnifunc
+      augroup end
+      ]])
     end
   },
 
