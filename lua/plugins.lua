@@ -67,7 +67,9 @@ return {
     'ray-x/go.nvim',
     ft = { "go" },
     config = function()
-      require('go').setup()
+      require('go').setup({
+        lsp_codelens = true,
+      })
       vim.cmd([[
       augroup go.filetype
       autocmd!
