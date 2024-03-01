@@ -68,7 +68,7 @@ return {
     ft = { "go" },
     config = function()
       require('go').setup({
-        lsp_codelens = true,
+        lsp_codelens = false,
       })
       vim.cmd([[
       augroup go.filetype
