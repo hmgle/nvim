@@ -67,7 +67,15 @@ return {
     'ray-x/go.nvim',
     ft = { "go" },
     config = function()
-      require('go').setup()
+      require('go').setup({
+        lsp_codelens = false,
+      })
+      vim.cmd([[
+      augroup go.filetype
+      autocmd!
+        autocmd FileType go setlocal omnifunc=v:lua.vim.lsp.omnifunc
+      augroup end
+      ]])
     end
   },
 
@@ -307,5 +315,12 @@ return {
       require('config.osc52')
     end,
     enabled = false,
+  },
+
+  {
+    'akinsho/toggleterm.nvim', version = "*",
+    config = function ()
+      require('config.toggleterm')
+    end
   },
 }
