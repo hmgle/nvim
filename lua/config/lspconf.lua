@@ -116,14 +116,14 @@ local function setup_lsp()
             unusedvariable = true,
             unusedwrite = true,
           },
-          hints = {
-            assignVariableTypes = true,
-            compositeLiteralFields = true,
-            compositeLiteralTypes = true,
-            constantValues = true,
-            parameterNames = true,
-            rangeVariableTypes = true,
-          },
+          -- hints = {
+          --   assignVariableTypes = true,
+          --   compositeLiteralFields = true,
+          --   compositeLiteralTypes = true,
+          --   constantValues = true,
+          --   parameterNames = true,
+          --   rangeVariableTypes = true,
+          -- },
         }
       }
     end
