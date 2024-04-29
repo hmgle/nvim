@@ -68,6 +68,12 @@ return {
     config = function()
       require('go').setup({
         lsp_codelens = false,
+        lsp_inlay_hints = {
+          enable = true,
+          -- hint style, set to 'eol' for end-of-line hints, 'inlay' for inline hints
+          -- inlay only avalible for 0.10.x
+          style = 'inlay',
+        },
       })
       vim.cmd([[
       augroup go.filetype
