@@ -14,3 +14,15 @@ map('', 's', "<cmd>lua require'hop'.hint_char1({ current_line_only = false })<cr
 
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.mouse = 'a'
+
+-- https://github.com/preservim/tagbar/wiki#zig
+vim.g.tagbar_type_zig = {
+    ctagstype = 'zig',
+    kinds = {
+        'f:functions',
+        's:structs',
+        'e:enums',
+        'u:unions',
+        'E:errors',
+    }
+}
