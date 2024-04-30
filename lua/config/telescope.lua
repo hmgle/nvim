@@ -55,7 +55,7 @@ telescope.setup({
   defaults = {
     prompt_prefix = '🔍 ',
     file_ignore_patterns = {
-      '.git/',
+      '%.git/',
     },
     dynamic_preview_title = true,
     vimgrep_arguments = {

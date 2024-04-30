@@ -107,6 +107,25 @@ local function setup_lsp()
     -- for gopls (go)
     if server == "gopls" then
       opt.cmd = { 'gopls', '-remote=auto' }
+      opt.settings = {
+        gopls = {
+          gofumpt = true,
+          staticcheck = true,
+          analyses = {
+            unusedparams = true,
+            unusedvariable = true,
+            unusedwrite = true,
+          },
+          -- hints = {
+          --   assignVariableTypes = true,
+          --   compositeLiteralFields = true,
+          --   compositeLiteralTypes = true,
+          --   constantValues = true,
+          --   parameterNames = true,
+          --   rangeVariableTypes = true,
+          -- },
+        }
+      }
     end
 
     lspconfig[server].setup(u.merge(default_options, opt))
