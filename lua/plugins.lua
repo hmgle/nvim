@@ -30,6 +30,20 @@ return {
   'jistr/vim-nerdtree-tabs',
 
   {
+    'hedyhli/outline.nvim',
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
+    keys = { -- mapping to toggle outline
+      { "<c-w><c-e>", "<cmd>Outline!<CR>", desc = "Toggle outline" },
+    },
+    opts = {
+      symbol_folding = {
+        autofold_depth = false,
+      },
+    },
+  },
+
+  {
     'smoka7/hop.nvim',
     event = "VeryLazy",
     config = function()
