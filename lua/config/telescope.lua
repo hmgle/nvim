@@ -206,4 +206,6 @@ local map = require('utils').map
 map('n', '<leader>fb', ':Telescope current_buffer_fuzzy_find<CR>')
 map('n', '<leader>fl', ':Telescope live_grep<CR>')
 map('n', '<leader>ff', ':Telescope find_files<CR>')
+map('n', '<leader>ss', ':Telescope lsp_document_symbols<CR>')
+map('n', '<leader>sS', ':Telescope lsp_dynamic_workspace_symbols<CR>')
 map('n', '<C-w>d', '<cmd>lua require"telescope.builtin".lsp_definitions({jump_type="split"})<CR>')
