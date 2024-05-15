@@ -347,4 +347,9 @@ return {
       require('config.toggleterm')
     end
   },
+
+  {
+    'h-hg/fcitx.nvim',
+    enable = vim.loop.os_uname().sysname == 'Linux' and true or false,
+  },
 }
