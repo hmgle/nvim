@@ -11,3 +11,4 @@ vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.jumpoptions = "stack"
+vim.o.wrapscan = false
