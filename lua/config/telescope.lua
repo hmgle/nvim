@@ -53,6 +53,7 @@ local opts_flex = {
 
 telescope.setup({
   defaults = {
+    scroll_strategy = 'limit',
     prompt_prefix = '🔍 ',
     file_ignore_patterns = {
       '%.git/',
