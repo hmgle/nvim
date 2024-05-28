@@ -66,6 +66,9 @@ endif
 function! s:gruvbox_material_custom() abort
     hi Search guibg=None guifg=#ff2222
     hi CurSearch guibg=None guifg=#ff0000 gui=bold
+    hi HlSearchNear guibg=None guifg=#ff0000
+    hi HlSearchLens guibg=None guifg=#bbbbbb
+    hi HlSearchLensNear guibg=None guifg=#888888
 endfunction
 
 augroup GruvboxMaterialCustom
