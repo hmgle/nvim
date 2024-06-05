@@ -110,15 +110,16 @@ local function setup_lsp()
     if server == "gopls" then
       opt.cmd = { 'gopls', '-remote=auto' }
       opt.settings = {
-        gopls = {
+        gopls = { -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
           gofumpt = true,
           staticcheck = true,
-          analyses = {
+          usePlaceholders = true,
+          analyses = { -- https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
             unusedparams = true,
             unusedvariable = true,
             unusedwrite = true,
           },
-          hints = {
+          hints = { -- https://github.com/golang/tools/blob/master/gopls/doc/inlayHints.md
             assignVariableTypes = true,
             compositeLiteralFields = true,
             compositeLiteralTypes = true,
