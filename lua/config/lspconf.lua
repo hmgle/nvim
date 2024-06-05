@@ -60,6 +60,8 @@ local function on_attach(client, bufnr)
   buf_set_keymap("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
   buf_set_keymap("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
 
+  vim.keymap.set('n', '<leader>h', function () vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)
+
   require 'illuminate'.on_attach(client)
 end
 
@@ -116,14 +118,14 @@ local function setup_lsp()
             unusedvariable = true,
             unusedwrite = true,
           },
-          -- hints = {
-          --   assignVariableTypes = true,
-          --   compositeLiteralFields = true,
-          --   compositeLiteralTypes = true,
-          --   constantValues = true,
-          --   parameterNames = true,
-          --   rangeVariableTypes = true,
-          -- },
+          hints = {
+            assignVariableTypes = true,
+            compositeLiteralFields = true,
+            compositeLiteralTypes = true,
+            constantValues = true,
+            parameterNames = true,
+            rangeVariableTypes = true,
+          },
         }
       }
     end

@@ -30,11 +30,44 @@ return {
   'jistr/vim-nerdtree-tabs',
 
   {
+    'hedyhli/outline.nvim',
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
+    keys = { -- mapping to toggle outline
+      { "<c-w><c-e>", "<cmd>Outline!<CR>", desc = "Toggle outline" },
+    },
+    opts = {
+      symbol_folding = {
+        autofold_depth = false,
+      },
+    },
+  },
+
+  {
     'smoka7/hop.nvim',
     event = "VeryLazy",
     config = function()
       -- you can configure Hop the way you like here; see :h hop-config
       require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+    end
+  },
+
+  {
+    'kevinhwang91/nvim-hlslens',
+    config = function ()
+      require('hlslens').setup()
+      local kopts = {noremap = true, silent = true}
+
+      vim.api.nvim_set_keymap('n', 'n',
+      [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+      kopts)
+      vim.api.nvim_set_keymap('n', 'N',
+      [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+      kopts)
+      vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+      vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
     end
   },
 
@@ -224,6 +257,11 @@ return {
       vim.g.gruvbox_material_better_performance = 1
       vim.g.gruvbox_material_enable_italic = 1
       vim.g.gruvbox_material_current_word = 'bold'
+      vim.g.gruvbox_material_foreground = 'original'
+      vim.g.gruvbox_material_background = 'hard'
+      vim.g.gruvbox_material_show_eob = 0
+      vim.g.gruvbox_material_dim_inactive_windows = 1
+      vim.g.gruvbox_material_ui_contrast = 'high'
       vim.cmd("colorscheme gruvbox-material")
     end
   },
