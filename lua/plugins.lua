@@ -80,7 +80,6 @@ return {
       map('n', '<leader>yd', ':<C-u>Yde<CR>')
     end
   },
-  'jremmen/vim-ripgrep',
 
   {
     'echasnovski/mini.tabline', version = '*',
