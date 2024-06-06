@@ -82,7 +82,16 @@ return {
   },
   'jremmen/vim-ripgrep',
   'dyng/ctrlsf.vim',
-  'ap/vim-buftabline',
+
+  {
+    'echasnovski/mini.tabline', version = '*',
+    config = function ()
+      require('mini.tabline').setup({
+        show_icons = false,
+      })
+      vim.api.nvim_set_hl(0, 'MiniTablineCurrent', {link='TabLineSel'})
+    end
+  },
 
   {
     "Yggdroot/LeaderF",
