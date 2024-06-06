@@ -81,7 +81,6 @@ return {
     end
   },
   'jremmen/vim-ripgrep',
-  'dyng/ctrlsf.vim',
 
   {
     'echasnovski/mini.tabline', version = '*',
