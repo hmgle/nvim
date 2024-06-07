@@ -372,4 +372,8 @@ return {
       require('config.toggleterm')
     end
   },
+
+  -- plantUML preview for .uml
+  'aklt/plantuml-syntax',
+  'scrooloose/vim-slumlord',
 }
