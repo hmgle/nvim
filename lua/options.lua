@@ -9,6 +9,9 @@ map('n', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.
 map('n', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>")
 map('n', 's', "<cmd>lua require'hop'.hint_char1({ current_line_only = false })<cr>")
 
+map('n', 'gt', "<cmd>bn<cr>")
+map('n', 'gT', "<cmd>bp<cr>")
+
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.mouse = 'a'
 
