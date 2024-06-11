@@ -120,6 +120,31 @@ return {
         -- visible = {modified = {buffer_number = true}},
       }
     end,
+    enabled = false,
+  },
+
+  {
+    'ojroques/nvim-hardline',
+    config = function ()
+      require('hardline').setup({
+        bufferline = true,
+        bufferline_settings = {
+          show_index = true,
+        },
+        theme = 'nordic',
+      })
+    end,
+  },
+  {
+    'johann2357/nvim-smartbufs',
+    keys = {
+      {'<A-1>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(1)<CR>', desc = 'Go to the 1 buffer', mode = 'n'},
+      {'<A-2>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(2)<CR>', desc = 'Go to the 2 buffer', mode = 'n'},
+      {'<A-3>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(3)<CR>', desc = 'Go to the 3 buffer', mode = 'n'},
+      {'<A-4>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(4)<CR>', desc = 'Go to the 4 buffer', mode = 'n'},
+      {'<A-5>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(5)<CR>', desc = 'Go to the 5 buffer', mode = 'n'},
+      {'<A-6>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(6)<CR>', desc = 'Go to the 6 buffer', mode = 'n'},
+    },
   },
 
   {
