@@ -282,6 +282,18 @@ return {
   },
 
   {
+    "gbprod/substitute.nvim",
+    config = function  ()
+      require("substitute").setup({
+      })
+      vim.keymap.set("n", "<leader>r", require('substitute').operator, { noremap = true })
+      vim.keymap.set("n", "<leader>rs", require('substitute').line, { noremap = true })
+      vim.keymap.set("n", "<leader>rS", require('substitute').eol, { noremap = true })
+      vim.keymap.set("x", "<leader>r", require('substitute').visual, { noremap = true })
+    end
+  },
+
+  {
     'folke/tokyonight.nvim',
     config = function()
       vim.g.tokyonight_style = "day"
