@@ -108,7 +108,7 @@ telescope.setup({
         ["<C-w>"] = { "<c-s-w>", type = "command" },
       },
       n = {
-        ["<esc>"] = actions.close,
+        ["<C-o>"] = actions.close,
         ["<CR>"] = actions.select_default,
         ["<C-x>"] = actions.select_horizontal,
         ["<C-v>"] = actions.select_vertical,
@@ -159,6 +159,7 @@ telescope.setup({
         },
       }, default_mappings),
       sort_mru = true,
+      sort_lastused = true,
       preview_title = false,
     }),
     lsp_implementations = u.merge(opts_cursor, {
