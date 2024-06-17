@@ -69,6 +69,10 @@ function! s:gruvbox_material_custom() abort
     hi HlSearchNear guibg=None guifg=#ff0000
     hi HlSearchLens guibg=None guifg=#bbbbbb
     hi HlSearchLensNear guibg=None guifg=#888888
+    " hi MiniTablineCurrent guibg=None guifg=#888888
+    " hi! link MiniTablineCurrent TabLineSel
+    " hi! link MiniTablineModifiedCurrent Substitute
+    " hi! link MiniTablineModifiedHidden Search
 endfunction
 
 augroup GruvboxMaterialCustom
