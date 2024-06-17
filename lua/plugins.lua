@@ -30,6 +30,14 @@ return {
   'jistr/vim-nerdtree-tabs',
 
   {
+    'Bekaboo/dropbar.nvim',
+    -- optional, but required for fuzzy finder support
+    dependencies = {
+      'nvim-telescope/telescope-fzf-native.nvim'
+    }
+  },
+
+  {
     'hedyhli/outline.nvim',
     lazy = true,
     cmd = { "Outline", "OutlineOpen" },
@@ -145,17 +153,6 @@ return {
       {'<A-5>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(5)<CR>', desc = 'Go to the 5 buffer', mode = 'n'},
       {'<A-6>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(6)<CR>', desc = 'Go to the 6 buffer', mode = 'n'},
     },
-  },
-
-  {
-    "Yggdroot/LeaderF",
-    init = function()
-      vim.g.Lf_ShortcutF = '<c-p>'
-      vim.g.Lf_UseCache = 0
-      vim.g.Lf_PreviewInPopup = 0
-      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
-    end,
-    build = ":LeaderfInstallCExtension"
   },
 
   {
