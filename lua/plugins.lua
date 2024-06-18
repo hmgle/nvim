@@ -34,7 +34,8 @@ return {
     -- optional, but required for fuzzy finder support
     dependencies = {
       'nvim-telescope/telescope-fzf-native.nvim'
-    }
+    },
+    enabled = false,
   },
 
   {
@@ -54,7 +55,28 @@ return {
   {
     "folke/flash.nvim",
     event = "VeryLazy",
-    opts = {},
+    opts = {
+      jump = {
+        autojump = true,
+        nohlsearch = true,
+      },
+      label = {
+        uppercase = false,
+      },
+      highlight = {
+        -- show a backdrop with hl FlashBackdrop
+        backdrop = false,
+        -- Highlight the search matches
+        matches = false,
+      },
+      modes = {
+        char = {
+          jump_labels = true,
+          multi_line = false,
+          highlight = { backdrop = false },
+        },
+      },
+    },
     keys = {
       { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
       { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
