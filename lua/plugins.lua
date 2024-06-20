@@ -59,12 +59,21 @@ return {
         backdrop = false,
         -- Highlight the search matches
         matches = false,
+        groups = {
+          label = "FlashMatch",
+        },
       },
       modes = {
         char = {
           jump_labels = false,
           multi_line = false,
-          highlight = { backdrop = false },
+          highlight = {
+            backdrop = false,
+            matches = false,
+            groups = {
+              label = "FlashMatch",
+            },
+          },
         },
       },
     },
