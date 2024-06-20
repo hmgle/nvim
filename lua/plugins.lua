@@ -62,7 +62,7 @@ return {
       },
       modes = {
         char = {
-          jump_labels = true,
+          jump_labels = false,
           multi_line = false,
           highlight = { backdrop = false },
         },
