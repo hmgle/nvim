@@ -234,6 +234,7 @@ return {
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
       }
     },
+    event = 'VeryLazy',
     config = function()
       require('config.telescope')
     end,
