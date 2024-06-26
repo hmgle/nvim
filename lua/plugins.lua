@@ -397,11 +397,10 @@ return {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
       require("which-key").setup {
-        triggers_nowait = {
-          -- marks
-          "`",
-          "'",
-          "<c-r>",
+        plugins = {
+          presets = {
+            operators = false,
+          },
         },
       }
     end
