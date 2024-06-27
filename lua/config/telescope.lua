@@ -200,6 +200,9 @@ telescope.setup({
     current_buffer_fuzzy_find = {
       mappings = default_mappings,
     },
+    lsp_document_symbols = {
+      symbol_width = 36,
+    },
   },
 })
 
