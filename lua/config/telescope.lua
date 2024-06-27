@@ -215,6 +215,7 @@ map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer'
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
 map('n', '<C-p>', builtin.find_files, 'Find files')
 map('n', '<leader>ff', builtin.find_files, 'Find files')
+map('n', '<leader>fs', builtin.treesitter, 'Lists symbols from treesitter')
 map('n', '<leader>ss', builtin.lsp_document_symbols, 'List lsp_document_symbols')
 map('n', '<leader>sS', builtin.lsp_dynamic_workspace_symbols, 'List lsp_dynamic_workspace_symbols')
 map('n', '<C-w>d', function ()
