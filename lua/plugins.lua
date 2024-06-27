@@ -402,6 +402,9 @@ return {
             operators = false,
           },
         },
+        triggers_blacklist = {
+          n = { "o", "O", '"' },
+        },
       }
     end
   },
