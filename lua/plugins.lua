@@ -22,12 +22,17 @@ return {
   'tpope/vim-abolish',
   'tpope/vim-repeat',
 
-  -- nerdtree
   {
-    'scrooloose/nerdtree',
-    cmd = 'NERDTreeTabsToggle',
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function ()
+      require('config.nvim-tree')
+    end
   },
-  'jistr/vim-nerdtree-tabs',
 
   {
     'hedyhli/outline.nvim',

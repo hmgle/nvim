@@ -2,9 +2,6 @@ local map = require('utils').map
 
 vim.g.mapleader = ','
 
-vim.g.NERDTreeWinSize = 24
-map('n', '<leader>tt', ':NERDTreeTabsToggle<CR>')
-
 map('n', 'gt', "<cmd>bn<cr>")
 map('n', 'gT', "<cmd>bp<cr>")
 
