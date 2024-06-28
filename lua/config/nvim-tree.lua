@@ -36,6 +36,7 @@ nvim_tree.setup({
 
     -- Custom mappings
     map('o',     node.open.edit,                    'Open')
+    map('<CR>',  node.open.edit,                    'Open')
     map('l',     tree.change_root_to_node,          'CD')
     map('h',     tree.change_root_to_parent,        'CD up')
     map('d',     fs.trash,                          'Trash')
