@@ -24,7 +24,7 @@ local opts_cursor = {
   layout_strategy = 'cursor',
   results_title = false,
   layout_config = {
-    width = 0.5,
+    width = 0.6,
     height = 0.4,
   },
 }
@@ -35,8 +35,8 @@ local opts_vertical = {
   layout_strategy = 'vertical',
   results_title = false,
   layout_config = {
-    width = 0.5,
-    height = 0.5,
+    width = 0.9,
+    height = 0.8,
     prompt_position = 'top',
     mirror = true,
   },
@@ -45,7 +45,7 @@ local opts_vertical = {
 local opts_flex = {
   layout_strategy = 'flex',
   layout_config = {
-    width = 0.7,
+    width = 0.8,
     height = 0.7,
     prompt_position = 'top',
   },
@@ -53,6 +53,7 @@ local opts_flex = {
 
 telescope.setup({
   defaults = {
+    layout_strategy = 'horizontal',
     scroll_strategy = 'limit',
     prompt_prefix = '🔍 ',
     file_ignore_patterns = {
@@ -83,14 +84,14 @@ telescope.setup({
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
 
-        ["<C-c>"] = actions.close,
+        ["<C-o>"] = actions.close,
 
         ["<Down>"] = actions.move_selection_next,
         ["<Up>"] = actions.move_selection_previous,
 
         ["<CR>"] = actions.select_default,
         ["<C-x>"] = actions.select_horizontal,
-        ["<C-v>"] = actions.select_vertical,
+        ["<C-]>"] = actions.select_vertical,
         ["<C-t>"] = actions.select_tab,
 
         ["<C-u>"] = actions.preview_scrolling_up,
@@ -108,15 +109,16 @@ telescope.setup({
         ["<C-w>"] = { "<c-s-w>", type = "command" },
       },
       n = {
-        ["<esc>"] = actions.close,
+        ["<C-o>"] = actions.close,
         ["<CR>"] = actions.select_default,
         ["<C-x>"] = actions.select_horizontal,
-        ["<C-v>"] = actions.select_vertical,
+        ["<C-]>"] = actions.select_vertical,
         ["<C-t>"] = actions.select_tab,
 
         ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
         ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
         ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["q"] = actions.send_to_qflist + actions.open_qflist,
         ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 
         -- TODO: This would be weird if we switch the ordering.
@@ -159,6 +161,7 @@ telescope.setup({
         },
       }, default_mappings),
       sort_mru = true,
+      sort_lastused = true,
       preview_title = false,
     }),
     lsp_implementations = u.merge(opts_cursor, {
@@ -197,19 +200,30 @@ telescope.setup({
     current_buffer_fuzzy_find = {
       mappings = default_mappings,
     },
+    lsp_document_symbols = {
+      symbol_width = 36,
+    },
   },
 })
 
 telescope.load_extension('fzf')
 
-
+local builtin = require('telescope.builtin')
 local map = require('utils').map
-map('n', '<leader>fb', ':Telescope current_buffer_fuzzy_find<CR>')
-map('n', '<leader>fl', ':Telescope live_grep<CR>')
-map('n', '<C-p>', ':Telescope find_files<CR>')
-map('n', '<leader>ff', ':Telescope find_files<CR>')
-map('n', '<leader>ss', ':Telescope lsp_document_symbols<CR>')
-map('n', '<leader>sS', ':Telescope lsp_dynamic_workspace_symbols<CR>')
-map('n', '<C-w>d', '<cmd>lua require"telescope.builtin".lsp_definitions({jump_type="split"})<CR>')
-map('n', '<leader>*', ':Telescope grep_string<CR>')
-map('n', '<leader>b', ':Telescope buffers<CR>')
+
+map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
+map('n', '<leader>fl', builtin.live_grep, 'Live grep')
+map('n', '<C-p>', builtin.find_files, 'Find files')
+map('n', '<leader>ff', builtin.find_files, 'Find files')
+map('n', '<leader>fs', builtin.treesitter, 'Lists symbols from treesitter')
+map('n', '<leader>ss', builtin.lsp_document_symbols, 'List lsp_document_symbols')
+map('n', '<leader>sS', builtin.lsp_dynamic_workspace_symbols, 'List lsp_dynamic_workspace_symbols')
+map('n', '<C-w>d', function ()
+  return builtin.lsp_definitions({jump_type="split"})
+end, 'lsp_definitions({jump_type="split"})')
+map('n', '<leader>*', builtin.grep_string, 'grep_string')
+map('n', '<leader>b', builtin.buffers, 'Open buffers')
+map('n', '<leader>fr', builtin.resume, 'Resume latest telescope session')
+map('n', '<leader>fq', builtin.quickfix, 'Quickfix')
+map('n', '<leader>fQ', builtin.quickfixhistory, 'Quickfix history')
+map('n', '<leader>fd', builtin.diagnostics, 'Diagnostics')

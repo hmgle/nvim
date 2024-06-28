@@ -2,6 +2,28 @@
 local cmp = require'cmp'
 local luasnip = require'luasnip'
 
+local feedkeys, map = require('utils').feedkeys, require('utils').map
+
+
+local function right_or_snip_next()
+  if luasnip.in_snippet() and luasnip.jumpable(1) then
+    luasnip.jump(1)
+  else
+    feedkeys('<Right>')
+  end
+end
+
+local function left_or_snip_prev()
+  if luasnip.in_snippet() and luasnip.jumpable(-1) then
+    luasnip.jump(-1)
+  else
+    feedkeys('<Left>')
+  end
+end
+
+map({'i', 's'}, '<c-l>', right_or_snip_next, '<Right> or next snippet')
+map({'i', 's'}, '<c-h>', left_or_snip_prev, '<Left> or previous snippet')
+
 luasnip.config.set_config({
   store_selection_keys = '<c-s>',
 })

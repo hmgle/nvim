@@ -1,11 +1,20 @@
 local M = {}
 
-function M.map(mode, lhs, rhs, opts)
-  local options = { noremap = true, silent = true }
-  if opts then
-    options = M.merge(options, opts)
+function M.map(modes, lhs, rhs, opts)
+  if type(opts) == 'string' then
+    opts = { desc = opts }
   end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+  local options = vim.tbl_extend('keep', opts or {}, { noremap = true, silent = true })
+  vim.keymap.set(modes, lhs, rhs, options)
+end
+
+function M.termcodes(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+function M.feedkeys(keys, mode)
+  if mode == nil then mode = 'in' end
+  return vim.api.nvim_feedkeys(M.termcodes(keys), mode, true)
 end
 
 function M.merge(...)

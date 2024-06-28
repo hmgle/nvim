@@ -22,19 +22,16 @@ return {
   'tpope/vim-abolish',
   'tpope/vim-repeat',
 
-  -- nerdtree
   {
-    'scrooloose/nerdtree',
-    cmd = 'NERDTreeTabsToggle',
-  },
-  'jistr/vim-nerdtree-tabs',
-
-  {
-    'Bekaboo/dropbar.nvim',
-    -- optional, but required for fuzzy finder support
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
     dependencies = {
-      'nvim-telescope/telescope-fzf-native.nvim'
-    }
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function ()
+      require('config.nvim-tree')
+    end
   },
 
   {
@@ -52,12 +49,45 @@ return {
   },
 
   {
-    'smoka7/hop.nvim',
+    "folke/flash.nvim",
     event = "VeryLazy",
-    config = function()
-      -- you can configure Hop the way you like here; see :h hop-config
-      require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-    end
+    opts = {
+      jump = {
+        autojump = true,
+        nohlsearch = true,
+      },
+      label = {
+        uppercase = false,
+      },
+      highlight = {
+        -- show a backdrop with hl FlashBackdrop
+        backdrop = false,
+        -- Highlight the search matches
+        matches = false,
+        groups = {
+          label = "FlashMatch",
+        },
+      },
+      modes = {
+        char = {
+          jump_labels = false,
+          multi_line = false,
+          highlight = {
+            backdrop = false,
+            matches = false,
+            groups = {
+              label = "FlashMatch",
+            },
+          },
+        },
+      },
+    },
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+    },
   },
 
   {
@@ -87,48 +117,6 @@ return {
       map('n', '<leader>ee', ':<C-u>Ydc<CR>')
       map('n', '<leader>yd', ':<C-u>Yde<CR>')
     end
-  },
-
-  {
-    'romgrk/barbar.nvim',
-    dependencies = {
-      'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
-      'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
-    },
-    init = function() vim.g.barbar_auto_setup = false end,
-    keys =
-    {
-      {'<A-1>', '<Cmd>BufferGoto 1<CR>', desc = 'Go to the 1 buffer', mode = 'n'},
-      {'<A-2>', '<Cmd>BufferGoto 2<CR>', desc = 'Go to the 2 buffer', mode = 'n'},
-      {'<A-3>', '<Cmd>BufferGoto 3<CR>', desc = 'Go to the 3 buffer', mode = 'n'},
-      {'<A-4>', '<Cmd>BufferGoto 4<CR>', desc = 'Go to the 4 buffer', mode = 'n'},
-      {'<A-5>', '<Cmd>BufferGoto 5<CR>', desc = 'Go to the 5 buffer', mode = 'n'},
-      {'<A-6>', '<Cmd>BufferGoto 6<CR>', desc = 'Go to the 6 buffer', mode = 'n'},
-    },
-    lazy = false,
-    opts = function(_, o)
-      o.icons =
-      {
-        buffer_index = true,
-        -- buffer_number = true,
-        filetype = { enabled = false },
-
-        button = false,
-        current =
-        {
-          diagnostics = {{enabled = false}, {enabled = false}},
-          gitsigns = {added = {enabled = false}, changed = {enabled = false}, deleted = {enabled = false}},
-          -- buffer_index = true,
-        },
-        diagnostics = {{enabled = true, icon = ''}, {enabled = true, icon = ''}},
-        gitsigns = {added = {enabled = true}, changed = {enabled = true}, deleted = {enabled = true}},
-        modified = {button = false},
-        pinned = {button = '', filename = true},
-        preset = 'slanted',
-        -- visible = {modified = {buffer_number = true}},
-      }
-    end,
-    enabled = false,
   },
 
   {
@@ -251,6 +239,7 @@ return {
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
       }
     },
+    event = 'VeryLazy',
     config = function()
       require('config.telescope')
     end,
@@ -276,6 +265,18 @@ return {
     config = function()
       require('config.yanky')
     end,
+  },
+
+  {
+    "gbprod/substitute.nvim",
+    config = function  ()
+      require("substitute").setup({
+      })
+      vim.keymap.set("n", "<leader>r", require('substitute').operator, { noremap = true })
+      vim.keymap.set("n", "<leader>rs", require('substitute').line, { noremap = true })
+      vim.keymap.set("n", "<leader>rS", require('substitute').eol, { noremap = true })
+      vim.keymap.set("x", "<leader>r", require('substitute').visual, { noremap = true })
+    end
   },
 
   {
@@ -401,11 +402,13 @@ return {
       vim.o.timeout = true
       vim.o.timeoutlen = 300
       require("which-key").setup {
-        triggers_nowait = {
-          -- marks
-          "`",
-          "'",
-          "<c-r>",
+        plugins = {
+          presets = {
+            operators = false,
+          },
+        },
+        triggers_blacklist = {
+          n = { "o", "O", '"' },
         },
       }
     end

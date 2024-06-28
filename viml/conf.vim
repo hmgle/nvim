@@ -25,7 +25,7 @@ set tabstop=8
 set smarttab
 set textwidth=500
 set smartindent
-
+set splitright
 
 " Bash like keys for the command line
 cnoremap <C-A> <Home>
