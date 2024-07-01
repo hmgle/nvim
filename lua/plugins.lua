@@ -442,6 +442,21 @@ return {
     end
   },
 
+  {
+    'nat-418/boole.nvim',
+    config = function ()
+      require('boole').setup({
+        mappings = {
+          increment = '<C-a>',
+          decrement = '<C-x>'
+        },
+        allow_caps_additions = {
+          {'enable', 'disable'}
+        }
+      })
+    end
+  },
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
