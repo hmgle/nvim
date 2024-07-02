@@ -7,6 +7,7 @@ map('n', 'gT', "<cmd>bp<cr>")
 
 vim.opt.completeopt = 'menu,menuone,noselect'
 vim.opt.mouse = 'a'
+vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 
 -- https://github.com/preservim/tagbar/wiki#zig
 vim.g.tagbar_type_zig = {
