@@ -27,6 +27,7 @@ yanky.setup {
       mappings = {
         default = mapping.put("p"),
         i = {
+          ["<c-k>"] = actions.move_selection_previous,
           ["<c-p>"] = mapping.put("p"),
           ["<c-P>"] = mapping.put("P"),
           ["<c-x>"] = mapping.delete(),
