@@ -11,7 +11,7 @@ conform.setup({
     html = { "prettier" },
     json = { "prettier" },
     yaml = { { "yamlfix", "prettier" } },
-    markdown = { "prettier" },
+    markdown = { "markdownlint", "prettier" },
     graphql = { "prettier" },
     liquid = { "prettier" },
     lua = { "stylua" },
@@ -24,6 +24,6 @@ conform.setup({
   format_on_save = {
     lsp_fallback = true,
     async = false,
-    timeout_ms = 1500,
+    timeout_ms = 3000,
   },
 })
