@@ -6,7 +6,7 @@ return {
     cmd = 'TagbarToggle',
     config = function()
       vim.g.tagbar_silent = 1
-    end
+    end,
   },
   'godlygeek/tabular',
   'tpope/vim-sleuth',
@@ -14,32 +14,32 @@ return {
   {
     'kylechui/nvim-surround',
     config = function()
-      require("nvim-surround").setup({
+      require('nvim-surround').setup {
         -- Configuration here, or leave empty to use defaults
-      })
-    end
+      }
+    end,
   },
   'tpope/vim-abolish',
   'tpope/vim-repeat',
 
   {
-    "nvim-tree/nvim-tree.lua",
-    version = "*",
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
     lazy = false,
     dependencies = {
-      "nvim-tree/nvim-web-devicons",
+      'nvim-tree/nvim-web-devicons',
     },
     config = function()
-      require('config.nvim-tree')
-    end
+      require 'config.nvim-tree'
+    end,
   },
 
   {
     'hedyhli/outline.nvim',
     lazy = true,
-    cmd = { "Outline", "OutlineOpen" },
+    cmd = { 'Outline', 'OutlineOpen' },
     keys = { -- mapping to toggle outline
-      { "<c-w><c-e>", "<cmd>Outline!<CR>", desc = "Toggle outline" },
+      { '<c-w><c-e>', '<cmd>Outline!<CR>', desc = 'Toggle outline' },
     },
     opts = {
       symbol_folding = {
@@ -49,8 +49,8 @@ return {
   },
 
   {
-    "folke/flash.nvim",
-    event = "VeryLazy",
+    'folke/flash.nvim',
+    event = 'VeryLazy',
     opts = {
       jump = {
         autojump = true,
@@ -65,7 +65,7 @@ return {
         -- Highlight the search matches
         matches = false,
         groups = {
-          label = "FlashMatch",
+          label = 'FlashMatch',
         },
       },
       modes = {
@@ -76,17 +76,45 @@ return {
             backdrop = false,
             matches = false,
             groups = {
-              label = "FlashMatch",
+              label = 'FlashMatch',
             },
           },
         },
       },
     },
     keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
-      { "S", mode = { "n", "o" },      function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
-      { "r", mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
-      { "R", mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      {
+        's',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('flash').jump()
+        end,
+        desc = 'Flash',
+      },
+      {
+        'S',
+        mode = { 'n', 'o' },
+        function()
+          require('flash').treesitter()
+        end,
+        desc = 'Flash Treesitter',
+      },
+      {
+        'r',
+        mode = 'o',
+        function()
+          require('flash').remote()
+        end,
+        desc = 'Remote Flash',
+      },
+      {
+        'R',
+        mode = { 'o', 'x' },
+        function()
+          require('flash').treesitter_search()
+        end,
+        desc = 'Treesitter Search',
+      },
     },
   },
 
@@ -96,17 +124,13 @@ return {
       require('hlslens').setup()
       local kopts = { noremap = true, silent = true }
 
-      vim.api.nvim_set_keymap('n', 'n',
-        [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
-        kopts)
-      vim.api.nvim_set_keymap('n', 'N',
-        [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
-        kopts)
+      vim.api.nvim_set_keymap('n', 'n', [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
+      vim.api.nvim_set_keymap('n', 'N', [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]], kopts)
       vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
       vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
       vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
       vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
-    end
+    end,
   },
 
   {
@@ -116,19 +140,19 @@ return {
       map('v', '<leader>ee', ':<C-u>Ydv<CR>')
       map('n', '<leader>ee', ':<C-u>Ydc<CR>')
       map('n', '<leader>yd', ':<C-u>Yde<CR>')
-    end
+    end,
   },
 
   {
     'ojroques/nvim-hardline',
     config = function()
-      require('hardline').setup({
+      require('hardline').setup {
         bufferline = true,
         bufferline_settings = {
           show_index = true,
         },
         theme = 'nordic',
-      })
+      }
     end,
   },
   {
@@ -145,9 +169,9 @@ return {
 
   {
     'ray-x/go.nvim',
-    ft = { "go" },
+    ft = { 'go' },
     config = function()
-      require('go').setup({
+      require('go').setup {
         lsp_codelens = false,
         lsp_inlay_hints = {
           enable = false,
@@ -155,21 +179,21 @@ return {
           -- inlay only avalible for 0.10.x
           style = 'inlay',
         },
-      })
-      vim.cmd([[
+      }
+      vim.cmd [[
       augroup go.filetype
       autocmd!
         autocmd FileType go setlocal omnifunc=v:lua.vim.lsp.omnifunc
       augroup end
-      ]])
-    end
+      ]]
+    end,
   },
 
   {
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      require('config.treesitter')
-    end
+      require 'config.treesitter'
+    end,
   },
 
   {
@@ -180,7 +204,7 @@ return {
   {
     'hrsh7th/nvim-cmp',
     config = function()
-      require('config.cmp')
+      require 'config.cmp'
     end,
     dependencies = {
       'hrsh7th/cmp-buffer',
@@ -190,7 +214,7 @@ return {
       {
         'L3MON4D3/LuaSnip',
         config = function()
-          require("luasnip.loaders.from_vscode").lazy_load()
+          require('luasnip.loaders.from_vscode').lazy_load()
         end,
         dependencies = {
           'rafamadriz/friendly-snippets',
@@ -202,7 +226,7 @@ return {
   {
     'neovim/nvim-lspconfig',
     config = function()
-      require('config.lspconf')
+      require 'config.lspconf'
     end,
     dependencies = {
       { 'williamboman/mason.nvim' },
@@ -210,7 +234,7 @@ return {
       {
         'ray-x/lsp_signature.nvim',
         config = function()
-          require('config.lsp-signature')
+          require 'config.lsp-signature'
         end,
       },
     },
@@ -218,37 +242,37 @@ return {
 
   {
     'stevearc/conform.nvim',
-    event = { "BufReadPre", "BufNewFile" },
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      require('config.conform')
+      require 'config.conform'
     end,
   },
 
   {
     'mfussenegger/nvim-lint',
-    event = { "BufReadPre", "BufNewFile" },
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
-      require('config.lint')
+      require 'config.lint'
     end,
   },
 
   {
     {
-      "folke/lazydev.nvim",
-      ft = "lua", -- only load on lua files
+      'folke/lazydev.nvim',
+      ft = 'lua', -- only load on lua files
       opts = {
         library = {
-          { path = "luvit-meta/library", words = { "vim%.uv" } },
+          { path = 'luvit-meta/library', words = { 'vim%.uv' } },
         },
       },
     },
-    { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
-    {                                        -- optional completion source for require statements and module annotations
-      "hrsh7th/nvim-cmp",
+    { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
+    { -- optional completion source for require statements and module annotations
+      'hrsh7th/nvim-cmp',
       opts = function(_, opts)
         opts.sources = opts.sources or {}
         table.insert(opts.sources, {
-          name = "lazydev",
+          name = 'lazydev',
           group_index = 0, -- set group index to 0 to skip loading LuaLS completions
         })
       end,
@@ -259,7 +283,9 @@ return {
   {
     'glepnir/lspsaga.nvim',
     dependencies = 'nvim-lspconfig',
-    config = function() require('config.lspsaga') end,
+    config = function()
+      require 'config.lspsaga'
+    end,
     enabled = false,
   },
 
@@ -269,61 +295,59 @@ return {
       'nvim-lua/popup.nvim',
       {
         'nvim-telescope/telescope-fzf-native.nvim',
-        build =
-        'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
-      }
+        build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+      },
     },
     event = 'VeryLazy',
     config = function()
-      require('config.telescope')
+      require 'config.telescope'
     end,
     enabled = true,
   },
 
   {
-    "AckslD/nvim-neoclip.lua",
+    'AckslD/nvim-neoclip.lua',
     dependencies = {
       { 'nvim-telescope/telescope.nvim' },
     },
     config = function()
-      require('config.neoclip')
+      require 'config.neoclip'
     end,
     enabled = false,
   },
 
   {
-    "gbprod/yanky.nvim",
+    'gbprod/yanky.nvim',
     dependencies = {
       { 'nvim-telescope/telescope.nvim' },
     },
     config = function()
-      require('config.yanky')
+      require 'config.yanky'
     end,
   },
 
   {
-    "gbprod/substitute.nvim",
+    'gbprod/substitute.nvim',
     config = function()
-      require("substitute").setup({
-      })
-      vim.keymap.set("n", "<leader>r", require('substitute').operator, { noremap = true })
-      vim.keymap.set("n", "<leader>rs", require('substitute').line, { noremap = true })
-      vim.keymap.set("n", "<leader>rS", require('substitute').eol, { noremap = true })
-      vim.keymap.set("x", "<leader>r", require('substitute').visual, { noremap = true })
-    end
+      require('substitute').setup {}
+      vim.keymap.set('n', '<leader>r', require('substitute').operator, { noremap = true })
+      vim.keymap.set('n', '<leader>rs', require('substitute').line, { noremap = true })
+      vim.keymap.set('n', '<leader>rS', require('substitute').eol, { noremap = true })
+      vim.keymap.set('x', '<leader>r', require('substitute').visual, { noremap = true })
+    end,
   },
 
   {
     'folke/tokyonight.nvim',
     config = function()
-      vim.g.tokyonight_style = "day"
-      vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
+      vim.g.tokyonight_style = 'day'
+      vim.g.tokyonight_sidebars = { 'qf', 'vista_kind', 'terminal', 'packer' }
 
       -- Change the "hint" color to the "orange" color, and make the "error" color bright red
-      vim.g.tokyonight_colors = { hint = "orange", error = "#ff0000" }
+      vim.g.tokyonight_colors = { hint = 'orange', error = '#ff0000' }
       vim.cmd [[colorscheme tokyonight]]
     end,
-    enabled = false
+    enabled = false,
   },
 
   {
@@ -331,7 +355,7 @@ return {
     -- config = function()
     --   vim.cmd("colorscheme dayfox")
     -- end,
-    enabled = true
+    enabled = true,
   },
 
   {
@@ -339,9 +363,9 @@ return {
     config = function()
       vim.o.termguicolors = true
       vim.o.background = 'light'
-      vim.cmd("colorscheme melange")
+      vim.cmd 'colorscheme melange'
     end,
-    enabled = false
+    enabled = false,
   },
 
   {
@@ -357,26 +381,24 @@ return {
       vim.g.gruvbox_material_show_eob = 0
       vim.g.gruvbox_material_dim_inactive_windows = 1
       vim.g.gruvbox_material_ui_contrast = 'high'
-      vim.cmd("colorscheme gruvbox-material")
-    end
+      vim.cmd 'colorscheme gruvbox-material'
+    end,
   },
 
   {
     'RRethy/vim-illuminate',
     config = function()
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>',
-        { noremap = true })
-      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>',
-        { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', { noremap = true })
       -- vim.g.Illuminate_useDeprecated = 1
-    end
+    end,
   },
 
   {
     'kosayoda/nvim-lightbulb',
     dependencies = 'antoinemadec/FixCursorHold.nvim',
     config = function()
-      require('config.lightbulb')
+      require 'config.lightbulb'
     end,
   },
 
@@ -385,8 +407,10 @@ return {
   },
 
   {
-    "windwp/nvim-autopairs",
-    config = function() require("nvim-autopairs").setup {} end
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup {}
+    end,
   },
 
   {
@@ -397,7 +421,7 @@ return {
       map('n', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
       map('v', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
       map('n', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
-    end
+    end,
   },
 
   {
@@ -406,10 +430,8 @@ return {
       require('Comment').setup()
       local opt = { expr = true, remap = true }
       -- Toggle using count
-      vim.keymap.set('n', '<leader>cc',
-        "v:count == 0 ? '<Plug>(comment_toggle_current_linewise)' : '<Plug>(comment_toggle_linewise_count)'", opt)
-      vim.keymap.set('n', '<leader>cb',
-        "v:count == 0 ? '<Plug>(comment_toggle_current_blockwise)' : '<Plug>(comment_toggle_blockwise_count)'", opt)
+      vim.keymap.set('n', '<leader>cc', "v:count == 0 ? '<Plug>(comment_toggle_current_linewise)' : '<Plug>(comment_toggle_linewise_count)'", opt)
+      vim.keymap.set('n', '<leader>cb', "v:count == 0 ? '<Plug>(comment_toggle_current_blockwise)' : '<Plug>(comment_toggle_blockwise_count)'", opt)
 
       -- Toggle in Op-pending mode
       vim.keymap.set('n', '<leader>cgc', '<Plug>(comment_toggle_linewise)')
@@ -418,59 +440,70 @@ return {
       -- Toggle in VISUAL mode
       vim.keymap.set('x', '<leader>cc', '<Plug>(comment_toggle_linewise_visual)')
       vim.keymap.set('x', '<leader>cb', '<Plug>(comment_toggle_blockwise_visual)')
-    end
+    end,
   },
 
   {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
+    'folke/which-key.nvim',
+    event = 'VeryLazy',
     config = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
-      require("which-key").setup {
+      require('which-key').setup {
         plugins = {
           presets = {
             operators = false,
           },
         },
-        triggers_blacklist = {
-          n = { "o", "O", '"' },
-          v = { "j", "k", '"' },
+        disable = {
+          -- disable a trigger for a certain context by returning true
+          ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
+          trigger = function(ctx)
+            local disabled_keys_v = { 'j', 'k', '"' }
+            local disabled_keys_n = { 'o', 'O', '"' }
+
+            if ctx.mode == 'v' then
+              return vim.tbl_contains(disabled_keys_v, ctx.keys)
+            elseif ctx.mode == 'n' then
+              return vim.tbl_contains(disabled_keys_n, ctx.keys)
+            end
+            return false
+          end,
         },
       }
-    end
+    end,
   },
 
   -- clipboard over ssh through tmux
   {
     'ojroques/nvim-osc52',
     config = function()
-      require('config.osc52')
+      require 'config.osc52'
     end,
     enabled = false,
   },
 
   {
     'akinsho/toggleterm.nvim',
-    version = "*",
+    version = '*',
     config = function()
-      require('config.toggleterm')
-    end
+      require 'config.toggleterm'
+    end,
   },
 
   {
     'nat-418/boole.nvim',
     config = function()
-      require('boole').setup({
+      require('boole').setup {
         mappings = {
           increment = '<C-a>',
-          decrement = '<C-x>'
+          decrement = '<C-x>',
         },
         allow_caps_additions = {
-          { 'enable', 'disable' }
-        }
-      })
-    end
+          { 'enable', 'disable' },
+        },
+      }
+    end,
   },
 
   -- plantUML preview for .uml
