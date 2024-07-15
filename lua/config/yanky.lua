@@ -15,7 +15,7 @@ local utils = require "yanky.utils"
 
 yanky.setup {
   ring = {
-    history_length = 10,
+    history_length = 20,
     storage = "shada",
     sync_with_numbered_registers = true,
   },
@@ -27,6 +27,7 @@ yanky.setup {
       mappings = {
         default = mapping.put("p"),
         i = {
+          ["<c-k>"] = actions.move_selection_previous,
           ["<c-p>"] = mapping.put("p"),
           ["<c-P>"] = mapping.put("P"),
           ["<c-x>"] = mapping.delete(),
@@ -63,3 +64,4 @@ vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
 vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
 vim.keymap.set("n", "<leader>a", "<Plug>(YankyCycleBackward)")
 vim.keymap.set("n", "<leader>y", ":Telescope yank_history<CR>")
+vim.keymap.set({"n","x"}, "y", "<Plug>(YankyYank)")
