@@ -473,6 +473,7 @@ return {
         },
       }
     end,
+    enabled = false,
   },
 
   -- clipboard over ssh through tmux
