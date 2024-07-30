@@ -20,6 +20,7 @@ conform.setup {
     rust = { 'rustfmt' },
     go = { 'goimports', 'gofumpt' },
     c = { 'trim_whitespace', 'trim_newlines' }, -- didn't want LSP formatting on C
+    cpp = { 'trim_whitespace', 'trim_newlines' }, -- didn't want LSP formatting on CPP
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
   },
   format_on_save = {
