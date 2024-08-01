@@ -305,6 +305,7 @@ return {
           require('telescope').setup {
             extensions = {
               frecency = {
+                matcher = 'fuzzy',
                 show_scores = true,
                 show_filter_column = false,
               },
