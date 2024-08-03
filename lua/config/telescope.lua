@@ -1,11 +1,11 @@
-local telescope = require('telescope')
-local actions = require('telescope.actions')
-local u = require('utils')
+local telescope = require 'telescope'
+local actions = require 'telescope.actions'
+local u = require 'utils'
 
 local default_mappings = {
   i = {
-    ["<C-j>"] = actions.move_selection_next,
-    ["<C-k>"] = actions.move_selection_previous,
+    ['<C-j>'] = actions.move_selection_next,
+    ['<C-k>'] = actions.move_selection_previous,
   },
   n = {
     ['Q'] = actions.smart_add_to_qflist + actions.open_qflist,
@@ -51,7 +51,7 @@ local opts_flex = {
   },
 }
 
-telescope.setup({
+telescope.setup {
   defaults = {
     layout_strategy = 'horizontal',
     scroll_strategy = 'limit',
@@ -75,71 +75,71 @@ telescope.setup({
     sorting_strategy = 'ascending',
     mappings = {
       i = {
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
+        ['<C-j>'] = actions.move_selection_next,
+        ['<C-k>'] = actions.move_selection_previous,
       },
     },
     default_mappings = {
       i = {
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
+        ['<C-j>'] = actions.move_selection_next,
+        ['<C-k>'] = actions.move_selection_previous,
 
-        ["<C-o>"] = actions.close,
+        ['<C-o>'] = actions.close,
 
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
+        ['<Down>'] = actions.move_selection_next,
+        ['<Up>'] = actions.move_selection_previous,
 
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-]>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<CR>'] = actions.select_default,
+        ['<C-x>'] = actions.select_horizontal,
+        ['<C-]>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
 
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
+        ['<C-u>'] = actions.preview_scrolling_up,
+        ['<C-d>'] = actions.preview_scrolling_down,
 
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
+        ['<PageUp>'] = actions.results_scrolling_up,
+        ['<PageDown>'] = actions.results_scrolling_down,
 
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-        ["<C-l>"] = actions.complete_tag,
-        ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
-        ["<C-w>"] = { "<c-s-w>", type = "command" },
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<C-l>'] = actions.complete_tag,
+        ['<C-_>'] = actions.which_key, -- keys from pressing <C-/>
+        ['<C-w>'] = { '<c-s-w>', type = 'command' },
       },
       n = {
-        ["<C-o>"] = actions.close,
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-]>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<C-o>'] = actions.close,
+        ['<CR>'] = actions.select_default,
+        ['<C-x>'] = actions.select_horizontal,
+        ['<C-]>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
 
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["q"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['q'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
 
         -- TODO: This would be weird if we switch the ordering.
-        ["j"] = actions.move_selection_next,
-        ["k"] = actions.move_selection_previous,
-        ["H"] = actions.move_to_top,
-        ["M"] = actions.move_to_middle,
-        ["L"] = actions.move_to_bottom,
+        ['j'] = actions.move_selection_next,
+        ['k'] = actions.move_selection_previous,
+        ['H'] = actions.move_to_top,
+        ['M'] = actions.move_to_middle,
+        ['L'] = actions.move_to_bottom,
 
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
-        ["gg"] = actions.move_to_top,
-        ["G"] = actions.move_to_bottom,
+        ['<Down>'] = actions.move_selection_next,
+        ['<Up>'] = actions.move_selection_previous,
+        ['gg'] = actions.move_to_top,
+        ['G'] = actions.move_to_bottom,
 
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
+        ['<C-u>'] = actions.preview_scrolling_up,
+        ['<C-d>'] = actions.preview_scrolling_down,
 
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
+        ['<PageUp>'] = actions.results_scrolling_up,
+        ['<PageDown>'] = actions.results_scrolling_down,
 
-        ["?"] = actions.which_key,
+        ['?'] = actions.which_key,
       },
     },
   },
@@ -204,22 +204,27 @@ telescope.setup({
       symbol_width = 36,
     },
   },
-})
+}
 
-telescope.load_extension('fzf')
+telescope.load_extension 'fzf'
 
-local builtin = require('telescope.builtin')
+local builtin = require 'telescope.builtin'
 local map = require('utils').map
 
 map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
-map('n', '<C-p>', builtin.find_files, 'Find files')
+map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
+
+map('n', '<leader>fz', function()
+  require('telescope').extensions.frecency.frecency {}
+end, 'Find files frecency (Root Dir)')
+
 map('n', '<leader>ff', builtin.find_files, 'Find files')
 map('n', '<leader>fs', builtin.treesitter, 'Lists symbols from treesitter')
 map('n', '<leader>ss', builtin.lsp_document_symbols, 'List lsp_document_symbols')
 map('n', '<leader>sS', builtin.lsp_dynamic_workspace_symbols, 'List lsp_dynamic_workspace_symbols')
-map('n', '<C-w>d', function ()
-  return builtin.lsp_definitions({jump_type="split"})
+map('n', '<C-w>d', function()
+  return builtin.lsp_definitions { jump_type = 'split' }
 end, 'lsp_definitions({jump_type="split"})')
 map('n', '<leader>*', builtin.grep_string, 'grep_string')
 map('n', '<leader>b', builtin.buffers, 'Open buffers')

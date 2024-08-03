@@ -203,6 +203,7 @@ return {
   -- autocompletion
   {
     'hrsh7th/nvim-cmp',
+    commit = '7e348da',
     config = function()
       require 'config.cmp'
     end,
@@ -296,6 +297,22 @@ return {
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
+      },
+
+      {
+        'nvim-telescope/telescope-frecency.nvim',
+        config = function()
+          require('telescope').setup {
+            extensions = {
+              frecency = {
+                matcher = 'fuzzy',
+                show_scores = true,
+                show_filter_column = false,
+              },
+            },
+          }
+          require('telescope').load_extension 'frecency'
+        end,
       },
     },
     event = 'VeryLazy',
@@ -472,6 +489,7 @@ return {
         },
       }
     end,
+    enabled = false,
   },
 
   -- clipboard over ssh through tmux
@@ -502,6 +520,17 @@ return {
         allow_caps_additions = {
           { 'enable', 'disable' },
         },
+      }
+    end,
+  },
+
+  {
+    'MeanderingProgrammer/markdown.nvim',
+    name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    config = function()
+      require('render-markdown').setup {
+        enabled = false,
       }
     end,
   },
