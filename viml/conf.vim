@@ -79,3 +79,39 @@ augroup GruvboxMaterialCustom
     autocmd!
     autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
 augroup END
+
+let g:Lf_PopupPalette = {
+\    'light': {
+\       'Lf_hl_cursorline': {
+\               'gui': 'bold',
+\               'guifg': 'NONE',
+\               'guibg': '#d4ede8',
+\               'cterm': 'NONE',
+\               'ctermfg': '7',
+\               'ctermbg': '1'
+\       }
+\    }
+\}
+
+let g:Lf_NormalCommandMap = {
+            \ "*":      {
+            \               "<C-Down>": "<C-J>",
+            \               "<C-Up>":   "<C-K>",
+            \               "<Esc>": "<C-O>",
+            \           },
+            \ "File":   {
+            \               "q":     "<Esc>",
+            \               "a":     "<C-A>",
+            \           },
+            \ "Buffer": {},
+            \ "Mru":    {},
+            \ "Tag":    {},
+            \ "BufTag": {},
+            \ "Function": {},
+            \ "Line":   {},
+            \ "History":{},
+            \ "Help":   {},
+            \ "Rg":     {},
+            \ "Gtags":  {},
+            \ "Colorscheme": {}
+            \}
