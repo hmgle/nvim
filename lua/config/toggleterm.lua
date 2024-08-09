@@ -3,6 +3,12 @@ require('toggleterm').setup {
   start_in_insert = true,
   direction = 'float',
   close_on_exit = true,
+  on_open = function()
+    vim.o.background = 'dark'
+  end,
+  on_close = function()
+    vim.o.background = 'light'
+  end,
 }
 function _G.set_terminal_keymaps()
   local opts = { buffer = 0 }
