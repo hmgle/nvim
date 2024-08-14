@@ -235,6 +235,12 @@ return {
           'rafamadriz/friendly-snippets',
         },
       },
+      -- codeium
+      {
+        'Exafunction/codeium.nvim',
+        cmd = 'Codeium',
+        opts = {},
+      },
     },
   },
 
