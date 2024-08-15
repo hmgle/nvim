@@ -215,6 +215,21 @@ return {
   },
 
   -- autocompletion
+  { -- gh copilot
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    build = ':Copilot auth',
+    config = function()
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+        filetypes = {
+          markdown = true,
+        },
+      }
+    end,
+  },
+
   {
     'hrsh7th/nvim-cmp',
     commit = '7e348da',
@@ -234,6 +249,15 @@ return {
         dependencies = {
           'rafamadriz/friendly-snippets',
         },
+      },
+      -- copilot
+      {
+        'zbirenbaum/copilot-cmp',
+        dependencies = 'zbirenbaum/copilot.lua',
+        config = function(_, opts)
+          local copilot_cmp = require 'copilot_cmp'
+          copilot_cmp.setup(opts)
+        end,
       },
       -- codeium
       {
