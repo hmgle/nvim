@@ -142,7 +142,21 @@ return {
       map('n', '<leader>yd', ':<C-u>Yde<CR>')
     end,
   },
+  {
+    'Yggdroot/LeaderF',
+    init = function()
+      -- vim.g.Lf_ShortcutF = '<c-p>'
+      vim.g.Lf_UseCache = 0
+      vim.g.Lf_PreviewInPopup = 0
+      vim.g.Lf_HideHelp = 1
+      vim.g.Lf_CommandMap = {
+        ['<ESC>'] = { '<ESC>', '<C-O>' },
+      }
 
+      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
+    end,
+    build = ':LeaderfInstallCExtension',
+  },
   {
     'ojroques/nvim-hardline',
     config = function()
@@ -201,6 +215,21 @@ return {
   },
 
   -- autocompletion
+  { -- gh copilot
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    build = ':Copilot auth',
+    config = function()
+      require('copilot').setup {
+        suggestion = { enabled = false },
+        panel = { enabled = false },
+        filetypes = {
+          markdown = true,
+        },
+      }
+    end,
+  },
+
   {
     'hrsh7th/nvim-cmp',
     commit = '7e348da',
@@ -220,6 +249,21 @@ return {
         dependencies = {
           'rafamadriz/friendly-snippets',
         },
+      },
+      -- copilot
+      {
+        'zbirenbaum/copilot-cmp',
+        dependencies = 'zbirenbaum/copilot.lua',
+        config = function(_, opts)
+          local copilot_cmp = require 'copilot_cmp'
+          copilot_cmp.setup(opts)
+        end,
+      },
+      -- codeium
+      {
+        'Exafunction/codeium.nvim',
+        cmd = 'Codeium',
+        opts = {},
       },
     },
   },
