@@ -264,6 +264,7 @@ return {
         'Exafunction/codeium.nvim',
         cmd = 'Codeium',
         opts = {},
+        enabled = false,
       },
     },
   },
