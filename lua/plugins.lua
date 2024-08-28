@@ -167,6 +167,7 @@ return {
         },
         theme = 'nordic',
       }
+      vim.opt.showmode = true
     end,
   },
   {
