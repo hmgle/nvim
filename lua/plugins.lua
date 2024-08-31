@@ -167,6 +167,7 @@ return {
         },
         theme = 'nordic',
       }
+      vim.opt.showmode = true
     end,
   },
   {
@@ -264,6 +265,7 @@ return {
         'Exafunction/codeium.nvim',
         cmd = 'Codeium',
         opts = {},
+        enabled = false,
       },
     },
   },
