@@ -581,6 +581,8 @@ return {
     end,
   },
 
+  'LunarVim/bigfile.nvim',
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
