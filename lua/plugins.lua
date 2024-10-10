@@ -629,6 +629,7 @@ return {
           map({ 'i' }, '<C-b>', '<Left>', { buffer = true })
           map({ 'i' }, '<C-f>', '<Right>', { buffer = true })
           map({ 'i' }, '<C-d>', '<Del>', { buffer = true })
+          map({ 'i' }, '<C-k>', '<C-o>D', { buffer = true })
           map({ 's', 'n' }, '<C-c>', input.close, { buffer = true })
           map({ 's', 'n' }, '<C-o>', input.close, { buffer = true })
           map('s', '<CR>', input.confirm, { buffer = true })
