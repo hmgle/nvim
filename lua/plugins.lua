@@ -623,8 +623,14 @@ return {
             feedkeys('<Esc>V<C-g>', 'i')
           end
           map({ 'i', 's' }, '<C-j>', input.history_next, { buffer = true })
-          map({ 'i', 's' }, '<C-k>', input.history_prev, { buffer = true })
+          map({ 's' }, '<C-k>', input.history_prev, { buffer = true })
+          map({ 'i' }, '<C-a>', '<Home>', { buffer = true })
+          map({ 'i' }, '<C-e>', '<End>', { buffer = true })
+          map({ 'i' }, '<C-b>', '<Left>', { buffer = true })
+          map({ 'i' }, '<C-f>', '<Right>', { buffer = true })
+          map({ 'i' }, '<C-d>', '<Del>', { buffer = true })
           map({ 's', 'n' }, '<C-c>', input.close, { buffer = true })
+          map({ 's', 'n' }, '<C-o>', input.close, { buffer = true })
           map('s', '<CR>', input.confirm, { buffer = true })
         end,
         group = 'Dressing',
