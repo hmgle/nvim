@@ -607,7 +607,6 @@ return {
         },
         input = {
           insert_only = false,
-          relative = 'editor',
           default_prompt = ' ', -- Doesn't seem to work
         },
       }
