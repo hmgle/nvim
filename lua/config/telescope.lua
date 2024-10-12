@@ -207,18 +207,16 @@ telescope.setup {
 }
 
 telescope.load_extension 'fzf'
+telescope.load_extension 'notify'
 
+local extensions = telescope.extensions
 local builtin = require 'telescope.builtin'
 local map = require('utils').map
 
 map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
 map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
-
-map('n', '<leader>fz', function()
-  require('telescope').extensions.frecency.frecency {}
-end, 'Find files frecency (Root Dir)')
-
+map('n', '<leader>fz', extensions.frecency.frecency, 'Find files frecency (Root Dir)')
 map('n', '<leader>ff', builtin.find_files, 'Find files')
 map('n', '<leader>fs', builtin.treesitter, 'Lists symbols from treesitter')
 map('n', '<leader>ss', builtin.lsp_document_symbols, 'List lsp_document_symbols')
@@ -232,3 +230,4 @@ map('n', '<leader>fr', builtin.resume, 'Resume latest telescope session')
 map('n', '<leader>fq', builtin.quickfix, 'Quickfix')
 map('n', '<leader>fQ', builtin.quickfixhistory, 'Quickfix history')
 map('n', '<leader>fd', builtin.diagnostics, 'Diagnostics')
+map('n', '<leader>fn', extensions.notify.notify, 'Notifications')

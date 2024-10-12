@@ -10,7 +10,7 @@ conform.setup {
     css = { 'prettier' },
     html = { 'prettier' },
     json = { 'prettier' },
-    yaml = { { 'yamlfix', 'prettier' } },
+    yaml = { 'yamlfix', 'prettier', stop_after_first = true },
     markdown = { 'markdownlint', 'prettier' },
     graphql = { 'prettier' },
     liquid = { 'prettier' },
