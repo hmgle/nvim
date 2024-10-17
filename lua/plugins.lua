@@ -638,6 +638,35 @@ return {
     end,
   },
 
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    config = function()
+      require('noice').setup {
+        cmdline = {
+          view = 'cmdline',
+          format = {
+            cmdline = false,
+            search_down = false,
+            search_up = false,
+            filter = false,
+            help = false,
+            lua = false,
+          },
+        },
+        lsp = {
+          signature = {
+            enabled = false,
+          },
+        },
+      }
+    end,
+  },
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
