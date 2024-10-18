@@ -452,8 +452,8 @@ return {
   {
     'RRethy/vim-illuminate',
     config = function()
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', { noremap = true })
-      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true,silent=true}<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true,silent=true}<cr>', { noremap = true })
       -- vim.g.Illuminate_useDeprecated = 1
     end,
   },
