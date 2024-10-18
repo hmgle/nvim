@@ -658,6 +658,9 @@ return {
             lua = false,
           },
         },
+        messages = {
+          view_search = false,
+        },
         lsp = {
           signature = {
             enabled = false,
