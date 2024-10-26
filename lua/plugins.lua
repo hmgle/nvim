@@ -452,8 +452,8 @@ return {
   {
     'RRethy/vim-illuminate',
     config = function()
-      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true}<cr>', { noremap = true })
-      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true}<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>n', '<cmd>lua require"illuminate".next_reference{wrap=true,silent=true}<cr>', { noremap = true })
+      vim.api.nvim_set_keymap('n', '<leader>N', '<cmd>lua require"illuminate".next_reference{reverse=true,wrap=true,silent=true}<cr>', { noremap = true })
       -- vim.g.Illuminate_useDeprecated = 1
     end,
   },
@@ -635,6 +635,38 @@ return {
         end,
         group = 'Dressing',
       })
+    end,
+  },
+
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    config = function()
+      require('noice').setup {
+        cmdline = {
+          view = 'cmdline',
+          format = {
+            cmdline = false,
+            search_down = false,
+            search_up = false,
+            filter = false,
+            help = false,
+            lua = false,
+          },
+        },
+        messages = {
+          view_search = false,
+        },
+        lsp = {
+          signature = {
+            enabled = false,
+          },
+        },
+      }
     end,
   },
 

@@ -41,3 +41,8 @@ if vim.fn.executable 'fcitx-remote' == 1 then
     callback = fcitx2en,
   })
 end
+
+-- https://github.com/LazyVim/LazyVim/discussions/1233
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+vim.opt.foldenable = false
