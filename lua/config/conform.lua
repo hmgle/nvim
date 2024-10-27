@@ -15,7 +15,7 @@ conform.setup {
     graphql = { 'prettier' },
     liquid = { 'prettier' },
     lua = { 'stylua' },
-    python = { 'isort', 'black' },
+    python = { 'ruff_format', 'isort', 'black', 'yapf', stop_after_first = true },
     sh = { 'shfmt' },
     rust = { 'rustfmt' },
     go = { 'goimports', 'gofumpt' },
