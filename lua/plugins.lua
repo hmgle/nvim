@@ -361,6 +361,7 @@ return {
           require('telescope').load_extension 'frecency'
         end,
       },
+      'nvim-telescope/telescope-ui-select.nvim',
     },
     event = 'VeryLazy',
     config = function()
@@ -591,50 +592,6 @@ return {
       local notify = require 'notify'
       notify.setup { timeout = 2000 }
       vim.notify = notify
-    end,
-  },
-
-  {
-    'stevearc/dressing.nvim',
-    event = 'VeryLazy',
-    config = function()
-      local utils = require 'utils'
-      local map, feedkeys = utils.map, utils.feedkeys
-
-      require('dressing').setup {
-        select = {
-          telescope = require('telescope.themes').get_dropdown(),
-        },
-        input = {
-          insert_only = false,
-          default_prompt = ' ', -- Doesn't seem to work
-        },
-      }
-
-      vim.api.nvim_create_augroup('Dressing', {})
-      vim.api.nvim_create_autocmd('Filetype', {
-        pattern = 'DressingInput',
-        callback = function()
-          local input = require 'dressing.input'
-
-          if vim.g.grep_string_mode then
-            -- Enter input window in select mode
-            feedkeys('<Esc>V<C-g>', 'i')
-          end
-          map({ 'i', 's' }, '<C-j>', input.history_next, { buffer = true })
-          map({ 's' }, '<C-k>', input.history_prev, { buffer = true })
-          map({ 'i' }, '<C-a>', '<Home>', { buffer = true })
-          map({ 'i' }, '<C-e>', '<End>', { buffer = true })
-          map({ 'i' }, '<C-b>', '<Left>', { buffer = true })
-          map({ 'i' }, '<C-f>', '<Right>', { buffer = true })
-          map({ 'i' }, '<C-d>', '<Del>', { buffer = true })
-          map({ 'i' }, '<C-k>', '<C-o>D', { buffer = true })
-          map({ 's', 'n' }, '<C-c>', input.close, { buffer = true })
-          map({ 's', 'n' }, '<C-o>', input.close, { buffer = true })
-          map('s', '<CR>', input.confirm, { buffer = true })
-        end,
-        group = 'Dressing',
-      })
     end,
   },
 
