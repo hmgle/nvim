@@ -660,6 +660,17 @@ return {
     end,
   },
 
+  {
+    'rmagatti/goto-preview',
+    config = function()
+      require('goto-preview').setup {
+        default_mappings = false,
+        vim.keymap.set('n', 'gp', "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { noremap = true }),
+        vim.keymap.set('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { noremap = true }),
+      }
+    end,
+  },
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
