@@ -627,6 +627,13 @@ return {
     end,
   },
 
+  {
+    'aznhe21/actions-preview.nvim',
+    config = function()
+      vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', require('actions-preview').code_actions)
+    end,
+  },
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
