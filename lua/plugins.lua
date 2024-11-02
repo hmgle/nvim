@@ -630,6 +630,31 @@ return {
   {
     'aznhe21/actions-preview.nvim',
     config = function()
+      require('actions-preview').setup {
+        diff = {
+          -- https://vimways.org/2018/the-power-of-diff/
+          -- https://github.com/neovim/neovim/issues/1466
+          algorithm = 'patience',
+          indent_heuristic = true,
+          ignore_whitespace = true,
+        },
+        telescope = require('telescope.themes').get_dropdown {
+          layout_config = {
+            mirror = true,
+            height = 8,
+            width = function()
+              local cols = vim.o.columns
+              if cols > 120 then
+                return 90
+              else
+                return math.floor(cols * 0.87)
+              end
+            end,
+            preview_cutoff = 30,
+          },
+        },
+      }
+
       vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', require('actions-preview').code_actions)
     end,
   },
