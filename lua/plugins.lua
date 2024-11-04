@@ -184,7 +184,8 @@ return {
 
   {
     'ray-x/go.nvim',
-    ft = { 'go' },
+    ft = { 'go', 'gomod' },
+    event = { 'CmdlineEnter' },
     config = function()
       require('go').setup {
         lsp_codelens = false,
@@ -195,12 +196,12 @@ return {
           style = 'inlay',
         },
       }
-      vim.cmd [[
-      augroup go.filetype
-      autocmd!
-        autocmd FileType go setlocal omnifunc=v:lua.vim.lsp.omnifunc
-      augroup end
-      ]]
+    end,
+    cond = function()
+      -- too slow to load on startup for big files
+      local max_file_size = 1024 * 100 -- 100KB
+      local file_size = vim.fn.getfsize(vim.fn.expand '%:p')
+      return file_size < max_file_size
     end,
   },
 
@@ -583,7 +584,14 @@ return {
     end,
   },
 
-  'LunarVim/bigfile.nvim',
+  {
+    'LunarVim/bigfile.nvim',
+    config = function()
+      require('bigfile').setup {
+        filesize = 1, -- size of the file in MiB, the plugin round file sizes to the closest MiB
+      }
+    end,
+  },
 
   {
     'rcarriga/nvim-notify',
