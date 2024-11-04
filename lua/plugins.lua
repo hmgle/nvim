@@ -184,7 +184,8 @@ return {
 
   {
     'ray-x/go.nvim',
-    ft = { 'go' },
+    ft = { 'go', 'gomod' },
+    event = { 'CmdlineEnter' },
     config = function()
       require('go').setup {
         lsp_codelens = false,
@@ -195,12 +196,12 @@ return {
           style = 'inlay',
         },
       }
-      vim.cmd [[
-      augroup go.filetype
-      autocmd!
-        autocmd FileType go setlocal omnifunc=v:lua.vim.lsp.omnifunc
-      augroup end
-      ]]
+    end,
+    cond = function()
+      -- too slow to load on startup for big files
+      local max_file_size = 1024 * 100 -- 100KB
+      local file_size = vim.fn.getfsize(vim.fn.expand '%:p')
+      return file_size < max_file_size
     end,
   },
 
@@ -361,6 +362,7 @@ return {
           require('telescope').load_extension 'frecency'
         end,
       },
+      'nvim-telescope/telescope-ui-select.nvim',
     },
     event = 'VeryLazy',
     config = function()
@@ -582,7 +584,14 @@ return {
     end,
   },
 
-  'LunarVim/bigfile.nvim',
+  {
+    'LunarVim/bigfile.nvim',
+    config = function()
+      require('bigfile').setup {
+        filesize = 1, -- size of the file in MiB, the plugin round file sizes to the closest MiB
+      }
+    end,
+  },
 
   {
     'rcarriga/nvim-notify',
@@ -591,50 +600,6 @@ return {
       local notify = require 'notify'
       notify.setup { timeout = 2000 }
       vim.notify = notify
-    end,
-  },
-
-  {
-    'stevearc/dressing.nvim',
-    event = 'VeryLazy',
-    config = function()
-      local utils = require 'utils'
-      local map, feedkeys = utils.map, utils.feedkeys
-
-      require('dressing').setup {
-        select = {
-          telescope = require('telescope.themes').get_dropdown(),
-        },
-        input = {
-          insert_only = false,
-          default_prompt = ' ', -- Doesn't seem to work
-        },
-      }
-
-      vim.api.nvim_create_augroup('Dressing', {})
-      vim.api.nvim_create_autocmd('Filetype', {
-        pattern = 'DressingInput',
-        callback = function()
-          local input = require 'dressing.input'
-
-          if vim.g.grep_string_mode then
-            -- Enter input window in select mode
-            feedkeys('<Esc>V<C-g>', 'i')
-          end
-          map({ 'i', 's' }, '<C-j>', input.history_next, { buffer = true })
-          map({ 's' }, '<C-k>', input.history_prev, { buffer = true })
-          map({ 'i' }, '<C-a>', '<Home>', { buffer = true })
-          map({ 'i' }, '<C-e>', '<End>', { buffer = true })
-          map({ 'i' }, '<C-b>', '<Left>', { buffer = true })
-          map({ 'i' }, '<C-f>', '<Right>', { buffer = true })
-          map({ 'i' }, '<C-d>', '<Del>', { buffer = true })
-          map({ 'i' }, '<C-k>', '<C-o>D', { buffer = true })
-          map({ 's', 'n' }, '<C-c>', input.close, { buffer = true })
-          map({ 's', 'n' }, '<C-o>', input.close, { buffer = true })
-          map('s', '<CR>', input.confirm, { buffer = true })
-        end,
-        group = 'Dressing',
-      })
     end,
   },
 
@@ -666,6 +631,50 @@ return {
             enabled = false,
           },
         },
+      }
+    end,
+  },
+
+  {
+    'aznhe21/actions-preview.nvim',
+    event = 'LspAttach',
+    config = function()
+      require('actions-preview').setup {
+        diff = {
+          -- https://vimways.org/2018/the-power-of-diff/
+          -- https://github.com/neovim/neovim/issues/1466
+          algorithm = 'patience',
+          indent_heuristic = true,
+          ignore_whitespace = true,
+        },
+        telescope = require('telescope.themes').get_dropdown {
+          layout_config = {
+            mirror = true,
+            height = 8,
+            width = function()
+              local cols = vim.o.columns
+              if cols > 120 then
+                return 90
+              else
+                return math.floor(cols * 0.87)
+              end
+            end,
+            preview_cutoff = 30,
+          },
+        },
+      }
+
+      vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', require('actions-preview').code_actions)
+    end,
+  },
+
+  {
+    'rmagatti/goto-preview',
+    config = function()
+      require('goto-preview').setup {
+        default_mappings = false,
+        vim.keymap.set('n', 'gp', "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { noremap = true }),
+        vim.keymap.set('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { noremap = true }),
       }
     end,
   },
