@@ -353,6 +353,8 @@ return {
           require('telescope').setup {
             extensions = {
               frecency = {
+                -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/270
+                db_safe_mode = false,
                 matcher = 'fuzzy',
                 show_scores = true,
                 show_filter_column = false,
