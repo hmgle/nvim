@@ -472,6 +472,23 @@ return {
 
   {
     'HiPhish/rainbow-delimiters.nvim',
+    dependencies = 'nvim-treesitter/nvim-treesitter',
+    config = function()
+      vim.g.rainbow_delimiters = {
+        whitelist = {
+          'c',
+          'go',
+          'erlang',
+          'javascript',
+          'lua',
+          'markdown',
+          'python',
+          'ruby',
+          'rust',
+          'zig',
+        },
+      }
+    end,
   },
 
   {
