@@ -353,6 +353,8 @@ return {
           require('telescope').setup {
             extensions = {
               frecency = {
+                -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/270
+                db_safe_mode = false,
                 matcher = 'fuzzy',
                 show_scores = true,
                 show_filter_column = false,
@@ -470,6 +472,23 @@ return {
 
   {
     'HiPhish/rainbow-delimiters.nvim',
+    dependencies = 'nvim-treesitter/nvim-treesitter',
+    config = function()
+      vim.g.rainbow_delimiters = {
+        whitelist = {
+          'c',
+          'go',
+          'erlang',
+          'javascript',
+          'lua',
+          'markdown',
+          'python',
+          'ruby',
+          'rust',
+          'zig',
+        },
+      }
+    end,
   },
 
   {
