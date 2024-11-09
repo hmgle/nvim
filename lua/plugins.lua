@@ -583,7 +583,6 @@ return {
     config = function()
       local terminal = require 'terminal'
       terminal.setup {
-        -- layout = { open_cmd = 'float' },
         layout = { open_cmd = 'float' },
       }
       vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter', 'TermOpen' }, {
