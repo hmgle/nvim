@@ -572,8 +572,40 @@ return {
   {
     'akinsho/toggleterm.nvim',
     version = '*',
+    enabled = false,
     config = function()
       require 'config.toggleterm'
+    end,
+  },
+
+  {
+    'rebelot/terminal.nvim',
+    config = function()
+      require('terminal').setup {
+        layout = { open_cmd = 'float' },
+      }
+      vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter', 'TermOpen' }, {
+        callback = function(args)
+          if vim.startswith(vim.api.nvim_buf_get_name(args.buf), 'term://') then
+            vim.cmd 'startinsert'
+          end
+        end,
+      })
+
+      local term_map = require 'terminal.mappings'
+      vim.keymap.set({ 'n', 't' }, '<c-s>', term_map.toggle)
+
+      vim.api.nvim_create_autocmd('TermEnter', {
+        callback = function()
+          vim.o.background = 'dark'
+        end,
+      })
+
+      vim.api.nvim_create_autocmd('TermLeave', {
+        callback = function()
+          vim.o.background = 'light'
+        end,
+      })
     end,
   },
 
