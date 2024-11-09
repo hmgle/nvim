@@ -581,7 +581,9 @@ return {
   {
     'rebelot/terminal.nvim',
     config = function()
-      require('terminal').setup {
+      local terminal = require 'terminal'
+      terminal.setup {
+        -- layout = { open_cmd = 'float' },
         layout = { open_cmd = 'float' },
       }
       vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter', 'TermOpen' }, {
@@ -592,8 +594,23 @@ return {
         end,
       })
 
-      local term_map = require 'terminal.mappings'
-      vim.keymap.set({ 'n', 't' }, '<c-s>', term_map.toggle)
+      local active_terminals = require 'terminal.active_terminals'
+
+      vim.keymap.set({ 'n', 't' }, '<c-s>', function()
+        if active_terminals:len() > 0 then
+          terminal.toggle()
+        else
+          local default_shell = vim.fn.getenv 'SHELL' or 'bash'
+          terminal.run(default_shell)
+        end
+      end)
+
+      vim.api.nvim_create_autocmd('TermOpen', {
+        callback = function()
+          local opts = { buffer = 0 }
+          vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+        end,
+      })
 
       vim.api.nvim_create_autocmd('TermEnter', {
         callback = function()
