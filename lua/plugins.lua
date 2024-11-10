@@ -620,6 +620,11 @@ return {
       vim.api.nvim_create_autocmd('TermLeave', {
         callback = function()
           vim.o.background = 'light'
+          vim.cmd 'hi Search guibg=None guifg=#ff2222'
+          vim.cmd 'hi CurSearch guibg=None guifg=#ff0000 gui=bold'
+          vim.cmd 'hi HlSearchNear guibg=None guifg=#ff0000'
+          vim.cmd 'hi HlSearchLens guibg=None guifg=#bbbbbb'
+          vim.cmd 'hi HlSearchLensNear guibg=None guifg=#888888'
         end,
       })
     end,
