@@ -572,7 +572,7 @@ return {
   {
     'akinsho/toggleterm.nvim',
     version = '*',
-    enabled = false,
+    enabled = true,
     config = function()
       require 'config.toggleterm'
     end,
@@ -580,6 +580,7 @@ return {
 
   {
     'rebelot/terminal.nvim',
+    enabled = false,
     config = function()
       local terminal = require 'terminal'
       terminal.setup {

@@ -42,7 +42,9 @@ if vim.fn.executable 'fcitx-remote' == 1 then
   })
 end
 
--- https://github.com/LazyVim/LazyVim/discussions/1233
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-vim.opt.foldenable = false
+-- Some performance issues that seems to be related to the foldexpr setting
+-- https://github.com/akinsho/toggleterm.nvim/issues/610
+-- -- https://github.com/LazyVim/LazyVim/discussions/1233
+-- vim.wo.foldmethod = 'expr'
+-- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- vim.opt.foldenable = false
