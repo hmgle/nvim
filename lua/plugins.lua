@@ -234,7 +234,6 @@ return {
 
   {
     'hrsh7th/nvim-cmp',
-    commit = '7e348da',
     config = function()
       require 'config.cmp'
     end,
