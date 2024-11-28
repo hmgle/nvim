@@ -10,12 +10,6 @@ set so=2
 
 set guicursor=i:block
 
-
-try
-    lang en_US
-catch
-endtry
-
 set ffs=unix,dos,mac "Default file types
 
 " set expandtab
