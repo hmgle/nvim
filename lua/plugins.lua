@@ -741,6 +741,39 @@ return {
   },
 
   {
+    'MagicDuck/grug-far.nvim',
+    cmd = 'GrugFar',
+    keys = {
+      {
+        '<leader>sr',
+        function()
+          local grug = require 'grug-far'
+          grug.open {
+            engine = 'ripgrep',
+          }
+        end,
+        mode = { 'n', 'v' },
+        desc = 'Search and Replace(rg)',
+      },
+      {
+        '<leader>sa',
+        function()
+          local grug = require 'grug-far'
+          grug.open {
+            engine = 'astgrep',
+          }
+        end,
+        mode = { 'n', 'v' },
+        desc = 'Search and Replace(ast-grep)',
+      },
+    },
+
+    config = function()
+      require('grug-far').setup {}
+    end,
+  },
+
+  {
     'rmagatti/goto-preview',
     config = function()
       require('goto-preview').setup {

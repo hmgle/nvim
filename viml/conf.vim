@@ -1,6 +1,3 @@
-let mapleader = ","
-let g:mapleader = ","
-
 set whichwrap+=<,>,h,l
 set ignorecase "Ignore case when searching
 set smartcase
