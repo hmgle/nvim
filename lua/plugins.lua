@@ -539,21 +539,6 @@ return {
             operators = false,
           },
         },
-        disable = {
-          -- disable a trigger for a certain context by returning true
-          ---@type fun(ctx: { keys: string, mode: string, plugin?: string }):boolean?
-          trigger = function(ctx)
-            local disabled_keys_v = { 'j', 'k', '"' }
-            local disabled_keys_n = { 'o', 'O', '"' }
-
-            if ctx.mode == 'v' then
-              return vim.tbl_contains(disabled_keys_v, ctx.keys)
-            elseif ctx.mode == 'n' then
-              return vim.tbl_contains(disabled_keys_n, ctx.keys)
-            end
-            return false
-          end,
-        },
       }
     end,
     enabled = false,
