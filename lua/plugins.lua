@@ -141,7 +141,7 @@ return {
         desc = 'Treewalker move_down',
       },
       {
-        '<c-h>',
+        '<leader>h',
         mode = { 'n', 'v' },
         function()
           require('treewalker').move_out()
@@ -149,7 +149,7 @@ return {
         desc = 'Treewalker move_out',
       },
       {
-        '<c-l>',
+        '<leader>l',
         mode = { 'n', 'v' },
         function()
           require('treewalker').move_in()

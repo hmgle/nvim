@@ -62,7 +62,7 @@ local function on_attach(client, bufnr)
   buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
 
-  vim.keymap.set('n', '<leader>h', function()
+  vim.keymap.set('n', '<leader>H', function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   end)
 

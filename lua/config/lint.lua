@@ -30,4 +30,4 @@ local toggle_lint = function()
     lint.try_lint()
   end
 end
-vim.keymap.set({ 'n' }, '<leader>l', toggle_lint, { noremap = true, desc = 'Toggle Lint' })
+vim.keymap.set({ 'n' }, '<leader>L', toggle_lint, { noremap = true, desc = 'Toggle Lint' })
