@@ -119,6 +119,47 @@ return {
   },
 
   {
+    'aaronik/treewalker.nvim',
+    opts = {
+      highlight = true, -- default is false
+    },
+    keys = {
+      {
+        '<c-d>',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('treewalker').move_down()
+        end,
+        desc = 'Treewalker move_down',
+      },
+      {
+        '<c-u>',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('treewalker').move_up()
+        end,
+        desc = 'Treewalker move_down',
+      },
+      {
+        '<c-h>',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('treewalker').move_left()
+        end,
+        desc = 'Treewalker move_down',
+      },
+      {
+        '<c-l>',
+        mode = { 'n', 'x', 'o' },
+        function()
+          require('treewalker').move_right()
+        end,
+        desc = 'Treewalker move_down',
+      },
+    },
+  },
+
+  {
     'kevinhwang91/nvim-hlslens',
     config = function()
       require('hlslens').setup()
@@ -498,17 +539,6 @@ return {
   },
 
   {
-    'jeetsukumaran/vim-indentwise',
-    config = function()
-      local map = require('utils').map
-      map('v', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
-      map('n', '<leader>u', '<Plug>(IndentWisePreviousLesserIndent)')
-      map('v', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
-      map('n', '<leader>d', '<Plug>(IndentWiseNextLesserIndent)')
-    end,
-  },
-
-  {
     'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup()
@@ -541,7 +571,7 @@ return {
         },
       }
     end,
-    enabled = false,
+    enabled = true,
   },
 
   -- clipboard over ssh through tmux

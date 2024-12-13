@@ -46,7 +46,6 @@ au FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua set colorcolumn=81
 nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid") != 0? "cclose" : "botright copen")."<cr>"
 
 
-nnoremap <C-d> "=strftime("%Y-%m-%d")<CR>P
 inoremap <C-d> <C-R>=strftime("%Y-%m-%d")<CR>
 
 if exists('$TMUX')
