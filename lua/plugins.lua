@@ -126,7 +126,7 @@ return {
     keys = {
       {
         '<c-d>',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'v' },
         function()
           require('treewalker').move_down()
         end,
@@ -134,7 +134,7 @@ return {
       },
       {
         '<c-u>',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'v' },
         function()
           require('treewalker').move_up()
         end,
@@ -142,19 +142,19 @@ return {
       },
       {
         '<c-h>',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'v' },
         function()
-          require('treewalker').move_left()
+          require('treewalker').move_out()
         end,
-        desc = 'Treewalker move_down',
+        desc = 'Treewalker move_out',
       },
       {
         '<c-l>',
-        mode = { 'n', 'x', 'o' },
+        mode = { 'n', 'v' },
         function()
-          require('treewalker').move_right()
+          require('treewalker').move_in()
         end,
-        desc = 'Treewalker move_down',
+        desc = 'Treewalker move_in',
       },
     },
   },
