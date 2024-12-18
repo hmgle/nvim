@@ -207,6 +207,9 @@ telescope.setup {
     lsp_document_symbols = {
       symbol_width = 36,
     },
+    colorscheme = {
+      enable_preview = true,
+    },
   },
 }
 
