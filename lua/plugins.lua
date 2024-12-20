@@ -319,7 +319,9 @@ return {
         },
 
         menu = {
+          max_height = 36,
           draw = {
+            columns = { { 'label', 'label_description', gap = 1 }, { 'kind' } },
             -- Use treesitter to highlight the label text
             treesitter = true,
           },
