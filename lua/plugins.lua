@@ -274,40 +274,73 @@ return {
   },
 
   {
-    'hrsh7th/nvim-cmp',
-    config = function()
-      require 'config.cmp'
-    end,
+    'saghen/blink.cmp',
     dependencies = {
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-path',
-      'saadparwaiz1/cmp_luasnip',
-      {
-        'L3MON4D3/LuaSnip',
-        config = function()
-          require('luasnip.loaders.from_vscode').lazy_load()
-        end,
-        dependencies = {
-          'rafamadriz/friendly-snippets',
+      { 'L3MON4D3/LuaSnip', version = 'v2.*' },
+      'rafamadriz/friendly-snippets',
+      'giuxtaposition/blink-cmp-copilot',
+    },
+
+    version = 'v0.*',
+    opts = {
+      keymap = { preset = 'default' },
+
+      appearance = {
+        -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+        -- Useful for when your theme doesn't support blink.cmp
+        -- will be removed in a future release
+        use_nvim_cmp_as_default = false,
+        -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = 'mono',
+      },
+
+      sources = {
+        providers = {
+          copilot = {
+            name = 'copilot',
+            module = 'blink-cmp-copilot',
+            score_offset = 100,
+            async = true,
+          },
+        },
+        completion = {
+          enabled_providers = { 'lsp', 'path', 'luasnip', 'copilot', 'buffer' },
         },
       },
-      -- copilot
-      {
-        'zbirenbaum/copilot-cmp',
-        dependencies = 'zbirenbaum/copilot.lua',
-        config = function(_, opts)
-          local copilot_cmp = require 'copilot_cmp'
-          copilot_cmp.setup(opts)
-        end,
+
+      completion = {
+        accept = {
+          -- Experimental auto-brackets support
+          auto_brackets = {
+            -- Whether to auto-insert brackets for functions
+            enabled = true,
+          },
+        },
+
+        menu = {
+          draw = {
+            -- Use treesitter to highlight the label text
+            treesitter = true,
+          },
+        },
+
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        -- Displays a preview of the selected item on the current line
+        ghost_text = {
+          enabled = true,
+        },
       },
-      -- codeium
-      {
-        'Exafunction/codeium.nvim',
-        cmd = 'Codeium',
-        opts = {},
-        enabled = false,
-      },
+    },
+    -- allows extending the providers array elsewhere in your config
+    -- without having to redefine it
+    opts_extend = {
+      'sources.completion.enabled_providers',
+      'sources.compat',
+      'sources.default',
     },
   },
 
@@ -316,7 +349,9 @@ return {
     config = function()
       require 'config.lspconf'
     end,
+
     dependencies = {
+      { 'saghen/blink.cmp' },
       { 'williamboman/mason.nvim' },
       { 'williamboman/mason-lspconfig.nvim' },
       {
@@ -355,15 +390,21 @@ return {
       },
     },
     { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
-    { -- optional completion source for require statements and module annotations
-      'hrsh7th/nvim-cmp',
-      opts = function(_, opts)
-        opts.sources = opts.sources or {}
-        table.insert(opts.sources, {
-          name = 'lazydev',
-          group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-        })
-      end,
+    { -- optional blink completion source for require statements and module annotations
+      'saghen/blink.cmp',
+      opts = {
+        sources = {
+          -- add lazydev to your completion providers
+          completion = {
+            enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
+          },
+          providers = {
+            -- dont show LuaLS require statements when lazydev has items
+            lsp = { fallback_for = { 'lazydev' } },
+            lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
+          },
+        },
+      },
     },
   },
 
