@@ -281,7 +281,7 @@ return {
       'giuxtaposition/blink-cmp-copilot',
     },
 
-    version = 'v0.*',
+    version = '*',
     opts = {
       keymap = { preset = 'default' },
 
@@ -304,9 +304,7 @@ return {
             async = true,
           },
         },
-        completion = {
-          enabled_providers = { 'lsp', 'path', 'luasnip', 'copilot', 'buffer' },
-        },
+        default = { 'lsp', 'path', 'luasnip', 'copilot', 'buffer' },
       },
 
       completion = {
@@ -323,7 +321,7 @@ return {
           draw = {
             columns = { { 'label', 'label_description', gap = 1 }, { 'kind' } },
             -- Use treesitter to highlight the label text
-            treesitter = true,
+            -- treesitter = true,
           },
         },
 
@@ -397,12 +395,10 @@ return {
       opts = {
         sources = {
           -- add lazydev to your completion providers
-          completion = {
-            enabled_providers = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
-          },
+          default = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
           providers = {
             -- dont show LuaLS require statements when lazydev has items
-            lsp = { fallback_for = { 'lazydev' } },
+            lsp = { fallbacks = { 'lazydev' } },
             lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
           },
         },
