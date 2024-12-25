@@ -774,11 +774,11 @@ return {
         messages = {
           view_search = false,
         },
-        lsp = {
-          signature = {
-            enabled = false,
-          },
-        },
+        -- lsp = {
+        --   signature = {
+        --     enabled = false,
+        --   },
+        -- },
       }
     end,
   },
