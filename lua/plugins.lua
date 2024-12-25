@@ -282,6 +282,7 @@ return {
     },
 
     version = '*',
+    event = 'InsertEnter',
     opts = {
       keymap = {
         preset = 'default',
