@@ -283,7 +283,14 @@ return {
 
     version = '*',
     opts = {
-      keymap = { preset = 'default' },
+      keymap = {
+        preset = 'default',
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+        ['<C-l>'] = { 'snippet_forward', 'fallback' },
+        ['<C-h>'] = { 'snippet_backward', 'fallback' },
+      },
 
       appearance = {
         -- Sets the fallback highlight groups to nvim-cmp's highlight groups
@@ -318,6 +325,7 @@ return {
           },
         },
         default = { 'lsp', 'path', 'luasnip', 'copilot', 'buffer' },
+        cmdline = {}, -- Disable sources for command-line mode
       },
 
       completion = {
