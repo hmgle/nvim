@@ -587,7 +587,6 @@ return {
 
   {
     'kosayoda/nvim-lightbulb',
-    dependencies = 'antoinemadec/FixCursorHold.nvim',
     config = function()
       require 'config.lightbulb'
     end,
