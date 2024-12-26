@@ -33,7 +33,6 @@ local function on_attach(client, bufnr)
   end
 
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
   local opts = { noremap = true, silent = true }
 
   buf_set_keymap('n', 'gh', '<cmd>Telescope lsp_document_symbols<CR>', opts)
@@ -67,6 +66,7 @@ local function on_attach(client, bufnr)
   end)
 
   require('illuminate').on_attach(client)
+  require('lsp_signature').on_attach(client, bufnr)
 end
 
 -- Setup lspconfig.

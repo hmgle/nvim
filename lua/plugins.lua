@@ -321,9 +321,7 @@ return {
       { 'williamboman/mason-lspconfig.nvim' },
       {
         'ray-x/lsp_signature.nvim',
-        config = function()
-          require 'config.lsp-signature'
-        end,
+        event = 'InsertEnter',
       },
     },
   },
