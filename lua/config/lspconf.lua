@@ -67,6 +67,7 @@ local function on_attach(client, bufnr)
   end)
 
   require('illuminate').on_attach(client)
+  require('lsp_signature').on_attach(client, bufnr)
 end
 
 -- Setup lspconfig.
