@@ -289,8 +289,32 @@ return {
         ['<C-k>'] = { 'select_prev', 'fallback' },
         ['<C-j>'] = { 'select_next', 'fallback' },
         ['<CR>'] = { 'accept', 'fallback' },
-        ['<C-l>'] = { 'snippet_forward', 'fallback' },
-        ['<C-h>'] = { 'snippet_backward', 'fallback' },
+        ['<C-h>'] = {
+          function()
+            local snippets = require('blink.cmp.config').snippets
+            local feedkeys = require('utils').feedkeys
+            if snippets.active { direction = -1 } then
+              vim.schedule(function()
+                snippets.jump(-1)
+              end)
+            else
+              feedkeys '<Left>'
+            end
+          end,
+        },
+        ['<C-l>'] = {
+          function()
+            local snippets = require('blink.cmp.config').snippets
+            local feedkeys = require('utils').feedkeys
+            if snippets.active { direction = 1 } then
+              vim.schedule(function()
+                snippets.jump(1)
+              end)
+            else
+              feedkeys '<Right>'
+            end
+          end,
+        },
       },
 
       appearance = {
