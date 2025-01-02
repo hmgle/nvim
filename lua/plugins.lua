@@ -573,6 +573,8 @@ return {
     enabled = true,
   },
 
+  { 'meznaric/key-analyzer.nvim', opts = {} },
+
   -- clipboard over ssh through tmux
   {
     'ojroques/nvim-osc52',
@@ -814,6 +816,16 @@ return {
         },
       },
       -- add any opts here
+    },
+    keys = {
+      {
+        '<leader>v',
+        mode = { 'n', 'x', 'v' },
+        function()
+          require('avante').toggle()
+        end,
+        desc = 'Avante.Toggle',
+      },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = 'make',
