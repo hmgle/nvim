@@ -274,6 +274,18 @@ return {
   },
 
   {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' },
+      { 'nvim-lua/plenary.nvim' },
+    },
+    build = 'make tiktoken', -- Only on MacOS or Linux
+    opts = {
+      -- See Configuration section for options
+    },
+  },
+
+  {
     'hrsh7th/nvim-cmp',
     config = function()
       require 'config.cmp'
