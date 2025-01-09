@@ -878,6 +878,43 @@ return {
     },
   },
 
+  {
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {
+      strategies = {
+        chat = {
+          adapter = 'ollama',
+        },
+        inline = {
+          adapter = 'ollama',
+        },
+      },
+      adapters = {
+        ollama = function()
+          return require('codecompanion.adapters').extend('ollama', {
+            env = {
+              url = 'https://api.deepseek.com',
+              api_key = function()
+                return os.getenv 'DEEPSEEK_API_KEY'
+              end,
+            },
+            headers = {
+              ['Content-Type'] = 'application/json',
+              ['Authorization'] = 'Bearer ${api_key}',
+            },
+            parameters = {
+              sync = true,
+            },
+          })
+        end,
+      },
+    },
+  },
+
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
   'scrooloose/vim-slumlord',
