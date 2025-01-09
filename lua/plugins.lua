@@ -276,7 +276,6 @@ return {
   {
     'saghen/blink.cmp',
     dependencies = {
-      { 'L3MON4D3/LuaSnip', version = 'v2.*' },
       'rafamadriz/friendly-snippets',
       'giuxtaposition/blink-cmp-copilot',
     },
@@ -336,7 +335,7 @@ return {
           copilot = {
             name = 'copilot',
             module = 'blink-cmp-copilot',
-            score_offset = -5,
+            -- score_offset = -5,
             async = true,
             transform_items = function(_, items)
               local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
@@ -349,7 +348,7 @@ return {
             end,
           },
         },
-        default = { 'lsp', 'path', 'luasnip', 'copilot', 'buffer' },
+        default = { 'lsp', 'path', 'snippets', 'copilot', 'buffer' },
         cmdline = {}, -- Disable sources for command-line mode
       },
 
