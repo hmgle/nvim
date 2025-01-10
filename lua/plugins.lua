@@ -895,19 +895,11 @@ return {
       },
       adapters = {
         ollama = function()
-          return require('codecompanion.adapters').extend('ollama', {
+          return require('codecompanion.adapters').extend('openai_compatible', {
             env = {
               url = 'https://api.deepseek.com',
-              api_key = function()
-                return os.getenv 'DEEPSEEK_API_KEY'
-              end,
-            },
-            headers = {
-              ['Content-Type'] = 'application/json',
-              ['Authorization'] = 'Bearer ${api_key}',
-            },
-            parameters = {
-              sync = true,
+              api_key = os.getenv 'DEEPSEEK_API_KEY',
+              chat_url = '/v1/chat/completions', -- optional: default value, override if different
             },
           })
         end,
