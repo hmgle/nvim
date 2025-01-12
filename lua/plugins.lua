@@ -274,6 +274,18 @@ return {
   },
 
   {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' },
+      { 'nvim-lua/plenary.nvim' },
+    },
+    build = 'make tiktoken', -- Only on MacOS or Linux
+    opts = {
+      -- See Configuration section for options
+    },
+  },
+
+  {
     'hrsh7th/nvim-cmp',
     config = function()
       require 'config.cmp'
@@ -384,24 +396,26 @@ return {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build',
       },
-
       {
-        'nvim-telescope/telescope-frecency.nvim',
+        'danielfalk/smart-open.nvim',
+        branch = '0.2.x',
         config = function()
           require('telescope').setup {
             extensions = {
-              frecency = {
-                -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/270
-                db_safe_mode = false,
-                matcher = 'fuzzy',
-                show_scores = true,
-                show_filter_column = false,
+              smart_open = {
+                cwd_only = true,
+                filename_first = false,
               },
             },
           }
-          require('telescope').load_extension 'frecency'
+          -- require('telescope').load_extension 'smart_open'
         end,
+        dependencies = {
+          'kkharji/sqlite.lua',
+          { 'nvim-telescope/telescope-fzy-native.nvim' },
+        },
       },
+
       'nvim-telescope/telescope-ui-select.nvim',
     },
     event = 'VeryLazy',
@@ -862,6 +876,35 @@ return {
           file_types = { 'markdown', 'Avante' },
         },
         ft = { 'markdown', 'Avante' },
+      },
+    },
+  },
+
+  {
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {
+      strategies = {
+        chat = {
+          adapter = 'ollama',
+        },
+        inline = {
+          adapter = 'ollama',
+        },
+      },
+      adapters = {
+        ollama = function()
+          return require('codecompanion.adapters').extend('openai_compatible', {
+            env = {
+              url = 'https://api.deepseek.com',
+              api_key = os.getenv 'DEEPSEEK_API_KEY',
+              chat_url = '/v1/chat/completions', -- optional: default value, override if different
+            },
+          })
+        end,
       },
     },
   },
