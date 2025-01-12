@@ -223,8 +223,11 @@ local map = require('utils').map
 
 map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
-map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
-map('n', '<leader>fz', extensions.frecency.frecency, 'Find files frecency (Root Dir)')
+map('n', '<C-p>', '<cmd>Telescope smart_open cwd_only=true theme=ivy<cr>', 'Find files frecency (CWD)')
+-- map('n', '<C-p>', function()
+--   require('telescope').extensions.smart_open.smart_open { cwd_only = true }
+-- end, { noremap = true, silent = true }, 'Find files frecency (CWD)')
+map('n', '<leader>fz', extensions.smart_open.smart_open, 'Find files frecency (Root Dir)')
 map('n', '<leader>ff', builtin.find_files, 'Find files')
 map('n', '<leader>fs', builtin.treesitter, 'Lists symbols from treesitter')
 map('n', '<leader>ss', builtin.lsp_document_symbols, 'List lsp_document_symbols')
