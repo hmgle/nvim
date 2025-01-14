@@ -825,6 +825,7 @@ return {
           api_key_name = 'DEEPSEEK_API_KEY',
           endpoint = 'https://api.deepseek.com',
           model = 'deepseek-coder',
+          temperature = 0,
         },
       },
       -- add any opts here
@@ -905,6 +906,35 @@ return {
         end,
       },
     },
+  },
+
+  {
+    'robitx/gp.nvim',
+    config = function()
+      local conf = {
+        providers = {
+          openai = {
+            endpoint = 'https://api.deepseek.com/chat/completions',
+            secret = os.getenv 'DEEPSEEK_API_KEY',
+          },
+        },
+
+        default_command_agent = 'deepseek',
+        default_chat_agent = 'deepseek',
+        agents = {
+          {
+            provider = 'openai',
+            name = 'deepseek',
+            chat = true,
+            command = true,
+            model = { model = 'deepseek-chat', temperature = 0, top_p = 0.2 },
+            system_prompt = require('gp.defaults').chat_system_prompt,
+            disable = false,
+          },
+        },
+      }
+      require('gp').setup(conf)
+    end,
   },
 
   -- plantUML preview for .uml
