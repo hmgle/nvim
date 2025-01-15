@@ -186,15 +186,13 @@ return {
   {
     'Yggdroot/LeaderF',
     init = function()
-      -- vim.g.Lf_ShortcutF = '<c-p>'
+      vim.g.Lf_ShortcutF = '<leader>fp'
       vim.g.Lf_UseCache = 0
       vim.g.Lf_PreviewInPopup = 0
       vim.g.Lf_HideHelp = 1
       vim.g.Lf_CommandMap = {
         ['<ESC>'] = { '<ESC>', '<C-O>' },
       }
-
-      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
     end,
     build = ':LeaderfInstallCExtension',
   },
