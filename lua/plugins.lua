@@ -399,6 +399,7 @@ return {
       {
         'danielfalk/smart-open.nvim',
         branch = '0.2.x',
+        enabled = vim.fn.has 'linux' ~= 1,
         config = function()
           require('telescope').setup {
             extensions = {
@@ -414,6 +415,25 @@ return {
           'kkharji/sqlite.lua',
           { 'nvim-telescope/telescope-fzy-native.nvim' },
         },
+      },
+
+      {
+        'nvim-telescope/telescope-frecency.nvim',
+        enabled = vim.fn.has 'linux' == 1,
+        config = function()
+          require('telescope').setup {
+            extensions = {
+              frecency = {
+                -- https://github.com/nvim-telescope/telescope-frecency.nvim/issues/270
+                db_safe_mode = false,
+                matcher = 'fuzzy',
+                show_scores = true,
+                show_filter_column = false,
+              },
+            },
+          }
+          require('telescope').load_extension 'frecency'
+        end,
       },
 
       'nvim-telescope/telescope-ui-select.nvim',
@@ -827,6 +847,7 @@ return {
           api_key_name = 'DEEPSEEK_API_KEY',
           endpoint = 'https://api.deepseek.com',
           model = 'deepseek-coder',
+          temperature = 0,
         },
       },
       -- add any opts here
@@ -901,12 +922,153 @@ return {
             env = {
               url = 'https://api.deepseek.com',
               api_key = os.getenv 'DEEPSEEK_API_KEY',
-              chat_url = '/v1/chat/completions', -- optional: default value, override if different
+              chat_url = '/chat/completions', -- optional: default value, override if different
             },
           })
         end,
       },
     },
+  },
+
+  {
+    'aweis89/aider.nvim',
+    dependencies = {
+      -- required for core functionality
+      'akinsho/toggleterm.nvim',
+
+      -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
+      'nvim-telescope/telescope.nvim',
+
+      -- Optional, but great for diff viewing and after_update_hook integration
+      'sindrets/diffview.nvim',
+
+      -- Optional but will show aider spinner whenever active
+      'folke/snacks.nvim',
+
+      -- Only if you care about using the /editor command
+      'willothy/flatten.nvim',
+    },
+    event = 'VeryLazy',
+    opts = {
+      -- Auto trigger diffview after Aider's file changes
+      after_update_hook = function()
+        require('diffview').open { 'HEAD^' }
+      end,
+      model_picker_search = { '^deepseek/' },
+    },
+
+    -- config = function()
+    --   require('aider').setup {}
+    -- end,
+    keys = {
+      {
+        '<leader>as',
+        '<cmd>AiderSpawn<CR>',
+        desc = 'Toggle Aidper (default)',
+      },
+      {
+        '<leader>a<space>',
+        '<cmd>AiderToggle<CR>',
+        desc = 'Toggle Aider',
+      },
+      {
+        '<leader>af',
+        '<cmd>AiderToggle float<CR>',
+        desc = 'Toggle Aider Float',
+      },
+      {
+        '<leader>av',
+        '<cmd>AiderToggle vertical<CR>',
+        desc = 'Toggle Aider Float',
+      },
+      {
+        '<leader>al',
+        '<cmd>AiderAdd<CR>',
+        desc = 'Add file to aider',
+      },
+      {
+        '<leader>ad',
+        '<cmd>AiderAsk<CR>',
+        desc = 'Ask with selection',
+        mode = { 'v', 'n' },
+      },
+      {
+        '<leader>am',
+        desc = 'Change model',
+      },
+      {
+        '<leader>ams',
+        '<cmd>AiderSend /model sonnet<CR>',
+        desc = 'Switch to sonnet',
+      },
+      {
+        '<leader>amh',
+        '<cmd>AiderSend /model haiku<CR>',
+        desc = 'Switch to haiku',
+      },
+      {
+        '<leader>amg',
+        '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>',
+        desc = 'Switch to haiku',
+      },
+      {
+        '<C-x>',
+        '<cmd>AiderToggle<CR>',
+        desc = 'Toggle Aider',
+        mode = { 'i', 't', 'n' },
+      },
+      -- Helpful mappings to utilize to manage aider changes
+      {
+        '<leader>ghh',
+        '<cmd>Gitsigns change_base HEAD^<CR>',
+        desc = 'Gitsigns pick reversals',
+      },
+      {
+        '<leader>dvh',
+        '<cmd>DiffviewOpen HEAD^<CR>',
+        desc = 'Diffview HEAD^',
+      },
+      {
+        '<leader>dvo',
+        '<cmd>DiffviewOpen<CR>',
+        desc = 'Diffview',
+      },
+      {
+        '<leader>dvc',
+        '<cmd>DiffviewClose!<CR>',
+        desc = 'Diffview close',
+      },
+    },
+  },
+
+  {
+    'robitx/gp.nvim',
+    enabled = false,
+    config = function()
+      local conf = {
+        providers = {
+          openai = {
+            endpoint = 'https://api.deepseek.com/chat/completions',
+            secret = os.getenv 'DEEPSEEK_API_KEY',
+          },
+        },
+
+        default_command_agent = 'deepseek',
+        default_chat_agent = 'deepseek',
+        agents = {
+          {
+            provider = 'openai',
+            name = 'deepseek',
+            chat = true,
+            command = true,
+            model = { model = 'deepseek-chat', temperature = 0, top_p = 0.2 },
+            system_prompt = require('gp.defaults').chat_system_prompt,
+            disable = false,
+          },
+        },
+      }
+      require('gp').setup(conf)
+    end,
   },
 
   -- plantUML preview for .uml
