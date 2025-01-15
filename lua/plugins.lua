@@ -817,6 +817,7 @@ return {
   {
     'yetone/avante.nvim',
     event = 'VeryLazy',
+    tag = 'v0.0.15',
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
