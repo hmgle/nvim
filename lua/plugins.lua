@@ -254,6 +254,10 @@ return {
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
   },
+  {
+    'andymass/vim-matchup',
+    event = 'BufRead',
+  },
 
   -- autocompletion
   { -- gh copilot
