@@ -257,6 +257,13 @@ return {
   {
     'andymass/vim-matchup',
     event = 'BufRead',
+    config = function()
+      vim.cmd 'highlight OffscreenPopup guibg=#FF0000CC guifg=blue'
+      vim.g.matchup_matchparen_offscreen = {
+        method = 'popup',
+        highlight = 'OffscreenPopup',
+      }
+    end,
   },
 
   -- autocompletion
