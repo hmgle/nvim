@@ -186,15 +186,13 @@ return {
   {
     'Yggdroot/LeaderF',
     init = function()
-      -- vim.g.Lf_ShortcutF = '<c-p>'
+      vim.g.Lf_ShortcutF = '<leader>fp'
       vim.g.Lf_UseCache = 0
       vim.g.Lf_PreviewInPopup = 0
       vim.g.Lf_HideHelp = 1
       vim.g.Lf_CommandMap = {
         ['<ESC>'] = { '<ESC>', '<C-O>' },
       }
-
-      require('utils').map('', '<leader>lf', ':LeaderfFunction!<cr>')
     end,
     build = ':LeaderfInstallCExtension',
   },
@@ -255,6 +253,17 @@ return {
 
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+  },
+  {
+    'andymass/vim-matchup',
+    event = 'BufRead',
+    config = function()
+      vim.cmd 'highlight OffscreenPopup guibg=#FF0000CC guifg=blue'
+      vim.g.matchup_matchparen_offscreen = {
+        method = 'popup',
+        highlight = 'OffscreenPopup',
+      }
+    end,
   },
 
   -- autocompletion
