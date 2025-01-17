@@ -966,6 +966,14 @@ return {
       model_picker_search = { '^deepseek/' },
     },
 
+    telescope = {
+      -- Runs `/add <files>` for selected entries (with multi-select supported)
+      -- add = '<c-l>',
+      -- Runs `/read-only <files>` for selected entries (with multi-select supported)
+      read_only = '<c-o>',
+      -- Runs `/drop`` <files> for selected entries (with multi-select supported)
+      drop = '<c-d>',
+    },
     -- config = function()
     --   require('aider').setup {}
     -- end,
