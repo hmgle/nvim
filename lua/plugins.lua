@@ -941,7 +941,6 @@ return {
 
   {
     'aweis89/aider.nvim',
-    dir = '~/.local/share/nvim/lazy/aider.nvim',
     dependencies = {
       -- required for core functionality
       'akinsho/toggleterm.nvim',
