@@ -853,13 +853,20 @@ return {
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = 'deepseek',
+      provider = 'txdeepseek',
       vendors = {
         deepseek = {
           __inherited_from = 'openai',
           api_key_name = 'DEEPSEEK_API_KEY',
           endpoint = 'https://api.deepseek.com',
           model = 'deepseek-coder',
+          temperature = 0,
+        },
+        txdeepseek = {
+          __inherited_from = 'openai',
+          api_key_name = 'TX_DEEPSEEK_API_KEY',
+          endpoint = 'https://api.lkeap.cloud.tencent.com/v1',
+          model = 'deepseek-r1',
           temperature = 0,
         },
       },
