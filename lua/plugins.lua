@@ -349,7 +349,10 @@ return {
           },
         },
         default = { 'lsp', 'path', 'snippets', 'copilot', 'buffer' },
-        cmdline = {}, -- Disable sources for command-line mode
+      },
+
+      cmdline = {
+        enabled = false,
       },
 
       completion = {
