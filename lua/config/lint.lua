@@ -7,7 +7,7 @@ lint.linters_by_ft = {
   typescriptreact = { 'eslint_d' },
   svelte = { 'eslint_d' },
   python = { 'mypy' },
-  markdown = { 'markdownlint' },
+  -- markdown = { 'markdownlint' },
   sh = { 'shellcheck' },
 }
 
