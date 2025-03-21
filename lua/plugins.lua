@@ -279,6 +279,9 @@ return {
         filetypes = {
           markdown = true,
         },
+        logger = {
+          print_log = false,
+        },
       }
     end,
   },
