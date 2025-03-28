@@ -223,7 +223,7 @@ local map = require('utils').map
 
 map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
-if vim.fn.has('linux') == 1 then
+if vim.fn.has 'linux' == 1 then
   map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
   map('n', '<leader>fz', extensions.frecency.frecency, 'Find files frecency (Root Dir)')
 else
@@ -241,7 +241,9 @@ map('n', '<C-w>d', function()
   return builtin.lsp_definitions { jump_type = 'split' }
 end, 'lsp_definitions({jump_type="split"})')
 map('n', '<leader>*', builtin.grep_string, 'grep_string')
--- map('n', '<leader>b', builtin.buffers, 'Open buffers')
+map('n', '<leader>b', function()
+  return builtin.buffers { sort_lastused = true, ignore_current_buffer = true }
+end, 'Open buffers')
 map('n', '<leader>fr', builtin.resume, 'Resume latest telescope session')
 map('n', '<leader>fq', builtin.quickfix, 'Quickfix')
 map('n', '<leader>fQ', builtin.quickfixhistory, 'Quickfix history')
