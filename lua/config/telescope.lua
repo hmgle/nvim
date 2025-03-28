@@ -233,7 +233,9 @@ map('n', '<C-w>d', function()
   return builtin.lsp_definitions { jump_type = 'split' }
 end, 'lsp_definitions({jump_type="split"})')
 map('n', '<leader>*', builtin.grep_string, 'grep_string')
--- map('n', '<leader>b', builtin.buffers, 'Open buffers')
+map('n', '<leader>b', function()
+  return builtin.buffers { sort_lastused = true, ignore_current_buffer = true }
+end, 'Open buffers')
 map('n', '<leader>fr', builtin.resume, 'Resume latest telescope session')
 map('n', '<leader>fq', builtin.quickfix, 'Quickfix')
 map('n', '<leader>fQ', builtin.quickfixhistory, 'Quickfix history')

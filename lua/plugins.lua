@@ -185,6 +185,7 @@ return {
   },
   {
     'Yggdroot/LeaderF',
+    enabled = false,
     init = function()
       -- vim.g.Lf_ShortcutF = '<c-p>'
       vim.g.Lf_UseCache = 0
