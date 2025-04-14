@@ -137,6 +137,10 @@ local function setup_lsp()
       }
     end
 
+    -- -- https://www.reddit.com/r/neovim/comments/1jxv6c0/nvimlspconfig_has_now_migrated_to_use_the_new/
+    -- vim.lsp.config(server, u.merge(default_options, opt))
+    -- vim.lsp.enable(server)
+
     lspconfig[server].setup(u.merge(default_options, opt))
   end
 end
