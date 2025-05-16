@@ -77,7 +77,7 @@ local function setup_lsp()
     return
   end
 
-  local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = require('blink.cmp').get_lsp_capabilities()
 
   local default_options = {
     on_attach = on_attach,

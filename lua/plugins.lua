@@ -283,6 +283,7 @@ return {
         logger = {
           print_log = false,
         },
+        copilot_model = 'gpt-4o-copilot', -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
       }
     end,
   },
@@ -300,40 +301,121 @@ return {
   },
 
   {
-    'hrsh7th/nvim-cmp',
-    config = function()
-      require 'config.cmp'
-    end,
+    'saghen/blink.cmp',
     dependencies = {
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-path',
-      'saadparwaiz1/cmp_luasnip',
-      {
-        'L3MON4D3/LuaSnip',
-        config = function()
-          require('luasnip.loaders.from_vscode').lazy_load()
-        end,
-        dependencies = {
-          'rafamadriz/friendly-snippets',
+      'rafamadriz/friendly-snippets',
+      'giuxtaposition/blink-cmp-copilot',
+    },
+
+    version = '*',
+    event = 'InsertEnter',
+    opts = {
+      keymap = {
+        preset = 'default',
+        ['<C-k>'] = { 'select_prev', 'fallback' },
+        ['<C-j>'] = { 'select_next', 'fallback' },
+        ['<CR>'] = { 'accept', 'fallback' },
+        ['<C-h>'] = {
+          function()
+            local snippets = require('blink.cmp.config').snippets
+            local feedkeys = require('utils').feedkeys
+            if snippets.active { direction = -1 } then
+              vim.schedule(function()
+                snippets.jump(-1)
+              end)
+            else
+              feedkeys '<Left>'
+            end
+          end,
+        },
+        ['<C-l>'] = {
+          function()
+            local snippets = require('blink.cmp.config').snippets
+            local feedkeys = require('utils').feedkeys
+            if snippets.active { direction = 1 } then
+              vim.schedule(function()
+                snippets.jump(1)
+              end)
+            else
+              feedkeys '<Right>'
+            end
+          end,
         },
       },
-      -- copilot
-      {
-        'zbirenbaum/copilot-cmp',
-        dependencies = 'zbirenbaum/copilot.lua',
-        config = function(_, opts)
-          local copilot_cmp = require 'copilot_cmp'
-          copilot_cmp.setup(opts)
-        end,
+
+      appearance = {
+        -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+        -- Useful for when your theme doesn't support blink.cmp
+        -- will be removed in a future release
+        use_nvim_cmp_as_default = false,
+        -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = 'mono',
+
+        kind_icons = {
+          Copilot = '',
+        },
       },
-      -- codeium
-      {
-        'Exafunction/codeium.nvim',
-        cmd = 'Codeium',
-        opts = {},
+
+      sources = {
+        providers = {
+          copilot = {
+            name = 'copilot',
+            module = 'blink-cmp-copilot',
+            -- score_offset = -5,
+            async = true,
+            transform_items = function(_, items)
+              local CompletionItemKind = require('blink.cmp.types').CompletionItemKind
+              local kind_idx = #CompletionItemKind + 1
+              CompletionItemKind[kind_idx] = 'Copilot'
+              for _, item in ipairs(items) do
+                item.kind = kind_idx
+              end
+              return items
+            end,
+          },
+        },
+        default = { 'lsp', 'path', 'snippets', 'copilot', 'buffer' },
+      },
+
+      cmdline = {
         enabled = false,
       },
+
+      completion = {
+        accept = {
+          -- Experimental auto-brackets support
+          auto_brackets = {
+            -- Whether to auto-insert brackets for functions
+            enabled = true,
+          },
+        },
+
+        menu = {
+          max_height = 36,
+          draw = {
+            columns = { { 'label', 'label_description', gap = 1 }, { 'kind' } },
+            -- Use treesitter to highlight the label text
+            -- treesitter = true,
+          },
+        },
+
+        documentation = {
+          auto_show = true,
+          auto_show_delay_ms = 200,
+        },
+        -- Displays a preview of the selected item on the current line
+        ghost_text = {
+          enabled = true,
+        },
+      },
+    },
+    -- allows extending the providers array elsewhere in your config
+    -- without having to redefine it
+    opts_extend = {
+      'sources.completion.enabled_providers',
+      'sources.compat',
+      'sources.default',
     },
   },
 
@@ -342,7 +424,9 @@ return {
     config = function()
       require 'config.lspconf'
     end,
+
     dependencies = {
+      { 'saghen/blink.cmp' },
       { 'williamboman/mason.nvim' },
       { 'williamboman/mason-lspconfig.nvim' },
       {
@@ -379,15 +463,19 @@ return {
       },
     },
     { 'Bilal2453/luvit-meta', lazy = true }, -- optional `vim.uv` typings
-    { -- optional completion source for require statements and module annotations
-      'hrsh7th/nvim-cmp',
-      opts = function(_, opts)
-        opts.sources = opts.sources or {}
-        table.insert(opts.sources, {
-          name = 'lazydev',
-          group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-        })
-      end,
+    { -- optional blink completion source for require statements and module annotations
+      'saghen/blink.cmp',
+      opts = {
+        sources = {
+          -- add lazydev to your completion providers
+          default = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
+          providers = {
+            -- dont show LuaLS require statements when lazydev has items
+            lsp = { fallbacks = { 'lazydev' } },
+            lazydev = { name = 'LazyDev', module = 'lazydev.integrations.blink' },
+          },
+        },
+      },
     },
   },
 
@@ -554,7 +642,6 @@ return {
 
   {
     'kosayoda/nvim-lightbulb',
-    dependencies = 'antoinemadec/FixCursorHold.nvim',
     config = function()
       require 'config.lightbulb'
     end,
@@ -842,20 +929,13 @@ return {
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
-      provider = 'txdeepseek',
+      provider = 'deepseek',
       vendors = {
         deepseek = {
           __inherited_from = 'openai',
           api_key_name = 'DEEPSEEK_API_KEY',
           endpoint = 'https://api.deepseek.com',
           model = 'deepseek-coder',
-          temperature = 0,
-        },
-        txdeepseek = {
-          __inherited_from = 'openai',
-          api_key_name = 'TX_DEEPSEEK_API_KEY',
-          endpoint = 'https://api.lkeap.cloud.tencent.com/v1',
-          model = 'deepseek-v3',
           temperature = 0,
         },
       },
@@ -879,9 +959,9 @@ return {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       --- The below dependencies are optional,
-      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+      -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
       'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-      'zbirenbaum/copilot.lua', -- for providers='copilot'
+      -- 'zbirenbaum/copilot.lua', -- for providers='copilot'
       {
         -- support for image pasting
         'HakonHarnes/img-clip.nvim',
