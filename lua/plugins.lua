@@ -290,6 +290,7 @@ return {
 
   {
     'CopilotC-Nvim/CopilotChat.nvim',
+    event = 'InsertEnter',
     dependencies = {
       { 'zbirenbaum/copilot.lua' },
       { 'nvim-lua/plenary.nvim' },
