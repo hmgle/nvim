@@ -283,6 +283,7 @@ return {
         logger = {
           print_log = false,
         },
+        copilot_model = 'gpt-4o-copilot', -- Current LSP default is gpt-35-turbo, supports gpt-4o-copilot
       }
     end,
   },
@@ -875,15 +876,6 @@ return {
       { 'nvim-telescope/telescope.nvim' },
     },
     event = 'LspAttach',
-    opts = {
-      picker = {
-          "buffer", -- https://www.reddit.com/r/neovim/comments/1ll205u/tinycodeactionnvim_now_supports_a_floating_buffer/
-          opts = {
-              hotkeys = true,
-              hotkeys_mode = "text_diff_based",
-          }
-      },
-    },
     config = function()
       require('tiny-code-action').setup {
         vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', function()
@@ -1047,7 +1039,21 @@ return {
       'sindrets/diffview.nvim',
 
       -- Optional but will show aider spinner whenever active
-      'folke/snacks.nvim',
+      {
+        'folke/snacks.nvim',
+        keys = {
+          { '<C-p>', function() Snacks.picker.smart({
+            multi = { "recent", "files" },
+            format = "file", -- use `file` format for all sources
+            matcher = {
+              cwd_bonus = true, -- boost cwd matches
+              frecency = true, -- use frecency boosting
+              sort_empty = true, -- sort even when the filter is empty
+            },
+            transform = "unique_file",
+          }) end, desc = "Smart Find Files" },
+        },
+      },
 
       -- Only if you care about using the /editor command
       'willothy/flatten.nvim',

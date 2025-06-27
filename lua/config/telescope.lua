@@ -224,10 +224,10 @@ local map = require('utils').map
 map('n', '<leader>fb', builtin.current_buffer_fuzzy_find, 'Fuzzy find in buffer')
 map('n', '<leader>fl', builtin.live_grep, 'Live grep')
 if vim.fn.has 'linux' == 1 then
-  map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
+  -- map('n', '<C-p>', '<cmd>Telescope frecency workspace=CWD theme=ivy<cr>', 'Find files frecency (CWD)')
   map('n', '<leader>fz', extensions.frecency.frecency, 'Find files frecency (Root Dir)')
 else
-  map('n', '<C-p>', '<cmd>Telescope smart_open cwd_only=true theme=ivy<cr>', 'Find files frecency (CWD)')
+  -- map('n', '<C-p>', '<cmd>Telescope smart_open cwd_only=true theme=ivy<cr>', 'Find files frecency (CWD)')
   -- map('n', '<C-p>', function()
   --   require('telescope').extensions.smart_open.smart_open { cwd_only = true }
   -- end, { noremap = true, silent = true }, 'Find files frecency (CWD)')
