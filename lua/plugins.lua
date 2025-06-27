@@ -875,6 +875,15 @@ return {
       { 'nvim-telescope/telescope.nvim' },
     },
     event = 'LspAttach',
+    opts = {
+      picker = {
+          "buffer", -- https://www.reddit.com/r/neovim/comments/1ll205u/tinycodeactionnvim_now_supports_a_floating_buffer/
+          opts = {
+              hotkeys = true,
+              hotkeys_mode = "text_diff_based",
+          }
+      },
+    },
     config = function()
       require('tiny-code-action').setup {
         vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', function()
