@@ -1057,6 +1057,7 @@ return {
                   smartcase = true,
                 },
                 transform = 'unique_file',
+                filter = { cwd = true },
               }
             end,
             desc = 'Smart Find Files',
