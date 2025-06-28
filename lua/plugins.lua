@@ -1042,16 +1042,25 @@ return {
       {
         'folke/snacks.nvim',
         keys = {
-          { '<C-p>', function() Snacks.picker.smart({
-            multi = { "recent", "files" },
-            format = "file", -- use `file` format for all sources
-            matcher = {
-              cwd_bonus = true, -- boost cwd matches
-              frecency = true, -- use frecency boosting
-              sort_empty = true, -- sort even when the filter is empty
-            },
-            transform = "unique_file",
-          }) end, desc = "Smart Find Files" },
+          {
+            '<C-p>',
+            function()
+              Snacks.picker.smart {
+                multi = { 'recent', 'files' },
+                -- layout = 'telescope',
+                format = 'file', -- use `file` format for all sources
+                matcher = {
+                  cwd_bonus = true, -- boost cwd matches
+                  frecency = true, -- use frecency boosting
+                  sort_empty = true, -- sort even when the filter is empty
+                  fuzzy = true,
+                  smartcase = true,
+                },
+                transform = 'unique_file',
+              }
+            end,
+            desc = 'Smart Find Files',
+          },
         },
       },
 
