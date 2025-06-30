@@ -1041,6 +1041,17 @@ return {
       -- Optional but will show aider spinner whenever active
       {
         'folke/snacks.nvim',
+        opts = {
+          picker = {
+            win = {
+              input = {
+                keys = {
+                  ['<C-O>'] = { 'close', mode = { 'n', 'i' } },
+                },
+              },
+            },
+          },
+        },
         keys = {
           {
             '<C-p>',
