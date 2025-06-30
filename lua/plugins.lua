@@ -871,6 +871,10 @@ return {
 
   {
     'rachartier/tiny-code-action.nvim',
+    -- There is a bug after the version of 755208f：
+    -- https://github.com/rachartier/tiny-code-action.nvim/issues/59
+    -- Error: attempt to compare nil with number #59
+    commit = 'dcb5dd2',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope.nvim' },
