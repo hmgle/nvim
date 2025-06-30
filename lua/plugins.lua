@@ -1047,6 +1047,8 @@ return {
               input = {
                 keys = {
                   ['<C-O>'] = { 'close', mode = { 'n', 'i' } },
+                  ['<c-x>'] = { 'edit_split', mode = { 'i', 'n' } },
+                  ['<c-]>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
                 },
               },
             },
