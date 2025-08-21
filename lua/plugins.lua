@@ -212,14 +212,18 @@ return {
   },
   {
     'johann2357/nvim-smartbufs',
-    keys = {
-      { '<A-1>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(1)<CR>', desc = 'Go to the 1 buffer', mode = 'n' },
-      { '<A-2>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(2)<CR>', desc = 'Go to the 2 buffer', mode = 'n' },
-      { '<A-3>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(3)<CR>', desc = 'Go to the 3 buffer', mode = 'n' },
-      { '<A-4>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(4)<CR>', desc = 'Go to the 4 buffer', mode = 'n' },
-      { '<A-5>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(5)<CR>', desc = 'Go to the 5 buffer', mode = 'n' },
-      { '<A-6>', '<Cmd>lua require("nvim-smartbufs").goto_buffer(6)<CR>', desc = 'Go to the 6 buffer', mode = 'n' },
-    },
+    keys = (function()
+      local keys = {}
+      for i = 1, 9 do
+        table.insert(keys, {
+          '<A-' .. i .. '>',
+          '<Cmd>lua require("nvim-smartbufs").goto_buffer(' .. i .. ')<CR>',
+          desc = 'Go to buffer ' .. i,
+          mode = 'n',
+        })
+      end
+      return keys
+    end)(),
   },
 
   {
