@@ -1,7 +1,5 @@
 local map = require('utils').map
 
-vim.g.mapleader = ','
-
 map('n', 'gt', '<cmd>bn<cr>')
 map('n', 'gT', '<cmd>bp<cr>')
 
