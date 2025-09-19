@@ -10,12 +10,6 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.s
 
 require 'config.lsp.providers'
 
--- try to import lspconfig
-local lspconfig = require 'lspconfig'
-if not lspconfig then
-  return
-end
-
 local masonlspconf = require 'mason-lspconfig'
 if not masonlspconf then
   return
@@ -67,7 +61,7 @@ local function on_attach(client, bufnr)
   require('lsp_signature').on_attach(client, bufnr)
 end
 
--- Setup lspconfig.
+-- Setup lsp servers using new vim.lsp.config API
 local function setup_lsp()
   local installed_servers = masonlspconf.get_installed_servers()
   -- don't setup servers if atleast one server is installed, or it will throw an error
@@ -83,11 +77,11 @@ local function setup_lsp()
   }
 
   for _, server in ipairs(installed_servers) do
-    local opt = {}
+    local config = u.merge(default_options, {})
 
     -- for lua
-    if server == 'sumneko_lua' then
-      opt.settings = {
+    if server == 'sumneko_lua' or server == 'lua_ls' then
+      config.settings = {
         Lua = {
           diagnostics = {
             -- Get the language server to recognize the 'vim', 'use' global
@@ -106,14 +100,15 @@ local function setup_lsp()
     -- for clangd (c/c++)
     -- [https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428]
     if server == 'clangd' then
-      capabilities.offsetEncoding = { 'utf-16' }
-      opt.capabilities = capabilities
+      local clangd_capabilities = vim.deepcopy(capabilities)
+      clangd_capabilities.offsetEncoding = { 'utf-16' }
+      config.capabilities = clangd_capabilities
     end
 
     -- for gopls (go)
     if server == 'gopls' then
-      opt.cmd = { 'gopls', '-remote=auto' }
-      opt.settings = {
+      config.cmd = { 'gopls', '-remote=auto' }
+      config.settings = {
         gopls = { -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
           gofumpt = true,
           staticcheck = true,
@@ -135,11 +130,9 @@ local function setup_lsp()
       }
     end
 
-    -- -- https://www.reddit.com/r/neovim/comments/1jxv6c0/nvimlspconfig_has_now_migrated_to_use_the_new/
-    -- vim.lsp.config(server, u.merge(default_options, opt))
-    -- vim.lsp.enable(server)
-
-    lspconfig[server].setup(u.merge(default_options, opt))
+    -- Use new vim.lsp.config and vim.lsp.enable APIs
+    vim.lsp.config(server, config)
+    vim.lsp.enable(server)
   end
 end
 
