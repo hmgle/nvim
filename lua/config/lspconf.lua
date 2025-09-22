@@ -10,8 +10,8 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.s
 
 require 'config.lsp.providers'
 
-local masonlspconf = require 'mason-lspconfig'
-if not masonlspconf then
+local mason_ok, masonlspconf = pcall(require, 'mason-lspconfig')
+if not mason_ok then
   return
 end
 
@@ -57,8 +57,15 @@ local function on_attach(client, bufnr)
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   end)
 
-  require('illuminate').on_attach(client)
-  require('lsp_signature').on_attach(client, bufnr)
+  local illuminate_ok, illuminate = pcall(require, 'illuminate')
+  if illuminate_ok and illuminate.on_attach then
+    illuminate.on_attach(client)
+  end
+
+  local signature_ok, signature = pcall(require, 'lsp_signature')
+  if signature_ok then
+    signature.on_attach(client, bufnr)
+  end
 end
 
 -- Setup lsp servers using new vim.lsp.config API
@@ -69,7 +76,11 @@ local function setup_lsp()
     return
   end
 
-  local capabilities = require('blink.cmp').get_lsp_capabilities()
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local blink_ok, blink = pcall(require, 'blink.cmp')
+  if blink_ok and blink.get_lsp_capabilities then
+    capabilities = blink.get_lsp_capabilities(capabilities, true)
+  end
 
   local default_options = {
     on_attach = on_attach,

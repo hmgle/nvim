@@ -113,6 +113,3 @@ vim.api.nvim_create_autocmd({'BufEnter', 'QuitPre'}, {
     end
   end
 })
-
-local map = require('utils').map
-map('n', '<leader>tt', ':NvimTreeToggle<CR>')

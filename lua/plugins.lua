@@ -25,7 +25,11 @@ return {
   {
     'nvim-tree/nvim-tree.lua',
     version = '*',
-    lazy = false,
+    cmd = { 'NvimTreeToggle', 'NvimTreeFocus', 'NvimTreeFindFile' },
+    keys = {
+      { '<leader>tt', '<cmd>NvimTreeToggle<cr>', desc = 'Toggle explorer' },
+      { '<leader>tf', '<cmd>NvimTreeFindFile<cr>', desc = 'Reveal file in explorer' },
+    },
     dependencies = {
       'nvim-tree/nvim-web-devicons',
     },
@@ -431,6 +435,7 @@ return {
 
   {
     'neovim/nvim-lspconfig',
+    event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       require 'config.lspconf'
     end,
@@ -550,7 +555,37 @@ return {
 
       'nvim-telescope/telescope-ui-select.nvim',
     },
-    event = 'VeryLazy',
+    cmd = 'Telescope',
+    keys = {
+      {
+        '<leader>ff',
+        function()
+          require('telescope.builtin').find_files()
+        end,
+        desc = 'Find files',
+      },
+      {
+        '<leader>fg',
+        function()
+          require('telescope.builtin').live_grep()
+        end,
+        desc = 'Live grep',
+      },
+      {
+        '<leader>fb',
+        function()
+          require('telescope.builtin').buffers()
+        end,
+        desc = 'Buffers',
+      },
+      {
+        '<leader>fh',
+        function()
+          require('telescope.builtin').help_tags()
+        end,
+        desc = 'Help tags',
+      },
+    },
     config = function()
       require 'config.telescope'
     end,
@@ -573,6 +608,7 @@ return {
     dependencies = {
       { 'nvim-telescope/telescope.nvim' },
     },
+    event = 'VeryLazy',
     config = function()
       require 'config.yanky'
     end,
@@ -639,6 +675,7 @@ return {
 
   {
     'RRethy/vim-illuminate',
+    event = { 'BufReadPost', 'BufNewFile' },
     config = function()
       vim.keymap.set('n', '<leader>n', function()
         require('illuminate').next_reference { wrap = true, silent = true }
@@ -652,6 +689,7 @@ return {
 
   {
     'kosayoda/nvim-lightbulb',
+    event = 'LspAttach',
     config = function()
       require 'config.lightbulb'
     end,
@@ -722,7 +760,7 @@ return {
     enabled = true,
   },
 
-  { 'meznaric/key-analyzer.nvim', opts = {} },
+  { 'meznaric/key-analyzer.nvim', event = 'VeryLazy', opts = {} },
 
   -- clipboard over ssh through tmux
   {
@@ -737,6 +775,17 @@ return {
     'akinsho/toggleterm.nvim',
     version = '*',
     enabled = true,
+    cmd = { 'ToggleTerm', 'TermExec' },
+    keys = {
+      {
+        '<C-s>',
+        function()
+          require('toggleterm').toggle()
+        end,
+        mode = { 'n', 't' },
+        desc = 'Toggle terminal',
+      },
+    },
     config = function()
       require 'config.toggleterm'
     end,
@@ -797,6 +846,7 @@ return {
 
   {
     'nat-418/boole.nvim',
+    event = 'VeryLazy',
     config = function()
       require('boole').setup {
         mappings = {
@@ -813,6 +863,7 @@ return {
   {
     'MeanderingProgrammer/markdown.nvim',
     name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
+    ft = { 'markdown', 'md', 'rmd' },
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
       require('render-markdown').setup {
