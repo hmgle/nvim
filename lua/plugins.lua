@@ -868,7 +868,22 @@ return {
     config = function()
       require('render-markdown').setup {
         enabled = false,
+        -- anti_conceal = {
+        --   enabled = false,
+        -- },
+        html = {
+          -- render_modes = true,
+          tag = {
+            kbd = {
+              scope_highlight = 'RenderMarkdownKeycap',
+            },
+          },
+        },
       }
+
+      if vim.fn.hlID 'RenderMarkdownKeycap' == 0 then
+        vim.api.nvim_set_hl(0, 'RenderMarkdownKeycap', { link = 'Visual' })
+      end
     end,
   },
 
