@@ -52,7 +52,25 @@ if vim.fn.executable 'fcitx5-remote' == 1 or vim.fn.executable 'fcitx-remote' ==
   })
 end
 
-vim.g.node_host_prog = io.open("nvm which default")
+local function resolve_node_host_prog()
+  local output = vim.fn.system({ 'bash', '-lc', 'nvm which default' })
+  if vim.v.shell_error == 0 then
+    local path = vim.fn.trim(output)
+    if path ~= '' and vim.fn.filereadable(path) == 1 then
+      return path
+    end
+  end
+
+  local node = vim.fn.exepath('node')
+  if node ~= '' then
+    return node
+  end
+end
+
+local node_host_prog = resolve_node_host_prog()
+if node_host_prog then
+  vim.g.node_host_prog = node_host_prog
+end
 
 -- Some performance issues that seems to be related to the foldexpr setting
 -- https://github.com/akinsho/toggleterm.nvim/issues/610

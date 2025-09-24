@@ -37,7 +37,7 @@ local function on_attach(client, bufnr)
   buf_set_keymap('n', '<leader>gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<leader>gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>Telescope lsp_references include_current_line=true<CR>', opts)
-  buf_set_keymap('n', '<leader>gf', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  buf_set_keymap('n', '<leader>gf', "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
   -- {{
   -- using actions-preview
   -- buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action({apply = true})<CR>', opts)
