@@ -10,6 +10,29 @@ vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.s
 
 require 'config.lsp.providers'
 
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client or client._supports_method_compat then
+      return
+    end
+    local mt = getmetatable(client)
+    local supports = mt and mt.supports_method
+    if type(supports) ~= 'function' then
+      return
+    end
+    client.supports_method = function(arg1, arg2)
+      if arg1 == client then
+        return supports(client, arg2)
+      else
+        return supports(client, arg1)
+      end
+    end
+    client._supports_method_compat = true
+  end,
+})
+
+
 local mason_ok, masonlspconf = pcall(require, 'mason-lspconfig')
 if not mason_ok then
   return
