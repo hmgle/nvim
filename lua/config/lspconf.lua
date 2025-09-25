@@ -21,11 +21,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
     if type(supports) ~= 'function' then
       return
     end
-    client.supports_method = function(arg1, arg2)
+    client.supports_method = function(arg1, ...)
       if arg1 == client then
-        return supports(client, arg2)
+        return supports(client, ...)
       else
-        return supports(client, arg1)
+        return supports(client, arg1, ...)
       end
     end
     client._supports_method_compat = true
