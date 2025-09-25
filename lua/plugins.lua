@@ -866,6 +866,11 @@ return {
     ft = { 'markdown', 'md', 'rmd' },
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
+      local ok, install = pcall(require, 'nvim-treesitter.install')
+      if ok then
+        install.ensure_installed { 'html' }
+      end
+
       require('render-markdown').setup {
         enabled = false,
         -- anti_conceal = {
