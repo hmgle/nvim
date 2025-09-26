@@ -67,10 +67,12 @@ local function resolve_node_host_prog()
   end
 end
 
-local node_host_prog = resolve_node_host_prog()
-if node_host_prog then
-  vim.g.node_host_prog = node_host_prog
-end
+vim.schedule(function()
+  local node_host_prog = resolve_node_host_prog()
+  if node_host_prog then
+    vim.g.node_host_prog = node_host_prog
+  end
+end)
 
 -- Some performance issues that seems to be related to the foldexpr setting
 -- https://github.com/akinsho/toggleterm.nvim/issues/610

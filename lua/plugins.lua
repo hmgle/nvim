@@ -246,15 +246,26 @@ return {
       }
     end,
     cond = function()
+      if vim.fn.executable('go') ~= 1 then
+        return false
+      end
+
+      local file = vim.fn.expand '%:p'
+      if file == '' then
+        return true
+      end
+
       -- too slow to load on startup for big files
       local max_file_size = 1024 * 100 -- 100KB
-      local file_size = vim.fn.getfsize(vim.fn.expand '%:p')
-      return file_size < max_file_size
+      local file_size = vim.fn.getfsize(file)
+      return file_size < 0 or file_size < max_file_size
     end,
   },
 
   {
     'nvim-treesitter/nvim-treesitter',
+    event = { 'BufReadPost', 'BufNewFile' },
+    build = ':TSUpdate',
     config = function()
       require 'config.treesitter'
     end,
@@ -262,6 +273,8 @@ return {
 
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    event = { 'BufReadPost', 'BufNewFile' },
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
   },
   {
     'andymass/vim-matchup',
@@ -897,6 +910,17 @@ return {
     config = function()
       require('bigfile').setup {
         filesize = 2, -- size of the file in MiB, the plugin round file sizes to the closest MiB
+        pattern = { '*.log', '*.txt', '*.csv', '*.tsv' },
+        features = {
+          'indent_blankline',
+          'illuminate',
+          'lsp',
+          'treesitter',
+          'syntax',
+          'matchparen',
+          'vimopts',
+          'filetype',
+        },
       }
     end,
   },

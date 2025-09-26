@@ -1,4 +1,7 @@
 require'nvim-treesitter.configs'.setup {
+  ensure_installed = { "lua", "go", "python", "javascript", "typescript" },
+  auto_install = false,
+  sync_install = false,
   highlight = {
     enable = true,
     disable = { "yaml" }, -- Disable yaml highlighting because Helm sucks :<

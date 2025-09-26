@@ -1,3 +1,7 @@
+if vim.loader and vim.loader.enable then
+  vim.loader.enable()
+end
+
 require("basic")
 vim.cmd("source $HOME/.config/nvim/viml/conf.vim")
 
