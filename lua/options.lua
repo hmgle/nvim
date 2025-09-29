@@ -100,7 +100,6 @@ if switch_to_en then
     pattern = '*',
     callback = switch_to_en,
   })
-
 end
 
 local function resolve_node_host_prog()
