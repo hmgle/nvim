@@ -101,11 +101,6 @@ if switch_to_en then
     callback = switch_to_en,
   })
 
-  -- Switch to English mode when pressing Esc
-  map('i', '<Esc>', function()
-    switch_to_en()
-    return '<Esc>'
-  end, { expr = true })
 end
 
 local function resolve_node_host_prog()
