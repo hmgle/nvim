@@ -53,24 +53,6 @@ if exists('$TMUX')
 endif
 
 
-function! s:gruvbox_material_custom() abort
-    hi Search guibg=None guifg=#ff2222
-    hi CurSearch guibg=None guifg=#ff0000 gui=bold
-    hi HlSearchNear guibg=None guifg=#ff0000
-    hi HlSearchLens guibg=None guifg=#bbbbbb
-    hi HlSearchLensNear guibg=None guifg=#888888
-    hi BlinkCmpGhostText guibg=None guifg=#bbb090
-    " hi MiniTablineCurrent guibg=None guifg=#888888
-    " hi! link MiniTablineCurrent TabLineSel
-    " hi! link MiniTablineModifiedCurrent Substitute
-    " hi! link MiniTablineModifiedHidden Search
-endfunction
-
-augroup GruvboxMaterialCustom
-    autocmd!
-    autocmd ColorScheme gruvbox-material call s:gruvbox_material_custom()
-augroup END
-
 let g:Lf_PopupPalette = {
 \    'light': {
 \       'Lf_hl_cursorline': {
