@@ -6,7 +6,7 @@ lint.linters_by_ft = {
   javascriptreact = { 'eslint_d' },
   typescriptreact = { 'eslint_d' },
   svelte = { 'eslint_d' },
-  python = { 'mypy' },
+  python = { 'ruff' },
   -- markdown = { 'markdownlint' },
   sh = { 'shellcheck' },
 }
@@ -58,10 +58,7 @@ local function available_linters(bufnr)
         table.insert(runnable, name)
       elseif not missing_linters[cmd] then
         missing_linters[cmd] = true
-        vim.notify(
-          string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd),
-          vim.log.levels.WARN
-        )
+        vim.notify(string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd), vim.log.levels.WARN)
       end
     end
   end
