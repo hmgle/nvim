@@ -41,140 +41,144 @@ On first launch, lazy.nvim will automatically install all plugins. LSP servers w
 ## ⌨️ Keybindings
 
 ### Leader Keys
+
 - **Leader**: <kbd>,</kbd> (comma)
 - **Local Leader**: <kbd>,</kbd> (comma)
 
 ### 🧭 Navigation & Movement
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>Ctrl</kbd>+<kbd>h</kbd>/<kbd>j</kbd>/<kbd>k</kbd>/<kbd>l</kbd> | Normal | Window navigation | Move between splits |
-| <kbd>gt</kbd> / <kbd>gT</kbd> | Normal | Buffer navigation | Next/Previous buffer |
-| <kbd>Alt</kbd>+<kbd>1-9</kbd> | Normal | Buffer selection | Go to buffer by number |
-| <kbd>s</kbd> | Normal/Visual | Flash jump | Quick jump to position |
-| <kbd>S</kbd> | Normal | Flash treesitter | Jump to treesitter node |
-| <kbd>,</kbd><kbd>h</kbd>/<kbd>l</kbd> | Normal/Visual | Treewalker | Move out/in AST tree |
-| <kbd>Ctrl</kbd>+<kbd>u</kbd>/<kbd>d</kbd> | Normal/Visual | Treewalker | Move up/down AST tree |
+| Key                                                                 | Mode          | Action            | Description             |
+| ------------------------------------------------------------------- | ------------- | ----------------- | ----------------------- |
+| <kbd>Ctrl</kbd>+<kbd>h</kbd>/<kbd>j</kbd>/<kbd>k</kbd>/<kbd>l</kbd> | Normal        | Window navigation | Move between splits     |
+| <kbd>gt</kbd> / <kbd>gT</kbd>                                       | Normal        | Buffer navigation | Next/Previous buffer    |
+| <kbd>Alt</kbd>+<kbd>1-9</kbd>                                       | Normal        | Buffer selection  | Go to buffer by number  |
+| <kbd>s</kbd>                                                        | Normal/Visual | Flash jump        | Quick jump to position  |
+| <kbd>S</kbd>                                                        | Normal        | Flash treesitter  | Jump to treesitter node |
+| <kbd>,</kbd><kbd>h</kbd>/<kbd>l</kbd>                               | Normal/Visual | Treewalker        | Move out/in AST tree    |
+| <kbd>Ctrl</kbd>+<kbd>u</kbd>/<kbd>d</kbd>                           | Normal/Visual | Treewalker        | Move up/down AST tree   |
 
 ### 🔍 Search & Find
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>Ctrl</kbd>+<kbd>p</kbd> | Normal | Smart file picker | Snacks.nvim smart picker |
-| <kbd>,</kbd><kbd>ff</kbd> | Normal | Find files | Telescope file finder |
-| <kbd>,</kbd><kbd>fl</kbd> | Normal | Live grep | Search in files |
-| <kbd>,</kbd><kbd>fb</kbd> | Normal | Buffer search | Fuzzy find in current buffer |
-| <kbd>,</kbd><kbd>fz</kbd> | Normal | Frecency/Smart | Frequent/smart file finder |
-| <kbd>,</kbd><kbd>fr</kbd> | Normal | Resume search | Resume last telescope |
-| <kbd>,</kbd><kbd>*</kbd> | Normal | Grep word | Search word under cursor |
-| <kbd>,</kbd><kbd>Enter</kbd> | Normal | Clear search | Clear search highlight |
-| <kbd>n</kbd>/<kbd>N</kbd> | Normal | Search next/prev | Enhanced with hlslens |
-| <kbd>*</kbd>/<kbd>#</kbd> <kbd>g*</kbd>/<kbd>g#</kbd> | Normal | Enhanced search | Search with hlslens |
+| Key                                                   | Mode   | Action            | Description                  |
+| ----------------------------------------------------- | ------ | ----------------- | ---------------------------- |
+| <kbd>Ctrl</kbd>+<kbd>p</kbd>                          | Normal | Smart file picker | Snacks.nvim smart picker     |
+| <kbd>,</kbd><kbd>ff</kbd>                             | Normal | Find files        | Telescope file finder        |
+| <kbd>,</kbd><kbd>fl</kbd>                             | Normal | Live grep         | Search in files              |
+| <kbd>,</kbd><kbd>fb</kbd>                             | Normal | Buffer search     | Fuzzy find in current buffer |
+| <kbd>,</kbd><kbd>fz</kbd>                             | Normal | Frecency/Smart    | Frequent/smart file finder   |
+| <kbd>,</kbd><kbd>fr</kbd>                             | Normal | Resume search     | Resume last telescope        |
+| <kbd>,</kbd><kbd>\*</kbd>                             | Normal | Grep word         | Search word under cursor     |
+| <kbd>,</kbd><kbd>Enter</kbd>                          | Normal | Clear search      | Clear search highlight       |
+| <kbd>n</kbd>/<kbd>N</kbd>                             | Normal | Search next/prev  | Enhanced with hlslens        |
+| <kbd>_</kbd>/<kbd>#</kbd> <kbd>g_</kbd>/<kbd>g#</kbd> | Normal | Enhanced search   | Search with hlslens          |
 
 ### 📄 File & Buffer Management
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>,</kbd><kbd>o</kbd> | Normal | Close others | Close all buffers except current |
-| <kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>Ctrl</kbd>+<kbd>e</kbd> | Normal | Toggle outline | Symbol outline sidebar |
-| Tree view (nvim-tree) | | | |
-| <kbd>o</kbd>/<kbd>Enter</kbd> | Normal | Open file | Open file/directory |
-| <kbd>l</kbd>/<kbd>h</kbd> | Normal | CD down/up | Change root directory |
-| <kbd>d</kbd>/<kbd>D</kbd> | Normal | Trash/Delete | Remove file |
-| <kbd>Ctrl</kbd>+<kbd>t</kbd>/<kbd>v</kbd> | Normal | Tab/Split | Open in tab/vertical split |
+| Key                                                      | Mode   | Action             | Description                          |
+| -------------------------------------------------------- | ------ | ------------------ | ------------------------------------ |
+| <kbd>,</kbd><kbd>cp</kbd>                                | Normal | Copy relative path | Copy file relative path to clipboard |
+| <kbd>,</kbd><kbd>cP</kbd>                                | Normal | Copy absolute path | Copy file absolute path to clipboard |
+| <kbd>,</kbd><kbd>cf</kbd>                                | Normal | Copy filename      | Copy filename to clipboard           |
+| <kbd>,</kbd><kbd>o</kbd>                                 | Normal | Close others       | Close all buffers except current     |
+| <kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>Ctrl</kbd>+<kbd>e</kbd> | Normal | Toggle outline     | Symbol outline sidebar               |
+| Tree view (nvim-tree)                                    |        |                    |                                      |
+| <kbd>o</kbd>/<kbd>Enter</kbd>                            | Normal | Open file          | Open file/directory                  |
+| <kbd>l</kbd>/<kbd>h</kbd>                                | Normal | CD down/up         | Change root directory                |
+| <kbd>d</kbd>/<kbd>D</kbd>                                | Normal | Trash/Delete       | Remove file                          |
+| <kbd>Ctrl</kbd>+<kbd>t</kbd>/<kbd>v</kbd>                | Normal | Tab/Split          | Open in tab/vertical split           |
 
 ### 📝 LSP & Code Navigation
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>gd</kbd> | Normal | Go to definition | Jump to definition |
-| <kbd>gD</kbd> | Normal | Go to declaration | Jump to declaration |
-| <kbd>gi</kbd> | Normal | Implementations | Show implementations (Telescope) |
-| <kbd>gr</kbd> | Normal | References | Show references (Telescope) |
-| <kbd>gh</kbd> | Normal | Document symbols | Show document symbols |
-| <kbd>gs</kbd> | Normal | Signature help | Show function signature |
-| <kbd>,</kbd><kbd>k</kbd> | Normal | Hover | Show hover information |
-| <kbd>,</kbd><kbd>rn</kbd> | Normal | Rename | Rename symbol |
-| <kbd>,</kbd><kbd>ca</kbd> | Normal/Visual | Code actions | Show code actions |
-| <kbd>,</kbd><kbd>H</kbd> | Normal | Toggle hints | Toggle inlay hints |
-| <kbd>[d</kbd> / <kbd>]d</kbd> | Normal | Diagnostics | Previous/Next diagnostic |
-| <kbd>gl</kbd> | Normal | All diagnostics | Show all diagnostics |
-| <kbd>gp</kbd> | Normal | Preview definition | Goto preview |
-| <kbd>gP</kbd> | Normal | Close preview | Close all previews |
+| Key                           | Mode          | Action             | Description                      |
+| ----------------------------- | ------------- | ------------------ | -------------------------------- |
+| <kbd>gd</kbd>                 | Normal        | Go to definition   | Jump to definition               |
+| <kbd>gD</kbd>                 | Normal        | Go to declaration  | Jump to declaration              |
+| <kbd>gi</kbd>                 | Normal        | Implementations    | Show implementations (Telescope) |
+| <kbd>gr</kbd>                 | Normal        | References         | Show references (Telescope)      |
+| <kbd>gh</kbd>                 | Normal        | Document symbols   | Show document symbols            |
+| <kbd>gs</kbd>                 | Normal        | Signature help     | Show function signature          |
+| <kbd>,</kbd><kbd>k</kbd>      | Normal        | Hover              | Show hover information           |
+| <kbd>,</kbd><kbd>rn</kbd>     | Normal        | Rename             | Rename symbol                    |
+| <kbd>,</kbd><kbd>ca</kbd>     | Normal/Visual | Code actions       | Show code actions                |
+| <kbd>,</kbd><kbd>H</kbd>      | Normal        | Toggle hints       | Toggle inlay hints               |
+| <kbd>[d</kbd> / <kbd>]d</kbd> | Normal        | Diagnostics        | Previous/Next diagnostic         |
+| <kbd>gl</kbd>                 | Normal        | All diagnostics    | Show all diagnostics             |
+| <kbd>gp</kbd>                 | Normal        | Preview definition | Goto preview                     |
+| <kbd>gP</kbd>                 | Normal        | Close preview      | Close all previews               |
 
 ### ✍️ Text Editing & Manipulation
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>p</kbd>/<kbd>P</kbd> | Normal/Visual | Paste | Enhanced paste with Yanky |
-| <kbd>Ctrl</kbd>+<kbd>n</kbd> | Normal | Cycle yank | Cycle through yank history |
-| <kbd>,</kbd><kbd>y</kbd> | Normal | Yank history | Show yank history (Telescope) |
-| <kbd>,</kbd><kbd>r</kbd> | Normal/Visual | Substitute | Substitute operator |
-| <kbd>,</kbd><kbd>rs</kbd>/<kbd>rS</kbd> | Normal | Substitute line/EOL | Substitute line/to end |
-| <kbd>,</kbd><kbd>cc</kbd>/<kbd>cb</kbd> | Normal/Visual | Comment line/block | Toggle comments |
-| <kbd>,</kbd><kbd>cgc</kbd>/<kbd>cgb</kbd> | Normal | Comment operator | Comment with operator |
-| <kbd>Ctrl</kbd>+<kbd>a</kbd>/<kbd>x</kbd> | Normal | Increment/Decrement | Smart boolean toggle |
+| Key                                       | Mode          | Action              | Description                   |
+| ----------------------------------------- | ------------- | ------------------- | ----------------------------- |
+| <kbd>p</kbd>/<kbd>P</kbd>                 | Normal/Visual | Paste               | Enhanced paste with Yanky     |
+| <kbd>Ctrl</kbd>+<kbd>n</kbd>              | Normal        | Cycle yank          | Cycle through yank history    |
+| <kbd>,</kbd><kbd>y</kbd>                  | Normal        | Yank history        | Show yank history (Telescope) |
+| <kbd>,</kbd><kbd>r</kbd>                  | Normal/Visual | Substitute          | Substitute operator           |
+| <kbd>,</kbd><kbd>rs</kbd>/<kbd>rS</kbd>   | Normal        | Substitute line/EOL | Substitute line/to end        |
+| <kbd>,</kbd><kbd>cc</kbd>/<kbd>cb</kbd>   | Normal/Visual | Comment line/block  | Toggle comments               |
+| <kbd>,</kbd><kbd>cgc</kbd>/<kbd>cgb</kbd> | Normal        | Comment operator    | Comment with operator         |
+| <kbd>Ctrl</kbd>+<kbd>a</kbd>/<kbd>x</kbd> | Normal        | Increment/Decrement | Smart boolean toggle          |
 
 ### 🔧 Code Quality & Formatting
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>,</kbd><kbd>L</kbd> | Normal | Toggle lint | Toggle linting |
-| Format on save | Auto | Auto-format | Automatic formatting enabled |
-| <kbd>,</kbd><kbd>gf</kbd> | Normal | Format buffer | Manual formatting |
+| Key                       | Mode   | Action        | Description                  |
+| ------------------------- | ------ | ------------- | ---------------------------- |
+| <kbd>,</kbd><kbd>L</kbd>  | Normal | Toggle lint   | Toggle linting               |
+| Format on save            | Auto   | Auto-format   | Automatic formatting enabled |
+| <kbd>,</kbd><kbd>gf</kbd> | Normal | Format buffer | Manual formatting            |
 
 ### 🤖 AI Integration
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>Ctrl</kbd>+<kbd>x</kbd> | Normal/Insert/Terminal | Toggle Aider | Toggle AI assistant |
-| <kbd>,</kbd><kbd>as</kbd> | Normal | Spawn Aider | Start Aider terminal |
-| <kbd>,</kbd><kbd>a</kbd><kbd>Space</kbd> | Normal | Toggle Aider | Toggle Aider window |
-| <kbd>,</kbd><kbd>af</kbd>/<kbd>av</kbd> | Normal | Float/Vertical | Aider in float/vertical |
-| <kbd>,</kbd><kbd>al</kbd> | Normal | Add file | Add file to Aider |
-| <kbd>,</kbd><kbd>ad</kbd> | Normal/Visual | Ask Aider | Ask with selection |
-| <kbd>,</kbd><kbd>am</kbd>* | Normal | Model switch | Switch AI models |
+| Key                                      | Mode                   | Action         | Description             |
+| ---------------------------------------- | ---------------------- | -------------- | ----------------------- |
+| <kbd>Ctrl</kbd>+<kbd>x</kbd>             | Normal/Insert/Terminal | Toggle Aider   | Toggle AI assistant     |
+| <kbd>,</kbd><kbd>as</kbd>                | Normal                 | Spawn Aider    | Start Aider terminal    |
+| <kbd>,</kbd><kbd>a</kbd><kbd>Space</kbd> | Normal                 | Toggle Aider   | Toggle Aider window     |
+| <kbd>,</kbd><kbd>af</kbd>/<kbd>av</kbd>  | Normal                 | Float/Vertical | Aider in float/vertical |
+| <kbd>,</kbd><kbd>al</kbd>                | Normal                 | Add file       | Add file to Aider       |
+| <kbd>,</kbd><kbd>ad</kbd>                | Normal/Visual          | Ask Aider      | Ask with selection      |
+| <kbd>,</kbd><kbd>am</kbd>\*              | Normal                 | Model switch   | Switch AI models        |
 
 ### 🔍 Search & Replace
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>,</kbd><kbd>sr</kbd> | Normal/Visual | Search/Replace (rg) | Grug-far with ripgrep |
+| Key                       | Mode          | Action               | Description             |
+| ------------------------- | ------------- | -------------------- | ----------------------- |
+| <kbd>,</kbd><kbd>sr</kbd> | Normal/Visual | Search/Replace (rg)  | Grug-far with ripgrep   |
 | <kbd>,</kbd><kbd>sa</kbd> | Normal/Visual | Search/Replace (ast) | AST-grep search/replace |
 
 ### 🖥️ Terminal & Tools
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>Ctrl</kbd>+<kbd>S</kbd> | Normal/Terminal | Toggle terminal | ToggleTerm integration |
-| <kbd>Esc</kbd> | Terminal | Normal mode | Exit terminal insert mode |
-| <kbd>,</kbd><kbd>q</kbd> | Normal | Toggle quickfix | Smart quickfix toggle |
+| Key                          | Mode            | Action          | Description               |
+| ---------------------------- | --------------- | --------------- | ------------------------- |
+| <kbd>Ctrl</kbd>+<kbd>S</kbd> | Normal/Terminal | Toggle terminal | ToggleTerm integration    |
+| <kbd>Esc</kbd>               | Terminal        | Normal mode     | Exit terminal insert mode |
+| <kbd>,</kbd><kbd>q</kbd>     | Normal          | Toggle quickfix | Smart quickfix toggle     |
 
 ### 📋 Command Line (VimL legacy)
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>Ctrl</kbd>+<kbd>A</kbd>/<kbd>E</kbd> | Command | Home/End | Move to line start/end |
-| <kbd>Ctrl</kbd>+<kbd>B</kbd>/<kbd>F</kbd> | Command | Left/Right | Character movement |
-| <kbd>Ctrl</kbd>+<kbd>P</kbd>/<kbd>N</kbd> | Command | Up/Down | Command history |
-| <kbd>Ctrl</kbd>+<kbd>K</kbd> | Command | Delete to end | Kill to end of line |
-| <kbd>Ctrl</kbd>+<kbd>d</kbd> | Insert | Insert date | Insert current date |
+| Key                                       | Mode    | Action        | Description            |
+| ----------------------------------------- | ------- | ------------- | ---------------------- |
+| <kbd>Ctrl</kbd>+<kbd>A</kbd>/<kbd>E</kbd> | Command | Home/End      | Move to line start/end |
+| <kbd>Ctrl</kbd>+<kbd>B</kbd>/<kbd>F</kbd> | Command | Left/Right    | Character movement     |
+| <kbd>Ctrl</kbd>+<kbd>P</kbd>/<kbd>N</kbd> | Command | Up/Down       | Command history        |
+| <kbd>Ctrl</kbd>+<kbd>K</kbd>              | Command | Delete to end | Kill to end of line    |
+| <kbd>Ctrl</kbd>+<kbd>d</kbd>              | Insert  | Insert date   | Insert current date    |
 
 ### 🌐 Translation (Optional)
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>,</kbd><kbd>ee</kbd> | Normal/Visual | Translate | YouDao translator |
-| <kbd>,</kbd><kbd>yd</kbd> | Normal | English | Translate to English |
+| Key                       | Mode          | Action    | Description          |
+| ------------------------- | ------------- | --------- | -------------------- |
+| <kbd>,</kbd><kbd>ee</kbd> | Normal/Visual | Translate | YouDao translator    |
+| <kbd>,</kbd><kbd>yd</kbd> | Normal        | English   | Translate to English |
 
 ### 📊 Special Features
 
-| Key | Mode | Action | Description |
-|-----|------|--------|-------------|
-| <kbd>,</kbd><kbd>n</kbd>/<kbd>N</kbd> | Normal | Next/Prev reference | Illuminate references |
-| <kbd>,</kbd><kbd>ss</kbd>/<kbd>sS</kbd> | Normal | Symbols | Document/Workspace symbols |
-| <kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>d</kbd> | Normal | Diagnostics | Workspace diagnostics |
-| <kbd>,</kbd><kbd>fn</kbd> | Normal | Notifications | Show notifications |
+| Key                                      | Mode   | Action              | Description                |
+| ---------------------------------------- | ------ | ------------------- | -------------------------- |
+| <kbd>,</kbd><kbd>n</kbd>/<kbd>N</kbd>    | Normal | Next/Prev reference | Illuminate references      |
+| <kbd>,</kbd><kbd>ss</kbd>/<kbd>sS</kbd>  | Normal | Symbols             | Document/Workspace symbols |
+| <kbd>Ctrl</kbd>+<kbd>w</kbd><kbd>d</kbd> | Normal | Diagnostics         | Workspace diagnostics      |
+| <kbd>,</kbd><kbd>fn</kbd>                | Normal | Notifications       | Show notifications         |
 
 ## 🔧 Configuration Structure
 
@@ -200,10 +204,12 @@ On first launch, lazy.nvim will automatically install all plugins. LSP servers w
 ## 🚀 AI Features Setup
 
 ### GitHub Copilot
+
 1. Install: `:Copilot auth`
 2. Already integrated with blink.cmp completion
 
 ### Aider (AI Pair Programming)
+
 ```bash
 # Install aider
 pip install aider-chat
@@ -213,7 +219,9 @@ export DEEPSEEK_API_KEY="your-api-key"
 ```
 
 ### CodeCompanion
+
 Uses Deepseek API for chat completion. Set environment variable:
+
 ```bash
 export DEEPSEEK_API_KEY="your-api-key"
 ```
@@ -221,6 +229,7 @@ export DEEPSEEK_API_KEY="your-api-key"
 ## 📋 Language Support
 
 ### Full LSP Support
+
 - **Go**: gopls with goimports, gofumpt
 - **JavaScript/TypeScript**: Various LSP servers via Mason
 - **Python**: Pyright/Pylsp with mypy, black, isort
@@ -230,6 +239,7 @@ export DEEPSEEK_API_KEY="your-api-key"
 - **And many more via Mason**
 
 ### Formatting (via conform.nvim)
+
 - **Format on save**: Enabled globally
 - **JavaScript/TypeScript**: prettier
 - **Python**: black + isort
@@ -239,6 +249,7 @@ export DEEPSEEK_API_KEY="your-api-key"
 - **Shell**: shfmt
 
 ### Linting (via nvim-lint)
+
 - **JavaScript/TypeScript**: eslint_d
 - **Python**: mypy
 - **Shell**: shellcheck
@@ -261,11 +272,13 @@ export DEEPSEEK_API_KEY="your-api-key"
 ## 🔧 Customization
 
 ### Adding New Languages
+
 1. LSP server auto-installs via Mason
 2. Add formatter to `lua/config/conform.lua`
 3. Add linter to `lua/config/lint.lua`
 
 ### Plugin Management
+
 ```lua
 -- In lua/plugins.lua, add:
 {
@@ -279,7 +292,9 @@ export DEEPSEEK_API_KEY="your-api-key"
 ```
 
 ### Custom Keymaps
+
 Add to `lua/options.lua` or create `lua/keymaps.lua`:
+
 ```lua
 local map = require('utils').map
 map('n', '<leader>custom', '<cmd>CustomCommand<CR>', 'Description')
@@ -288,16 +303,19 @@ map('n', '<leader>custom', '<cmd>CustomCommand<CR>', 'Description')
 ## 🐛 Troubleshooting
 
 ### Plugin Issues
+
 - `:Lazy` - Plugin manager interface
 - `:Lazy update` - Update all plugins
 - `:Lazy clean` - Remove unused plugins
 
 ### LSP Issues
+
 - `:Mason` - LSP server manager
 - `:LspInfo` - LSP status for current buffer
 - `:checkhealth` - General health check
 
 ### Performance Issues
+
 - `:Lazy profile` - Profile plugin loading
 - Disable format-on-save in `conform.lua` if needed
 - Check big file detection settings
@@ -312,6 +330,7 @@ map('n', '<leader>custom', '<cmd>CustomCommand<CR>', 'Description')
 ## 🤝 Contributing
 
 This configuration is actively maintained. Feel free to:
+
 - Report issues
 - Suggest improvements
 - Submit pull requests
@@ -320,3 +339,4 @@ This configuration is actively maintained. Feel free to:
 ## 📄 License
 
 This configuration is open source. Individual plugins maintain their own licenses.
+
