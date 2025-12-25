@@ -1,6 +1,16 @@
 local conform = require 'conform'
 
 conform.setup {
+  formatters = {
+    biome = {
+      args = {
+        'format',
+        '--json-parse-allow-trailing-commas=true',
+        '--stdin-file-path',
+        '$FILENAME',
+      },
+    },
+  },
   formatters_by_ft = {
     javascript = { 'biome', 'prettier', stop_after_first = true },
     typescript = { 'biome', 'prettier', stop_after_first = true },
