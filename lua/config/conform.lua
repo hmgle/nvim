@@ -2,14 +2,15 @@ local conform = require 'conform'
 
 conform.setup {
   formatters_by_ft = {
-    javascript = { 'prettier' },
-    typescript = { 'prettier' },
-    javascriptreact = { 'prettier' },
-    typescriptreact = { 'prettier' },
+    javascript = { 'biome', 'prettier', stop_after_first = true },
+    typescript = { 'biome', 'prettier', stop_after_first = true },
+    javascriptreact = { 'biome', 'prettier', stop_after_first = true },
+    typescriptreact = { 'biome', 'prettier', stop_after_first = true },
     svelte = { 'prettier' },
-    css = { 'prettier' },
-    html = { 'prettier' },
-    json = { 'prettier' },
+    css = { 'biome', 'prettier', stop_after_first = true },
+    html = { 'biome', 'prettier', stop_after_first = true },
+    json = { 'biome', 'prettier', stop_after_first = true },
+    jsonc = { 'biome', 'prettier', stop_after_first = true },
     yaml = { 'yamlfix', 'prettier', stop_after_first = true },
     markdown = { 'markdownlint', 'prettier' },
     graphql = { 'prettier' },
