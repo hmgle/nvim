@@ -2,9 +2,12 @@ local conform = require 'conform'
 
 conform.setup {
   formatters = {
-    biome = {
+    ['biome-json'] = {
+      command = 'biome',
       args = {
         'format',
+        '--indent-style=space',
+        '--indent-width=2',
         '--json-parse-allow-trailing-commas=true',
         '--stdin-file-path',
         '$FILENAME',
@@ -19,8 +22,8 @@ conform.setup {
     svelte = { 'prettier' },
     css = { 'biome', 'prettier', stop_after_first = true },
     html = { 'biome', 'prettier', stop_after_first = true },
-    json = { 'biome', 'prettier', stop_after_first = true },
-    jsonc = { 'biome', 'prettier', stop_after_first = true },
+    json = { 'biome-json', 'prettier', stop_after_first = true },
+    jsonc = { 'biome-json', 'prettier', stop_after_first = true },
     yaml = { 'yamlfix', 'prettier', stop_after_first = true },
     markdown = { 'markdownlint', 'prettier' },
     graphql = { 'prettier' },
