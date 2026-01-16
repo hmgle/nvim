@@ -280,6 +280,10 @@ return {
     'andymass/vim-matchup',
     event = 'BufRead',
     config = function()
+      -- disable virtual text at end of line
+      vim.g.matchup_matchparen_end_sign = ''
+      vim.g.matchup_treesitter_disable_virtual_text = true
+      -- show popup when cursor is on closing bracket
       vim.cmd 'highlight OffscreenPopup guibg=#FF0000CC guifg=blue'
       vim.g.matchup_matchparen_offscreen = {
         method = 'popup',
