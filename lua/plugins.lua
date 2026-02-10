@@ -9,7 +9,13 @@ return {
     end,
   },
   'godlygeek/tabular',
-  'tpope/vim-sleuth',
+  {
+    'NMAC427/guess-indent.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
+    config = function()
+      require 'config.guess-indent'
+    end,
+  },
   'tpope/vim-fugitive',
   {
     'kylechui/nvim-surround',
