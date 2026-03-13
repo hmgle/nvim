@@ -1137,157 +1137,40 @@ return {
   },
 
   {
-    'aweis89/aider.nvim',
-    dependencies = {
-      -- required for core functionality
-      'akinsho/toggleterm.nvim',
-
-      -- for fuzzy file `/add`ing functionality ("ibhagwan/fzf-lua" supported as well)
-      'nvim-telescope/telescope.nvim',
-
-      -- Optional, but great for diff viewing and after_update_hook integration
-      'sindrets/diffview.nvim',
-
-      -- Optional but will show aider spinner whenever active
-      {
-        'folke/snacks.nvim',
-        opts = {
-          picker = {
-            win = {
-              input = {
-                keys = {
-                  ['<C-O>'] = { 'close', mode = { 'n', 'i' } },
-                  ['<c-x>'] = { 'edit_split', mode = { 'i', 'n' } },
-                  ['<c-]>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
-                },
-              },
+    'folke/snacks.nvim',
+    opts = {
+      picker = {
+        win = {
+          input = {
+            keys = {
+              ['<C-O>'] = { 'close', mode = { 'n', 'i' } },
+              ['<c-x>'] = { 'edit_split', mode = { 'i', 'n' } },
+              ['<c-]>'] = { 'edit_vsplit', mode = { 'i', 'n' } },
             },
           },
         },
-        keys = {
-          {
-            '<C-p>',
-            function()
-              Snacks.picker.smart {
-                multi = { 'recent', 'files' },
-                -- layout = 'telescope',
-                format = 'file', -- use `file` format for all sources
-                matcher = {
-                  cwd_bonus = true, -- boost cwd matches
-                  frecency = true, -- use frecency boosting
-                  sort_empty = true, -- sort even when the filter is empty
-                  fuzzy = true,
-                  smartcase = true,
-                },
-                transform = 'unique_file',
-                filter = { cwd = true },
-              }
-            end,
-            desc = 'Smart Find Files',
-          },
-        },
       },
-
-      -- Only if you care about using the /editor command
-      'willothy/flatten.nvim',
     },
-    event = 'VeryLazy',
-    opts = {
-      -- Auto trigger diffview after Aider's file changes
-      after_update_hook = function()
-        require('diffview').open { 'HEAD^' }
-      end,
-      model_picker_search = { '^deepseek/' },
-    },
-
-    telescope = {
-      -- Runs `/add <files>` for selected entries (with multi-select supported)
-      -- add = '<c-l>',
-      -- Runs `/read-only <files>` for selected entries (with multi-select supported)
-      read_only = '<c-o>',
-      -- Runs `/drop`` <files> for selected entries (with multi-select supported)
-      drop = '<c-d>',
-    },
-    -- config = function()
-    --   require('aider').setup {}
-    -- end,
     keys = {
       {
-        '<leader>as',
-        '<cmd>AiderSpawn<CR>',
-        desc = 'Toggle Aidper (default)',
-      },
-      {
-        '<leader>a<space>',
-        '<cmd>AiderToggle<CR>',
-        desc = 'Toggle Aider',
-      },
-      {
-        '<leader>af',
-        '<cmd>AiderToggle float<CR>',
-        desc = 'Toggle Aider Float',
-      },
-      {
-        '<leader>av',
-        '<cmd>AiderToggle vertical<CR>',
-        desc = 'Toggle Aider Float',
-      },
-      {
-        '<leader>al',
-        '<cmd>AiderAdd<CR>',
-        desc = 'Add file to aider',
-      },
-      {
-        '<leader>ad',
-        '<cmd>AiderAsk<CR>',
-        desc = 'Ask with selection',
-        mode = { 'v', 'n' },
-      },
-      {
-        '<leader>am',
-        desc = 'Change model',
-      },
-      {
-        '<leader>ams',
-        '<cmd>AiderSend /model sonnet<CR>',
-        desc = 'Switch to sonnet',
-      },
-      {
-        '<leader>amh',
-        '<cmd>AiderSend /model haiku<CR>',
-        desc = 'Switch to haiku',
-      },
-      {
-        '<leader>amg',
-        '<cmd>AiderSend /model gemini/gemini-exp-1206<CR>',
-        desc = 'Switch to haiku',
-      },
-      {
-        '<C-x>',
-        '<cmd>AiderToggle<CR>',
-        desc = 'Toggle Aider',
-        mode = { 'i', 't', 'n' },
-      },
-      -- Helpful mappings to utilize to manage aider changes
-      {
-        '<leader>ghh',
-        '<cmd>Gitsigns change_base HEAD^<CR>',
-        desc = 'Gitsigns pick reversals',
-      },
-      {
-        '<leader>dvh',
-        '<cmd>DiffviewOpen HEAD^<CR>',
-        desc = 'Diffview HEAD^',
-      },
-      {
-        '<leader>dvo',
-        '<cmd>DiffviewOpen<CR>',
-        desc = 'Diffview',
-      },
-      {
-        '<leader>dvc',
-        '<cmd>DiffviewClose!<CR>',
-        desc = 'Diffview close',
+        '<C-p>',
+        function()
+          Snacks.picker.smart {
+            multi = { 'recent', 'files' },
+            -- layout = 'telescope',
+            format = 'file', -- use `file` format for all sources
+            matcher = {
+              cwd_bonus = true, -- boost cwd matches
+              frecency = true, -- use frecency boosting
+              sort_empty = true, -- sort even when the filter is empty
+              fuzzy = true,
+              smartcase = true,
+            },
+            transform = 'unique_file',
+            filter = { cwd = true },
+          }
+        end,
+        desc = 'Smart Find Files',
       },
     },
   },
