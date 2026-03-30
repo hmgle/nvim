@@ -1,62 +1,21 @@
 local M = {}
 
-local function has_method(value, method)
-  local ok, result = pcall(function()
-    return type(value[method]) == "function"
-  end)
-  return ok and result
-end
-
-local function is_node_like(value)
-  local value_type = type(value)
-  if value_type ~= "table" and value_type ~= "userdata" then
-    return false
-  end
-
-  return has_method(value, "start") and has_method(value, "end_") and has_method(value, "range")
-end
-
 local function unwrap_capture(value)
-  if type(value) == "table" and not is_node_like(value) and is_node_like(value[1]) then
-    return value[1]
+  while type(value) == "table" and value[1] ~= nil do
+    value = value[1]
   end
-
   return value
 end
 
-function M.patch_core()
-  if vim.g._treesitter_capture_compat_patched then
-    return
-  end
-  vim.g._treesitter_capture_compat_patched = true
-
-  local ts = vim.treesitter
-  if not ts then
-    return
-  end
-
-  local original_get_range = ts.get_range
-  if type(original_get_range) == 'function' then
-    ts.get_range = function(node, ...)
-      return original_get_range(unwrap_capture(node), ...)
-    end
-  end
-
-  local original_get_node_text = ts.get_node_text
-  if type(original_get_node_text) == 'function' then
-    ts.get_node_text = function(node, ...)
-      return original_get_node_text(unwrap_capture(node), ...)
-    end
-  end
-end
-
 function M.patch_nvim_treesitter()
-  local ok, query = pcall(require, 'nvim-treesitter.query')
+  local ok, query = pcall(require, "nvim-treesitter.query")
   if not ok or query._capture_compat_patched then
     return
   end
   query._capture_compat_patched = true
 
+  -- Neovim 0.12 wraps captures from iter_matches(..., { all = false }).
+  -- nvim-treesitter-textobjects still expects bare TSNode values here.
   local tsrange = require("nvim-treesitter.tsrange")
 
   query.iter_prepared_matches = function(ts_query, qnode, bufnr, start_row, end_row)
@@ -105,22 +64,6 @@ function M.patch_nvim_treesitter()
       return prepared_match
     end
   end
-
-  local original_iter_captures = query.iter_captures
-  query.iter_captures = function(bufnr, query_name, root, lang)
-    local iter = original_iter_captures(bufnr, query_name, root, lang)
-
-    return function()
-      local name, node, metadata = iter()
-      if name == nil then
-        return
-      end
-
-      return name, unwrap_capture(node), metadata
-    end
-  end
 end
-
-M.patch_core()
 
 return M
