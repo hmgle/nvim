@@ -210,16 +210,13 @@ return {
   {
     'ojroques/nvim-hardline',
     config = function()
-      local function set_hardline_statusline(active)
-        if vim.api.nvim_win_get_config(0).relative ~= '' then
-          vim.opt_local.statusline = ''
-          return
-        end
+      local utils = require 'utils'
 
+      local function set_hardline_statusline(active)
         local statusline = active
             and [[%{%luaeval('require("hardline").update_statusline(true)')%}]]
           or [[%{%luaeval('require("hardline").update_statusline(false)')%}]]
-        vim.opt_local.statusline = statusline
+        utils.set_local_window_option(0, 'statusline', statusline, { float_value = '' })
       end
 
       require('hardline').setup {

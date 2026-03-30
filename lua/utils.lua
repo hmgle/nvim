@@ -28,6 +28,23 @@ function M.merge_list(tbl1, tbl2)
   return tbl1
 end
 
+function M.is_floating_window(win)
+  win = win or 0
+  return vim.api.nvim_win_get_config(win).relative ~= ''
+end
+
+function M.set_local_window_option(win, name, value, opts)
+  win = win or 0
+  opts = opts or {}
+
+  local local_value = value
+  if M.is_floating_window(win) then
+    local_value = opts.float_value
+  end
+
+  vim.api.nvim_set_option_value(name, local_value, { scope = 'local', win = win })
+end
+
 CloseBufsButCurr = function()
   local bufnr = vim.api.nvim_get_current_buf()
   local bufs = vim.api.nvim_list_bufs()
