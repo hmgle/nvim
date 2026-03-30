@@ -43,7 +43,7 @@ local function available_linters(bufnr)
   if not vim.api.nvim_buf_is_valid(bufnr) then
     return nil
   end
-  local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+  local ft = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
   local configured = lint.linters_by_ft[ft]
   if not configured then
     return nil
@@ -88,7 +88,7 @@ local function run_lint(bufnr)
 end
 
 local function clear_lint(bufnr)
-  local ft = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+  local ft = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
   local linters = lint.linters_by_ft[ft]
   if not linters then
     return

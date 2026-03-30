@@ -1,18 +1,10 @@
 local u = require 'utils'
 
-vim.lsp.set_log_level('WARN')
+vim.lsp.log.set_level('WARN')
 
 vim.g.loaded_python_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
-
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = 'rounded',
-})
-
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-  border = 'rounded',
-})
 
 require 'config.lsp.providers'
 
@@ -44,18 +36,25 @@ if not mason_ok then
   return
 end
 
+local function open_diagnostic_float_on_jump(diagnostic, bufnr)
+  if not diagnostic then
+    return
+  end
+  vim.diagnostic.open_float({
+    bufnr = bufnr,
+    scope = 'cursor',
+    focus = false,
+  })
+end
+
 -- do something on lsp attach
 local function on_attach(client, bufnr)
   -- set mappings only in current buffer with lsp enabled
   local function buf_set_keymap(...)
     vim.api.nvim_buf_set_keymap(bufnr, ...)
   end
-  -- set options only in current buffer with lsp enabled
-  local function buf_set_option(...)
-    vim.api.nvim_buf_set_option(bufnr, ...)
-  end
 
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
   local opts = { noremap = true, silent = true }
 
   buf_set_keymap('n', 'gh', '<cmd>Telescope lsp_document_symbols<CR>', opts)
@@ -72,15 +71,33 @@ local function on_attach(client, bufnr)
   -- buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action({apply = true})<CR>', opts)
   -- buf_set_keymap('v', '<leader>ca', '<cmd>vim.lsp.buf.range_code_action()<CR>', opts)
   -- }}
-  buf_set_keymap('n', '<leader>k', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
-  buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', 'gc', '<cmd>Telescope lsp_incoming_calls<CR>', opts)
   buf_set_keymap('n', '<leader>gc', '<cmd>lua vim.lsp.buf.incoming_calls()<CR>', opts)
 
   buf_set_keymap('n', 'gl', '<cmd>Telescope diagnostics<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  vim.keymap.set('n', '<leader>k', function()
+    vim.lsp.buf.hover({
+      border = 'rounded',
+    })
+  end, { buffer = bufnr, silent = true })
+  vim.keymap.set('n', 'gs', function()
+    vim.lsp.buf.signature_help({
+      border = 'rounded',
+    })
+  end, { buffer = bufnr, silent = true })
+  vim.keymap.set('n', '[d', function()
+    vim.diagnostic.jump({
+      count = -1,
+      on_jump = open_diagnostic_float_on_jump,
+    })
+  end, { buffer = bufnr, silent = true })
+  vim.keymap.set('n', ']d', function()
+    vim.diagnostic.jump({
+      count = 1,
+      on_jump = open_diagnostic_float_on_jump,
+    })
+  end, { buffer = bufnr, silent = true })
 
   vim.keymap.set('n', '<leader>H', function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())

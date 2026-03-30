@@ -21,7 +21,7 @@ vim.g.tagbar_type_zig = {
   },
 }
 
-local uv = vim.uv or vim.loop
+local uv = vim.uv
 
 local function throttle(fn)
   if not uv or not uv.now then
