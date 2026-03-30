@@ -210,6 +210,18 @@ return {
   {
     'ojroques/nvim-hardline',
     config = function()
+      local function set_hardline_statusline(active)
+        if vim.api.nvim_win_get_config(0).relative ~= '' then
+          vim.opt_local.statusline = ''
+          return
+        end
+
+        local statusline = active
+            and [[%{%luaeval('require("hardline").update_statusline(true)')%}]]
+          or [[%{%luaeval('require("hardline").update_statusline(false)')%}]]
+        vim.opt_local.statusline = statusline
+      end
+
       require('hardline').setup {
         bufferline = true,
         bufferline_settings = {
@@ -217,7 +229,20 @@ return {
         },
         theme = 'nordic',
       }
-      vim.opt.showmode = true
+
+      local group = vim.api.nvim_create_augroup('hardline', { clear = true })
+      vim.api.nvim_create_autocmd({ 'WinEnter', 'BufEnter' }, {
+        group = group,
+        callback = function()
+          set_hardline_statusline(true)
+        end,
+      })
+      vim.api.nvim_create_autocmd({ 'WinLeave', 'BufLeave' }, {
+        group = group,
+        callback = function()
+          set_hardline_statusline(false)
+        end,
+      })
     end,
   },
   {
