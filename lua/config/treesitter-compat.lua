@@ -1,10 +1,27 @@
 local M = {}
 
-local function unwrap_capture(node)
-  if type(node) == 'table' then
-    return node[1] or node
+local function has_method(value, method)
+  local ok, result = pcall(function()
+    return type(value[method]) == "function"
+  end)
+  return ok and result
+end
+
+local function is_node_like(value)
+  local value_type = type(value)
+  if value_type ~= "table" and value_type ~= "userdata" then
+    return false
   end
-  return node
+
+  return has_method(value, "start") and has_method(value, "end_") and has_method(value, "range")
+end
+
+local function unwrap_capture(value)
+  if type(value) == "table" and not is_node_like(value) and is_node_like(value[1]) then
+    return value[1]
+  end
+
+  return value
 end
 
 function M.patch_core()
@@ -40,31 +57,66 @@ function M.patch_nvim_treesitter()
   end
   query._capture_compat_patched = true
 
-  local original_iter_prepared_matches = query.iter_prepared_matches
-  query.iter_prepared_matches = function(...)
-    local iter = original_iter_prepared_matches(...)
+  local tsrange = require("nvim-treesitter.tsrange")
+
+  query.iter_prepared_matches = function(ts_query, qnode, bufnr, start_row, end_row)
+    local function split(to_split)
+      local parts = {}
+      for part in string.gmatch(to_split, "([^.]+)") do
+        table.insert(parts, part)
+      end
+      return parts
+    end
+
+    local matches = ts_query:iter_matches(qnode, bufnr, start_row, end_row, { all = false })
 
     return function()
-      local prepared_match = iter()
-      if not prepared_match then
+      local pattern, match, metadata = matches()
+      if pattern == nil then
         return
       end
 
-      local function normalize_nodes(value)
-        if type(value) ~= 'table' then
-          return
+      local prepared_match = {}
+
+      for id, node in pairs(match) do
+        local name = ts_query.captures[id]
+        if name ~= nil then
+          query.insert_to_path(prepared_match, split(name .. ".node"), unwrap_capture(node))
+          query.insert_to_path(prepared_match, split(name .. ".metadata"), metadata[id])
         end
-        for key, nested in pairs(value) do
-          if key == 'node' then
-            value[key] = unwrap_capture(nested)
-          else
-            normalize_nodes(nested)
+      end
+
+      local preds = ts_query.info.patterns[pattern]
+      if preds then
+        for _, pred in pairs(preds) do
+          if pred[1] == "set!" and type(pred[2]) == "string" then
+            query.insert_to_path(prepared_match, split(pred[2]), pred[3])
+          end
+          if pred[1] == "make-range!" and type(pred[2]) == "string" and #pred == 4 then
+            query.insert_to_path(
+              prepared_match,
+              split(pred[2] .. ".node"),
+              tsrange.TSRange.from_nodes(bufnr, unwrap_capture(match[pred[3]]), unwrap_capture(match[pred[4]]))
+            )
           end
         end
       end
 
-      normalize_nodes(prepared_match)
       return prepared_match
+    end
+  end
+
+  local original_iter_captures = query.iter_captures
+  query.iter_captures = function(bufnr, query_name, root, lang)
+    local iter = original_iter_captures(bufnr, query_name, root, lang)
+
+    return function()
+      local name, node, metadata = iter()
+      if name == nil then
+        return
+      end
+
+      return name, unwrap_capture(node), metadata
     end
   end
 end
