@@ -60,4 +60,7 @@ require'nvim-treesitter.configs'.setup {
     },
   },
 }
-require('config.treesitter-compat').patch_nvim_treesitter()
+
+local compat = require('config.treesitter-compat')
+compat.patch_vim_treesitter()
+compat.patch_nvim_treesitter()

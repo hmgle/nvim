@@ -7,6 +7,32 @@ local function unwrap_capture(value)
   return value
 end
 
+local function unwrap_node(value)
+  while type(value) == "table" and value[1] ~= nil do
+    value = value[1]
+  end
+  return value
+end
+
+function M.patch_vim_treesitter()
+  local ts = vim.treesitter
+  if ts._capture_compat_patched then
+    return
+  end
+  ts._capture_compat_patched = true
+
+  local get_range = ts.get_range
+  local get_node_text = ts.get_node_text
+
+  ts.get_range = function(node, source, metadata)
+    return get_range(unwrap_node(node), source, metadata)
+  end
+
+  ts.get_node_text = function(node, source, opts)
+    return get_node_text(unwrap_node(node), source, opts)
+  end
+end
+
 function M.patch_nvim_treesitter()
   local ok, query = pcall(require, "nvim-treesitter.query")
   if not ok or query._capture_compat_patched then
