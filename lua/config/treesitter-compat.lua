@@ -1,14 +1,27 @@
 local M = {}
 
-local function unwrap_capture(value)
-  while type(value) == "table" and value[1] ~= nil do
-    value = value[1]
-  end
-  return value
+local function has_method(value, method)
+  local ok, result = pcall(function()
+    return type(value[method]) == "function"
+  end)
+  return ok and result
 end
 
-local function unwrap_node(value)
-  while type(value) == "table" and value[1] ~= nil do
+local function is_node_like(value)
+  local value_type = type(value)
+  if value_type ~= "table" and value_type ~= "userdata" then
+    return false
+  end
+
+  return has_method(value, "start")
+    and has_method(value, "end_")
+    and has_method(value, "range")
+end
+
+local function unwrap_node_capture(value)
+  while type(value) == "table"
+      and not is_node_like(value)
+      and is_node_like(value[1]) do
     value = value[1]
   end
   return value
@@ -24,12 +37,15 @@ function M.patch_vim_treesitter()
   local get_range = ts.get_range
   local get_node_text = ts.get_node_text
 
+  -- Markdown injections can still hand singleton capture wrappers to the
+  -- core helpers on Neovim 0.12. Normalize those wrappers before the runtime
+  -- tries to call TSNode methods such as :range().
   ts.get_range = function(node, source, metadata)
-    return get_range(unwrap_node(node), source, metadata)
+    return get_range(unwrap_node_capture(node), source, metadata)
   end
 
   ts.get_node_text = function(node, source, opts)
-    return get_node_text(unwrap_node(node), source, opts)
+    return get_node_text(unwrap_node_capture(node), source, opts)
   end
 end
 
@@ -41,7 +57,8 @@ function M.patch_nvim_treesitter()
   query._capture_compat_patched = true
 
   -- Neovim 0.12 wraps captures from iter_matches(..., { all = false }).
-  -- nvim-treesitter-textobjects still expects bare TSNode values here.
+  -- nvim-treesitter-textobjects and make-range! still expect bare TSNode
+  -- values, so unwrap only singleton node wrappers here.
   local tsrange = require("nvim-treesitter.tsrange")
 
   query.iter_prepared_matches = function(ts_query, qnode, bufnr, start_row, end_row)
@@ -66,7 +83,11 @@ function M.patch_nvim_treesitter()
       for id, node in pairs(match) do
         local name = ts_query.captures[id]
         if name ~= nil then
-          query.insert_to_path(prepared_match, split(name .. ".node"), unwrap_capture(node))
+          query.insert_to_path(
+            prepared_match,
+            split(name .. ".node"),
+            unwrap_node_capture(node)
+          )
           query.insert_to_path(prepared_match, split(name .. ".metadata"), metadata[id])
         end
       end
@@ -81,7 +102,11 @@ function M.patch_nvim_treesitter()
             query.insert_to_path(
               prepared_match,
               split(pred[2] .. ".node"),
-              tsrange.TSRange.from_nodes(bufnr, unwrap_capture(match[pred[3]]), unwrap_capture(match[pred[4]]))
+              tsrange.TSRange.from_nodes(
+                bufnr,
+                unwrap_node_capture(match[pred[3]]),
+                unwrap_node_capture(match[pred[4]])
+              )
             )
           end
         end

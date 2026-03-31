@@ -61,6 +61,10 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+-- Keep both compat shims enabled on Neovim 0.12:
+-- 1. nvim-treesitter textobjects still need unwrapped captures.
+-- 2. markdown/render-markdown injections still reach core helpers with
+--    singleton capture wrappers.
 local compat = require('config.treesitter-compat')
 compat.patch_vim_treesitter()
 compat.patch_nvim_treesitter()
