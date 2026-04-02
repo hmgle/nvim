@@ -911,9 +911,9 @@ return {
   },
 
   {
-    'MeanderingProgrammer/markdown.nvim',
-    name = 'render-markdown', -- Only needed if you have another plugin named markdown.nvim
-    ft = { 'markdown', 'md', 'rmd' },
+    'MeanderingProgrammer/render-markdown.nvim',
+    name = 'render-markdown',
+    ft = { 'markdown', 'md', 'rmd', 'Avante' },
     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
       local ok, install = pcall(require, 'nvim-treesitter.install')
@@ -923,6 +923,7 @@ return {
 
       require('render-markdown').setup {
         enabled = false,
+        file_types = { 'markdown', 'rmd', 'Avante' },
         -- anti_conceal = {
         --   enabled = false,
         -- },
@@ -1120,14 +1121,6 @@ return {
             use_absolute_path = true,
           },
         },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
       },
     },
   },
