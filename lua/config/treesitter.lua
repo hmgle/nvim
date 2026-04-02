@@ -7,64 +7,13 @@ require'nvim-treesitter.configs'.setup {
     disable = { "yaml" }, -- Disable yaml highlighting because Helm sucks :<
     additional_vim_regex_highlighting = false,
   },
-  textobjects = {
-    select = {
-      enable = true,
-      -- Automatically jump forward to textobj, similar to targets.vim
-      lookahead = true,
-      keymaps = {
-        -- You can use the capture groups defined in textobjects.scm
-        ["af"] = "@function.outer",
-        ["if"] = "@function.inner",
-        ["ac"] = "@class.outer",
-        ["ic"] = "@class.inner",
-        ["aa"] = "@parameter.outer",
-        ["ia"] = "@parameter.inner",
-        ["as"] = "@statement.outer",
-        -- ["is"] = "@scopename.inner",
-        ["ib"] = "@block.inner",
-        ["ab"] = "@block.outer",
-        ["ak"] = "@comment.outer",
-      },
-    },
-    move = {
-      enable = true,
-      set_jumps = true, -- whether to set jumps in the jumplist
-      goto_next_start = {
-        ["]]"] = "@function.outer",
-        ["]m"] = "@class.outer",
-        [")"] = "@block.outer",
-      },
-      goto_next_end = {
-        ["]["] = "@function.outer",
-        ["]M"] = "@class.outer",
-      },
-      goto_previous_start = {
-        ["[["] = "@function.outer",
-        ["[m"] = "@class.outer",
-        ["("] = "@block.outer",
-      },
-      goto_previous_end = {
-        ["[]"] = "@function.outer",
-        ["[M"] = "@class.outer",
-      },
-    },
-
-    lsp_interop = {
-      enable = true,
-      border = 'none',
-      peek_definition_code = {
-        ["<leader>df"] = "@function.outer",
-        ["<leader>dF"] = "@class.outer",
-      },
-    },
-  },
 }
 
--- Keep both compat shims enabled on Neovim 0.12:
--- 1. nvim-treesitter textobjects still need unwrapped captures.
--- 2. markdown/render-markdown injections still reach core helpers with
---    singleton capture wrappers.
-local compat = require('config.treesitter-compat')
-compat.patch_vim_treesitter()
-compat.patch_nvim_treesitter()
+-- Neovim 0.12 still hands singleton capture wrappers to core helpers in some
+-- markdown injection paths, and nvim-treesitter query consumers still expect
+-- bare TSNodes.
+if vim.fn.has("nvim-0.12") == 1 then
+  local compat = require("config.treesitter-compat")
+  compat.patch_vim_treesitter()
+  compat.patch_nvim_treesitter()
+end

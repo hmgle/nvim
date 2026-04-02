@@ -301,8 +301,12 @@ return {
 
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    branch = 'main',
     event = { 'BufReadPost', 'BufNewFile' },
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    config = function()
+      require('config.treesitter-textobjects').setup()
+    end,
   },
   {
     'andymass/vim-matchup',

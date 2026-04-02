@@ -57,7 +57,7 @@ function M.patch_nvim_treesitter()
   query._capture_compat_patched = true
 
   -- Neovim 0.12 wraps captures from iter_matches(..., { all = false }).
-  -- nvim-treesitter-textobjects and make-range! still expect bare TSNode
+  -- nvim-treesitter's own locals/query consumers still expect bare TSNode
   -- values, so unwrap only singleton node wrappers here.
   local tsrange = require("nvim-treesitter.tsrange")
 
