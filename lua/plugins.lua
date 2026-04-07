@@ -735,6 +735,12 @@ return {
     'RRethy/vim-illuminate',
     event = { 'BufReadPost', 'BufNewFile' },
     config = function()
+      require('illuminate').configure {
+        -- nvim-treesitter.locals is currently unstable with newer Neovim releases.
+        -- Keep illuminate on LSP/regex providers to avoid startup errors when opening files.
+        providers = { 'lsp', 'regex' },
+      }
+
       vim.keymap.set('n', '<leader>n', function()
         require('illuminate').next_reference { wrap = true, silent = true }
       end)
