@@ -4,7 +4,7 @@ A Lua-based Neovim configuration using lazy.nvim for plugin management.
 
 ## Requirements
 
-- Neovim >= 0.10.0 (built with LuaJIT)
+- Neovim >= 0.12.0 (built with LuaJIT)
 - Git >= 2.19.0
 - CMake, make, GCC/Clang (for telescope-fzf-native)
 - Node.js (for LSP servers and formatters)
@@ -20,6 +20,35 @@ nvim
 ```
 
 Plugins install automatically on first launch. LSP servers install on-demand via Mason.
+
+Tree-sitter runtime now uses Neovim 0.12 built-ins for parsing/highlighting, while
+`nvim-treesitter` `main` and `nvim-treesitter-textobjects` are kept only as third-party
+asset sources for parsers and query files.
+
+### Tree-sitter Assets
+
+- Third-party queries come from the plugin runtime paths of
+  `nvim-treesitter` and `nvim-treesitter-textobjects`.
+- Parsers are installed into `stdpath("data") .. "/treesitter"` via
+  `install_dir`, not into the plugin checkout itself.
+- `queries/` in this repo is reserved for local overrides only. At the moment it
+  contains a single Neovim 0.12 compatibility override for Markdown injections.
+
+On a new machine, the bootstrap path is:
+
+```bash
+nvim --headless "+Lazy! restore" +qa
+nvim --headless "+TSInstallSync lua go python javascript typescript html yaml markdown markdown_inline" +qa
+```
+
+To sync upstream parser/query changes later:
+
+```bash
+nvim --headless "+Lazy! update nvim-treesitter nvim-treesitter-textobjects" "+TSUpdateSync" +qa
+```
+
+If we need to patch an upstream query for Neovim behavior, prefer adding the smallest possible
+override file under this repo's `queries/` instead of vendoring the whole upstream query tree.
 
 ## Directory Structure
 

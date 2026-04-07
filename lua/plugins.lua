@@ -265,6 +265,7 @@ return {
     config = function()
       require('go').setup {
         lsp_codelens = false,
+        textobjects = false,
         lsp_inlay_hints = {
           enable = false,
           -- hint style, set to 'eol' for end-of-line hints, 'inlay' for inline hints
@@ -292,22 +293,29 @@ return {
 
   {
     'nvim-treesitter/nvim-treesitter',
-    event = { 'BufReadPost', 'BufNewFile' },
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
     config = function()
+      local parser_dir = vim.fn.stdpath('data') .. '/treesitter'
+      vim.opt.runtimepath:prepend(parser_dir)
+
+      require('nvim-treesitter').setup {
+        install_dir = parser_dir,
+      }
+
       require 'config.treesitter'
+      require('config.treesitter-textobjects').setup()
     end,
   },
 
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
     branch = 'main',
-    event = { 'BufReadPost', 'BufNewFile' },
+    lazy = false,
     dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    config = function()
-      require('config.treesitter-textobjects').setup()
-    end,
   },
+
   {
     'andymass/vim-matchup',
     event = 'BufRead',
@@ -747,7 +755,6 @@ return {
 
   {
     'HiPhish/rainbow-delimiters.nvim',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
     config = function()
       vim.g.rainbow_delimiters = {
         whitelist = {
@@ -914,13 +921,8 @@ return {
     'MeanderingProgrammer/render-markdown.nvim',
     name = 'render-markdown',
     ft = { 'markdown', 'md', 'rmd', 'Avante' },
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    dependencies = { 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     config = function()
-      local ok, install = pcall(require, 'nvim-treesitter.install')
-      if ok then
-        install.ensure_installed { 'html' }
-      end
-
       require('render-markdown').setup {
         enabled = false,
         file_types = { 'markdown', 'rmd', 'Avante' },
@@ -1130,7 +1132,6 @@ return {
     enabled = false,
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
     },
     opts = {
       strategies = {

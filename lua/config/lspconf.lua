@@ -54,7 +54,6 @@ local function on_attach(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, ...)
   end
 
-  vim.api.nvim_set_option_value('omnifunc', 'v:lua.vim.lsp.omnifunc', { buf = bufnr })
   local opts = { noremap = true, silent = true }
 
   buf_set_keymap('n', 'gh', '<cmd>Telescope lsp_document_symbols<CR>', opts)

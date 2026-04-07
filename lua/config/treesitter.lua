@@ -1,19 +1,48 @@
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = { "lua", "go", "python", "javascript", "typescript" },
-  auto_install = false,
-  sync_install = false,
-  highlight = {
-    enable = true,
-    disable = { "yaml" }, -- Disable yaml highlighting because Helm sucks :<
-    additional_vim_regex_highlighting = false,
-  },
+local M = {}
+
+local disabled_highlights = {
+  yaml = true, -- Disable yaml highlighting because Helm sucks :<
 }
 
--- Neovim 0.12 still hands singleton capture wrappers to core helpers in some
--- markdown injection paths, and nvim-treesitter query consumers still expect
--- bare TSNodes.
-if vim.fn.has("nvim-0.12") == 1 then
-  local compat = require("config.treesitter-compat")
-  compat.patch_vim_treesitter()
-  compat.patch_nvim_treesitter()
+local group = vim.api.nvim_create_augroup("native-treesitter", { clear = true })
+
+local function maybe_start(bufnr)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return
+  end
+
+  if vim.bo[bufnr].buftype ~= "" or disabled_highlights[vim.bo[bufnr].filetype] then
+    pcall(vim.treesitter.stop, bufnr)
+    return
+  end
+
+  local parser = vim.treesitter.get_parser(bufnr)
+  if not parser then
+    return
+  end
+
+  vim.treesitter.start(bufnr)
 end
+
+function M.setup()
+  vim.api.nvim_create_autocmd({ "FileType", "BufEnter" }, {
+    group = group,
+    callback = function(args)
+      maybe_start(args.buf)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("OptionSet", {
+    group = group,
+    pattern = "filetype",
+    callback = function()
+      maybe_start(vim.api.nvim_get_current_buf())
+    end,
+  })
+
+  maybe_start(vim.api.nvim_get_current_buf())
+end
+
+M.setup()
+
+return M
