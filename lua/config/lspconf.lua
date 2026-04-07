@@ -1,5 +1,3 @@
-local u = require 'utils'
-
 vim.lsp.log.set_level('WARN')
 
 vim.g.loaded_python_provider = 0
@@ -30,25 +28,25 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-
 local mason_ok, masonlspconf = pcall(require, 'mason-lspconfig')
 if not mason_ok then
   return
 end
 
-local function open_diagnostic_float_on_jump(diagnostic, bufnr)
-  if not diagnostic then
-    return
+local function enable_builtin_lsp_features(client, bufnr)
+  if client:supports_method('textDocument/inlayHint') then
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
-  vim.diagnostic.open_float({
-    bufnr = bufnr,
-    scope = 'cursor',
-    focus = false,
-  })
+
+  if client:supports_method('textDocument/linkedEditingRange') then
+    vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
+  end
 end
 
 -- do something on lsp attach
 local function on_attach(client, bufnr)
+  enable_builtin_lsp_features(client, bufnr)
+
   -- set mappings only in current buffer with lsp enabled
   local function buf_set_keymap(...)
     vim.api.nvim_buf_set_keymap(bufnr, ...)
@@ -88,19 +86,18 @@ local function on_attach(client, bufnr)
   vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump({
       count = -1,
-      on_jump = open_diagnostic_float_on_jump,
     })
   end, { buffer = bufnr, silent = true })
   vim.keymap.set('n', ']d', function()
     vim.diagnostic.jump({
       count = 1,
-      on_jump = open_diagnostic_float_on_jump,
     })
   end, { buffer = bufnr, silent = true })
 
   vim.keymap.set('n', '<leader>H', function()
-    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-  end)
+    local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+    vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+  end, { buffer = bufnr, silent = true, desc = 'Toggle inlay hints' })
 
   local signature_ok, signature = pcall(require, 'lsp_signature')
   if signature_ok then
@@ -126,9 +123,10 @@ local function setup_lsp()
     on_attach = on_attach,
     capabilities = capabilities,
   }
+  vim.lsp.config('*', default_options)
 
   for _, server in ipairs(installed_servers) do
-    local config = u.merge(default_options, {})
+    local config = {}
 
     -- for lua
     if server == 'sumneko_lua' or server == 'lua_ls' then
@@ -181,8 +179,9 @@ local function setup_lsp()
       }
     end
 
-    -- Use new vim.lsp.config and vim.lsp.enable APIs
-    vim.lsp.config(server, config)
+    if next(config) then
+      vim.lsp.config(server, config)
+    end
     vim.lsp.enable(server)
   end
 end

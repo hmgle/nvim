@@ -267,9 +267,8 @@ return {
         lsp_codelens = false,
         textobjects = false,
         lsp_inlay_hints = {
+          -- Use Neovim's built-in inlay hints in 0.12.
           enable = false,
-          -- hint style, set to 'eol' for end-of-line hints, 'inlay' for inline hints
-          -- inlay only avalible for 0.10.x
           style = 'inlay',
         },
       }
