@@ -742,10 +742,10 @@ return {
       }
 
       vim.keymap.set('n', '<leader>n', function()
-        require('illuminate').next_reference { wrap = true, silent = true }
+        require('illuminate').goto_next_reference(true)
       end)
       vim.keymap.set('n', '<leader>N', function()
-        require('illuminate').next_reference { reverse = true, wrap = true, silent = true }
+        require('illuminate').goto_prev_reference(true)
       end)
       -- vim.g.Illuminate_useDeprecated = 1
     end,
