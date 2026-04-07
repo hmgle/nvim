@@ -34,6 +34,10 @@ if not mason_ok then
 end
 
 local function enable_builtin_lsp_features(client, bufnr)
+  if client:supports_method('textDocument/codeLens') then
+    vim.lsp.codelens.enable(true, { bufnr = bufnr })
+  end
+
   if client:supports_method('textDocument/inlayHint') then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
@@ -98,6 +102,10 @@ local function on_attach(client, bufnr)
     local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
     vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
   end, { buffer = bufnr, silent = true, desc = 'Toggle inlay hints' })
+  vim.keymap.set('n', '<leader>C', function()
+    local enabled = vim.lsp.codelens.is_enabled({ bufnr = bufnr })
+    vim.lsp.codelens.enable(not enabled, { bufnr = bufnr })
+  end, { buffer = bufnr, silent = true, desc = 'Toggle code lens' })
 
   local signature_ok, signature = pcall(require, 'lsp_signature')
   if signature_ok then
