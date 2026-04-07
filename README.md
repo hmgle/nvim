@@ -114,6 +114,7 @@ Leader key is `,` (comma).
 | <kbd>,</kbd><kbd>r</kbd><kbd>n</kbd>                | Normal        | Rename                   |
 | <kbd>,</kbd><kbd>c</kbd><kbd>a</kbd>                | Normal/Visual | Code actions             |
 | <kbd>,</kbd><kbd>H</kbd>                            | Normal        | Toggle inlay hints       |
+| <kbd>,</kbd><kbd>C</kbd>                            | Normal        | Toggle code lens         |
 | <kbd>[</kbd><kbd>d</kbd> / <kbd>]</kbd><kbd>d</kbd> | Normal        | Previous/Next diagnostic |
 | <kbd>g</kbd><kbd>l</kbd>                            | Normal        | All diagnostics          |
 | <kbd>g</kbd><kbd>p</kbd>                            | Normal        | Preview definition       |
