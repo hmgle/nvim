@@ -3,7 +3,11 @@ local map = require('utils').map
 map('n', 'gt', '<cmd>bn<cr>')
 map('n', 'gT', '<cmd>bp<cr>')
 
+require('config.diagnostics').setup()
+
 vim.opt.completeopt = 'menu,menuone,noselect'
+vim.opt.pumborder = 'rounded'
+vim.opt.pummaxwidth = 80
 vim.opt.mouse = 'a'
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
