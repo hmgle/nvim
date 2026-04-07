@@ -102,11 +102,6 @@ local function on_attach(client, bufnr)
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   end)
 
-  local illuminate_ok, illuminate = pcall(require, 'illuminate')
-  if illuminate_ok and illuminate.on_attach then
-    illuminate.on_attach(client)
-  end
-
   local signature_ok, signature = pcall(require, 'lsp_signature')
   if signature_ok then
     signature.on_attach(client, bufnr)
