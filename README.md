@@ -7,6 +7,7 @@ A Lua-based Neovim configuration using lazy.nvim for plugin management.
 - Neovim >= 0.12.0 (built with LuaJIT)
 - Git >= 2.19.0
 - CMake, make, GCC/Clang (for telescope-fzf-native)
+- `tree-sitter-cli` (required for `:TSInstall*` / `:TSUpdate*`)
 - Node.js (for LSP servers and formatters)
 - Python 3 with pynvim: `pip install pynvim`
 - A Nerd Font (optional, for icons)
@@ -18,6 +19,32 @@ pip install pynvim
 git clone https://github.com/hmgle/nvim.git ~/.config/nvim
 nvim
 ```
+
+Install `tree-sitter-cli` before running `:TSInstall*` or `:TSUpdate*`.
+Package manager installs are preferred over `npm`.
+
+Common install commands:
+
+```bash
+# Debian / Ubuntu
+sudo apt install tree-sitter-cli
+
+# macOS (Homebrew)
+brew install tree-sitter
+
+# Rust toolchain fallback
+cargo install --locked tree-sitter-cli
+```
+
+Verify it is available in `PATH`:
+
+```bash
+tree-sitter --version
+```
+
+Verify that the installed `tree-sitter-cli` version satisfies the requirement of
+the currently pinned `nvim-treesitter` revision. If your distro package is too
+old, prefer the `cargo` install above or an upstream release binary.
 
 Plugins install automatically on first launch. LSP servers install on-demand via Mason.
 
@@ -46,6 +73,9 @@ To sync upstream parser/query changes later:
 ```bash
 nvim --headless "+Lazy! update nvim-treesitter nvim-treesitter-textobjects" "+TSUpdateSync" +qa
 ```
+
+If `:TSUpdate` fails with `ENOENT ... 'tree-sitter'`, the local `tree-sitter-cli`
+binary is missing from `PATH`.
 
 If we need to patch an upstream query for Neovim behavior, prefer adding the smallest possible
 override file under this repo's `queries/` instead of vendoring the whole upstream query tree.
