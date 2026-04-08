@@ -35,11 +35,11 @@ end
 
 local function enable_builtin_lsp_features(client, bufnr)
   if client:supports_method('textDocument/codeLens') then
-    vim.lsp.codelens.enable(true, { bufnr = bufnr })
+    vim.lsp.codelens.enable(false, { bufnr = bufnr })
   end
 
   if client:supports_method('textDocument/inlayHint') then
-    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    vim.lsp.inlay_hint.enable(false, { bufnr = bufnr })
   end
 
   if client:supports_method('textDocument/linkedEditingRange') then
@@ -50,6 +50,10 @@ end
 -- do something on lsp attach
 local function on_attach(client, bufnr)
   enable_builtin_lsp_features(client, bufnr)
+
+  local function notify_toggle(feature, enabled)
+    vim.notify(string.format('%s: %s', feature, enabled and 'ON' or 'OFF'), vim.log.levels.INFO)
+  end
 
   -- set mappings only in current buffer with lsp enabled
   local function buf_set_keymap(...)
@@ -100,11 +104,15 @@ local function on_attach(client, bufnr)
 
   vim.keymap.set('n', '<leader>H', function()
     local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
-    vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+    local next_enabled = not enabled
+    vim.lsp.inlay_hint.enable(next_enabled, { bufnr = bufnr })
+    notify_toggle('Inlay hints', next_enabled)
   end, { buffer = bufnr, silent = true, desc = 'Toggle inlay hints' })
   vim.keymap.set('n', '<leader>C', function()
     local enabled = vim.lsp.codelens.is_enabled({ bufnr = bufnr })
-    vim.lsp.codelens.enable(not enabled, { bufnr = bufnr })
+    local next_enabled = not enabled
+    vim.lsp.codelens.enable(next_enabled, { bufnr = bufnr })
+    notify_toggle('Code lens', next_enabled)
   end, { buffer = bufnr, silent = true, desc = 'Toggle code lens' })
 
   local signature_ok, signature = pcall(require, 'lsp_signature')
