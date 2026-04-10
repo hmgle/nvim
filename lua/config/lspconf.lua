@@ -1,6 +1,5 @@
 vim.lsp.log.set_level('WARN')
 
-vim.g.loaded_python_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 
@@ -142,62 +141,6 @@ local function setup_lsp()
   vim.lsp.config('*', default_options)
 
   for _, server in ipairs(installed_servers) do
-    local config = {}
-
-    -- for lua
-    if server == 'sumneko_lua' or server == 'lua_ls' then
-      config.settings = {
-        Lua = {
-          diagnostics = {
-            -- Get the language server to recognize the 'vim', 'use' global
-            globals = { 'vim', 'use', 'require' },
-          },
-          workspace = {
-            -- Make the server aware of Neovim runtime files
-            library = vim.api.nvim_get_runtime_file('', true),
-          },
-          -- Do not send telemetry data containing a randomized but unique identifier
-          telemetry = { enable = false },
-        },
-      }
-    end
-
-    -- for clangd (c/c++)
-    -- [https://github.com/jose-elias-alvarez/null-ls.nvim/issues/428]
-    if server == 'clangd' then
-      local clangd_capabilities = vim.deepcopy(capabilities)
-      clangd_capabilities.offsetEncoding = { 'utf-16' }
-      config.capabilities = clangd_capabilities
-    end
-
-    -- for gopls (go)
-    if server == 'gopls' then
-      config.cmd = { 'gopls', '-remote=auto' }
-      config.settings = {
-        gopls = { -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
-          gofumpt = true,
-          staticcheck = true,
-          usePlaceholders = true,
-          analyses = { -- https://github.com/golang/tools/blob/master/gopls/doc/analyzers.md
-            unusedparams = true,
-            unusedvariable = true,
-            unusedwrite = true,
-          },
-          hints = { -- https://github.com/golang/tools/blob/master/gopls/doc/inlayHints.md
-            assignVariableTypes = true,
-            compositeLiteralFields = true,
-            compositeLiteralTypes = true,
-            constantValues = true,
-            parameterNames = true,
-            rangeVariableTypes = true,
-          },
-        },
-      }
-    end
-
-    if next(config) then
-      vim.lsp.config(server, config)
-    end
     vim.lsp.enable(server)
   end
 end

@@ -5,7 +5,7 @@ map('n', 'gT', '<cmd>bp<cr>')
 
 require('config.diagnostics').setup()
 
-vim.opt.completeopt = 'menu,menuone,noselect'
+vim.opt.completeopt = 'menu,menuone,noselect,popup'
 vim.opt.pumborder = 'rounded'
 vim.opt.pummaxwidth = 80
 vim.opt.mouse = 'a'
