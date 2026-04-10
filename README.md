@@ -9,13 +9,13 @@ A Lua-based Neovim configuration using lazy.nvim for plugin management.
 - CMake, make, GCC/Clang (for telescope-fzf-native)
 - `tree-sitter-cli` (required for `:TSInstall*` / `:TSUpdate*`)
 - Node.js (for LSP servers and formatters)
-- Python 3 with pynvim: `pip install pynvim`
+- Python 3 with pynvim: `uv tool install --upgrade pynvim`
 - A Nerd Font (optional, for icons)
 
 ## Installation
 
 ```bash
-pip install pynvim
+uv tool install --upgrade pynvim
 git clone https://github.com/hmgle/nvim.git ~/.config/nvim
 nvim
 ```
@@ -86,6 +86,8 @@ override file under this repo's `queries/` instead of vendoring the whole upstre
 ~/.config/nvim/
 ├── init.lua              # Entry point, lazy.nvim bootstrap
 ├── lazy-lock.json        # Plugin version lock
+├── after/
+│   └── lsp/              # Local LSP overrides merged after upstream/default configs
 ├── lua/
 │   ├── basic.lua         # Core settings (leader, encoding, etc.)
 │   ├── options.lua       # Additional options and keymaps
@@ -100,6 +102,21 @@ override file under this repo's `queries/` instead of vendoring the whole upstre
 └── viml/
     └── conf.vim          # Legacy VimScript
 ```
+
+### Runtimepath And `after/`
+
+Neovim loads runtime files from every directory on `'runtimepath'`.
+For a given runtime namespace such as `syntax/`, `ftplugin/`, or `lsp/`,
+matching files under `after/` are loaded later and therefore win as overrides.
+
+This config uses that mechanism in two places:
+
+- `after/syntax/...` for highlight overrides that should apply after the colorscheme or plugin syntax files.
+- `after/lsp/<server>.lua` for per-server LSP overrides that should apply after upstream `lsp/<server>.lua` configs provided by Neovim or plugins.
+
+You do not need to `require()` files under `after/` manually. If the directory is
+on `'runtimepath'`, Neovim discovers and loads them automatically when the
+corresponding feature is resolved.
 
 ## Key Bindings
 
@@ -229,6 +246,10 @@ Runs on BufEnter, BufWritePost, InsertLeave. Toggle with `,L`.
 
 Uses Mason + mason-lspconfig. Servers auto-install on demand.
 
+Global LSP behavior lives in `lua/config/lspconf.lua`. That file is responsible
+for shared `on_attach` behavior, keymaps, completion capabilities, and
+`vim.lsp.enable()`.
+
 Configured servers include:
 
 - lua_ls (Lua)
@@ -237,6 +258,31 @@ Configured servers include:
 - pyright/pylsp (Python)
 - rust-analyzer (Rust)
 - Various others via Mason
+
+### Adding Or Overriding A Server
+
+Neovim 0.12 resolves server configs in this order:
+
+1. `vim.lsp.config('*', ...)`
+2. `lsp/<server>.lua`
+3. `after/lsp/<server>.lua`
+4. later `vim.lsp.config('<server>', ...)` calls
+
+In practice, use this repo's layout like this:
+
+- Put shared behavior in `lua/config/lspconf.lua`.
+- Put repo-local server settings in `after/lsp/<server>.lua`.
+- Use `lsp/<server>.lua` only if you intentionally want to define a base config rather than a local override layer.
+
+Examples:
+
+- Add `after/lsp/ts_ls.lua` if this repo needs TypeScript-specific settings.
+- Keep keymaps and attach-time toggles out of `after/lsp/*.lua`; those belong in `lua/config/lspconf.lua`.
+- If a plugin or upstream config already provides `lsp/<server>.lua`, this repo's `after/lsp/<server>.lua` will override it without needing to fork the original file.
+
+Project-local overrides are also possible in a checked-out project via
+`.nvim/lsp/<server>.lua`, which is useful when a specific repository needs a
+different root marker or command line.
 
 ## Theme
 
