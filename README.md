@@ -250,6 +250,10 @@ Global LSP behavior lives in `lua/config/lspconf.lua`. That file is responsible
 for shared `on_attach` behavior, keymaps, completion capabilities, and
 `vim.lsp.enable()`.
 
+On Neovim 0.12, use `:checkhealth vim.lsp` to inspect LSP status. The legacy
+`:LspInfo` alias is not guaranteed to exist because recent `nvim-lspconfig`
+skips registering it when Neovim's built-in `:lsp` command is present.
+
 Configured servers include:
 
 - lua_ls (Lua)
@@ -313,7 +317,7 @@ export DEEPSEEK_API_KEY="your-key"
 :Lazy              " Plugin manager
 :Lazy update       " Update plugins
 :Mason             " LSP server manager
-:LspInfo           " LSP status
+:checkhealth vim.lsp " LSP status
 :checkhealth       " General health check
 :Lazy profile      " Profile startup
 ```
