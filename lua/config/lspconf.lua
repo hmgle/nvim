@@ -120,14 +120,10 @@ local function on_attach(client, bufnr)
   end
 end
 
--- Setup lsp servers using new vim.lsp.config API
+-- Setup LSP defaults first, then let mason-lspconfig enable installed servers.
+-- Relying on get_installed_servers() is fragile with newer mason-lspconfig
+-- because the package registry is initialized asynchronously.
 local function setup_lsp()
-  local installed_servers = masonlspconf.get_installed_servers()
-  -- don't setup servers if atleast one server is installed, or it will throw an error
-  if #installed_servers == 0 then
-    return
-  end
-
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   local blink_ok, blink = pcall(require, 'blink.cmp')
   if blink_ok and blink.get_lsp_capabilities then
@@ -139,10 +135,7 @@ local function setup_lsp()
     capabilities = capabilities,
   }
   vim.lsp.config('*', default_options)
-
-  for _, server in ipairs(installed_servers) do
-    vim.lsp.enable(server)
-  end
+  masonlspconf.setup()
 end
 
 setup_lsp()
