@@ -3,48 +3,12 @@ vim.lsp.log.set_level 'WARN'
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 
-local mason_ok, mason = pcall(require, 'mason')
-if not mason_ok then
-  return
-end
-
-mason.setup {
-  ui = {
-    icons = {
-      package_installed = '✓',
-      package_pending = '➜',
-      package_uninstalled = '✗',
-    },
-  },
-}
-
 local masonlspconf_ok, masonlspconf = pcall(require, 'mason-lspconfig')
 if not masonlspconf_ok then
   return
 end
 
-local function normalize_supports_method(client)
-  if client._supports_method_compat then
-    return
-  end
-
-  local mt = getmetatable(client)
-  local supports = mt and mt.supports_method
-  if type(supports) ~= 'function' then
-    return
-  end
-
-  client.supports_method = function(arg1, ...)
-    if arg1 == client then
-      return supports(client, ...)
-    else
-      return supports(client, arg1, ...)
-    end
-  end
-  client._supports_method_compat = true
-end
-
-local function enable_builtin_lsp_features(client, bufnr)
+local function sync_builtin_lsp_features(client, bufnr)
   if client:supports_method 'textDocument/codeLens' then
     vim.lsp.codelens.enable(false, { bufnr = bufnr })
   end
@@ -59,25 +23,31 @@ local function enable_builtin_lsp_features(client, bufnr)
 end
 
 local function set_lsp_keymaps(bufnr)
+  local builtin = require 'telescope.builtin'
+
   local function notify_toggle(feature, enabled)
     vim.notify(string.format('%s: %s', feature, enabled and 'ON' or 'OFF'), vim.log.levels.INFO)
   end
 
   local opts = { buffer = bufnr, noremap = true, silent = true }
 
-  vim.keymap.set('n', 'gh', '<cmd>Telescope lsp_document_symbols<CR>', opts)
-  vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  vim.keymap.set('n', '<leader>gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  vim.keymap.set('n', 'gi', '<cmd>Telescope lsp_implementations<CR>', opts)
-  vim.keymap.set('n', '<leader>gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  vim.keymap.set('n', '<leader>gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  vim.keymap.set('n', 'gr', '<cmd>Telescope lsp_references include_current_line=true<CR>', opts)
-  vim.keymap.set('n', '<leader>gf', '<cmd>lua vim.lsp.buf.format { async = true }<CR>', opts)
-  vim.keymap.set('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  vim.keymap.set('n', 'gc', '<cmd>Telescope lsp_incoming_calls<CR>', opts)
-  vim.keymap.set('n', '<leader>gc', '<cmd>lua vim.lsp.buf.incoming_calls()<CR>', opts)
-  vim.keymap.set('n', 'gl', '<cmd>Telescope diagnostics<CR>', opts)
+  vim.keymap.set('n', 'gh', builtin.lsp_document_symbols, opts)
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', 'gi', builtin.lsp_implementations, opts)
+  vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, opts)
+  vim.keymap.set('n', 'gr', function()
+    builtin.lsp_references { include_current_line = true }
+  end, opts)
+  vim.keymap.set('n', '<leader>gf', function()
+    vim.lsp.buf.format { async = true }
+  end, opts)
+  vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', 'gc', builtin.lsp_incoming_calls, opts)
+  vim.keymap.set('n', '<leader>gc', vim.lsp.buf.incoming_calls, opts)
+  vim.keymap.set('n', 'gl', builtin.diagnostics, opts)
   vim.keymap.set('n', '<leader>k', function()
     vim.lsp.buf.hover {
       border = 'rounded',
@@ -124,8 +94,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     local bufnr = args.buf
-    normalize_supports_method(client)
-    enable_builtin_lsp_features(client, bufnr)
+    sync_builtin_lsp_features(client, bufnr)
 
     if not vim.b[bufnr].native_lsp_keymaps then
       set_lsp_keymaps(bufnr)
@@ -160,7 +129,9 @@ local function setup_lsp()
     capabilities = capabilities,
   }
   vim.lsp.config('*', default_options)
-  masonlspconf.setup()
+  masonlspconf.setup {
+    automatic_enable = true,
+  }
 end
 
 setup_lsp()

@@ -2,10 +2,7 @@ return {
   settings = {
     Lua = {
       diagnostics = {
-        globals = { 'vim', 'use', 'require' },
-      },
-      workspace = {
-        library = vim.api.nvim_get_runtime_file('', true),
+        globals = { 'vim' },
       },
       telemetry = {
         enable = false,
