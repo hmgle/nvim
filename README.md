@@ -131,8 +131,24 @@ Leader key is `,` (comma).
 | <kbd>Alt</kbd>+<kbd>1</kbd> to <kbd>Alt</kbd>+<kbd>9</kbd>          | Normal        | Jump to buffer by number |
 | <kbd>s</kbd>                                                        | Normal/Visual | Flash jump               |
 | <kbd>S</kbd>                                                        | Normal        | Flash treesitter jump    |
+| <kbd>r</kbd>                                                        | Operator      | Flash remote operation   |
 | <kbd>Ctrl</kbd>+<kbd>u</kbd> / <kbd>Ctrl</kbd>+<kbd>d</kbd>         | Normal/Visual | Treewalker up/down       |
 | <kbd>,</kbd><kbd>h</kbd> / <kbd>,</kbd><kbd>l</kbd>                 | Normal/Visual | Treewalker out/in        |
+
+#### Flash remote operations
+
+Flash remote is only active in operator-pending mode. Start with an operator,
+press <kbd>r</kbd>, choose a Flash label at the remote location, then finish
+with a normal motion or text object.
+
+Examples:
+
+| Keys                               | Action                                             |
+| ---------------------------------- | -------------------------------------------------- |
+| <kbd>y</kbd><kbd>r</kbd>...<kbd>iw</kbd> | Yank the remote inner word selected after Flash    |
+| <kbd>d</kbd><kbd>r</kbd>...<kbd>ap</kbd> | Delete the remote paragraph selected after Flash   |
+| <kbd>c</kbd><kbd>r</kbd>...<kbd>$</kbd>  | Change from the remote target through end of line  |
+| <kbd>y</kbd><kbd>r</kbd>...<kbd>S</kbd>  | Use Flash treesitter after remote targeting        |
 
 ### Search
 
