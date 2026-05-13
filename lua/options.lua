@@ -44,6 +44,8 @@ local function throttle(fn)
 end
 
 local function make_switcher()
+  local fallback
+
   if vim.fn.executable 'xdotool' == 1 then
     -- Use the custom rime keybinding to switch to English mode (Control+Alt+Shift+F12)
     -- rime config:
@@ -51,7 +53,7 @@ local function make_switcher()
     --   key_binder/bindings/+:
     --     - { when: always, accept: "Control+Alt+Shift+F12", set_option: ascii_mode }
     local command = { 'xdotool', 'key', 'ctrl+alt+shift+F12' }
-    return throttle(function()
+    fallback = throttle(function()
       vim.fn.jobstart(command, {
         on_exit = function(_, code)
           if code ~= 0 then
@@ -86,19 +88,86 @@ local function make_switcher()
     end)
   end
 
-  if vim.fn.executable 'fcitx5-remote' == 1 then
-    return fcitx_switcher 'fcitx5-remote'
+  if not fallback and vim.fn.executable 'fcitx5-remote' == 1 then
+    fallback = fcitx_switcher 'fcitx5-remote'
   end
 
-  if vim.fn.executable 'fcitx-remote' == 1 then
-    return fcitx_switcher 'fcitx-remote'
+  if not fallback and vim.fn.executable 'fcitx-remote' == 1 then
+    fallback = fcitx_switcher 'fcitx-remote'
   end
+
+  if vim.fn.executable 'busctl' == 1 and vim.env.DBUS_SESSION_BUS_ADDRESS and (vim.env.DISPLAY or vim.env.WAYLAND_DISPLAY) then
+    local is_ascii_command = {
+      'busctl',
+      '--user',
+      'call',
+      'org.fcitx.Fcitx5',
+      '/rime',
+      'org.fcitx.Fcitx.Rime1',
+      'IsAsciiMode',
+    }
+    local set_ascii_command = {
+      'busctl',
+      '--user',
+      'call',
+      'org.fcitx.Fcitx5',
+      '/rime',
+      'org.fcitx.Fcitx.Rime1',
+      'SetAsciiMode',
+      'b',
+      'true',
+    }
+
+    return throttle(function()
+      local is_ascii = false
+
+      vim.fn.jobstart(is_ascii_command, {
+        stdout_buffered = true,
+        on_stdout = function(_, data)
+          if type(data) ~= 'table' then
+            return
+          end
+
+          is_ascii = table.concat(data, '\n'):find('b true', 1, true) ~= nil
+        end,
+        on_exit = function(_, code)
+          if code ~= 0 then
+            if fallback then
+              fallback()
+            end
+            return
+          end
+
+          if is_ascii then
+            return
+          end
+
+          vim.fn.jobstart(set_ascii_command, {
+            on_exit = function(_, set_code)
+              if set_code ~= 0 and fallback then
+                fallback()
+              end
+            end,
+          })
+        end,
+      })
+    end)
+  end
+
+  return fallback
 end
 
 local switch_to_en = make_switcher()
 
 if switch_to_en then
   local group = vim.api.nvim_create_augroup('fcitx', { clear = true })
+  vim.api.nvim_create_autocmd('VimEnter', {
+    group = group,
+    pattern = '*',
+    callback = function()
+      vim.schedule(switch_to_en)
+    end,
+  })
   vim.api.nvim_create_autocmd('InsertLeave', {
     group = group,
     pattern = '*',
