@@ -119,46 +119,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- Relying on get_installed_servers() is fragile with newer mason-lspconfig
 -- because the package registry is initialized asynchronously.
 local function setup_lsp()
-  local capabilities = vim.tbl_deep_extend('force', vim.lsp.protocol.make_client_capabilities(), {
-    textDocument = {
-      completion = {
-        completionItem = {
-          snippetSupport = true,
-          commitCharactersSupport = false,
-          documentationFormat = { 'markdown', 'plaintext' },
-          deprecatedSupport = true,
-          preselectSupport = false,
-          tagSupport = { valueSet = { 1 } },
-          insertReplaceSupport = true,
-          resolveSupport = {
-            properties = {
-              'documentation',
-              'detail',
-              'additionalTextEdits',
-              'command',
-              'data',
-            },
-          },
-          insertTextModeSupport = {
-            valueSet = { 1 },
-          },
-          labelDetailsSupport = true,
-        },
-        completionList = {
-          itemDefaults = {
-            'commitCharacters',
-            'editRange',
-            'insertTextFormat',
-            'insertTextMode',
-            'data',
-          },
-        },
-
-        contextSupport = true,
-        insertTextMode = 1,
-      },
-    },
-  })
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+  local blink_ok, blink = pcall(require, 'blink.cmp')
+  if blink_ok and blink.get_lsp_capabilities then
+    capabilities = blink.get_lsp_capabilities(capabilities, true)
+  end
 
   local default_options = {
     capabilities = capabilities,
