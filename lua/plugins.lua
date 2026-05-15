@@ -339,11 +339,31 @@ return {
     config = function()
       vim.g.copilot_manual_enabled = vim.g.copilot_manual_enabled or false
 
+      local copilot_command = require 'copilot.command'
+      local enable = copilot_command.enable
+      local disable = copilot_command.disable
+      local default_should_attach = require('copilot.config.should_attach').default
+      local block_setup_enable = true
+
+      copilot_command.enable = function(...)
+        if block_setup_enable and vim.g.copilot_manual_enabled ~= true then
+          return
+        end
+
+        vim.g.copilot_manual_enabled = true
+        return enable(...)
+      end
+
+      copilot_command.disable = function(...)
+        vim.g.copilot_manual_enabled = false
+        return disable(...)
+      end
+
       require('copilot').setup {
         suggestion = { enabled = false },
         panel = { enabled = false },
-        should_attach = function(_, _)
-          return vim.g.copilot_manual_enabled == true
+        should_attach = function(bufnr, bufname)
+          return vim.g.copilot_manual_enabled == true and default_should_attach(bufnr, bufname)
         end,
         filetypes = {
           markdown = true,
@@ -353,19 +373,7 @@ return {
         },
       }
 
-      local copilot_command = require 'copilot.command'
-      local enable = copilot_command.enable
-      local disable = copilot_command.disable
-
-      copilot_command.enable = function(...)
-        vim.g.copilot_manual_enabled = true
-        return enable(...)
-      end
-
-      copilot_command.disable = function(...)
-        vim.g.copilot_manual_enabled = false
-        return disable(...)
-      end
+      block_setup_enable = false
     end,
   },
 
