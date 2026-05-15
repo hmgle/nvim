@@ -316,9 +316,12 @@ Alternative themes available but disabled: Nightfox, TokyoNight, Melange.
 
 ```
 :Copilot auth
+:Copilot enable
+:Copilot disable
 ```
 
-Integrated with blink.cmp completion.
+Copilot is opt-in for each Neovim session. It is integrated with blink.cmp
+completion after `:Copilot enable`, and stays unloaded during normal file opens.
 
 ### Aider
 

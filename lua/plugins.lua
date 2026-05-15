@@ -335,12 +335,16 @@ return {
   { -- gh copilot
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
-    event = 'InsertEnter',
     build = ':Copilot auth',
     config = function()
+      vim.g.copilot_manual_enabled = vim.g.copilot_manual_enabled or false
+
       require('copilot').setup {
         suggestion = { enabled = false },
         panel = { enabled = false },
+        should_attach = function(_, _)
+          return vim.g.copilot_manual_enabled == true
+        end,
         filetypes = {
           markdown = true,
         },
@@ -348,12 +352,37 @@ return {
           print_log = false,
         },
       }
+
+      local copilot_command = require 'copilot.command'
+      local enable = copilot_command.enable
+      local disable = copilot_command.disable
+
+      copilot_command.enable = function(...)
+        vim.g.copilot_manual_enabled = true
+        return enable(...)
+      end
+
+      copilot_command.disable = function(...)
+        vim.g.copilot_manual_enabled = false
+        return disable(...)
+      end
     end,
   },
 
   {
     'CopilotC-Nvim/CopilotChat.nvim',
-    event = 'InsertEnter',
+    cmd = {
+      'CopilotChat',
+      'CopilotChatOpen',
+      'CopilotChatClose',
+      'CopilotChatToggle',
+      'CopilotChatStop',
+      'CopilotChatReset',
+      'CopilotChatSave',
+      'CopilotChatLoad',
+      'CopilotChatPrompts',
+      'CopilotChatModels',
+    },
     dependencies = {
       { 'zbirenbaum/copilot.lua' },
       { 'nvim-lua/plenary.nvim' },
@@ -365,10 +394,17 @@ return {
   },
 
   {
+    'giuxtaposition/blink-cmp-copilot',
+    lazy = true,
+    dependencies = {
+      { 'zbirenbaum/copilot.lua' },
+    },
+  },
+
+  {
     'saghen/blink.cmp',
     dependencies = {
       'rafamadriz/friendly-snippets',
-      'giuxtaposition/blink-cmp-copilot',
     },
 
     version = '*',
@@ -426,6 +462,9 @@ return {
           copilot = {
             name = 'copilot',
             module = 'blink-cmp-copilot',
+            enabled = function()
+              return vim.g.copilot_manual_enabled == true
+            end,
             -- score_offset = -5,
             async = true,
             transform_items = function(_, items)
@@ -439,7 +478,13 @@ return {
             end,
           },
         },
-        default = { 'lsp', 'path', 'snippets', 'copilot', 'buffer' },
+        default = function()
+          local sources = { 'lsp', 'path', 'snippets', 'buffer' }
+          if vim.g.copilot_manual_enabled == true then
+            table.insert(sources, 'copilot')
+          end
+          return sources
+        end,
       },
 
       cmdline = {
@@ -497,7 +542,6 @@ return {
     end,
 
     dependencies = {
-      { 'saghen/blink.cmp' },
       {
         'williamboman/mason.nvim',
         opts = {
@@ -550,7 +594,13 @@ return {
       opts = {
         sources = {
           -- add lazydev to your completion providers
-          default = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' },
+          default = function()
+            local sources = { 'lsp', 'path', 'snippets', 'buffer', 'lazydev' }
+            if vim.g.copilot_manual_enabled == true then
+              table.insert(sources, 'copilot')
+            end
+            return sources
+          end,
           providers = {
             -- dont show LuaLS require statements when lazydev has items
             lsp = { fallbacks = { 'lazydev' } },
