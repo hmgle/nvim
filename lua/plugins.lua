@@ -340,9 +340,11 @@ return {
       vim.g.copilot_manual_enabled = vim.g.copilot_manual_enabled == true
 
       local copilot_command = require 'copilot.command'
-      local enable = copilot_command.enable
-      local disable = copilot_command.disable
+      local enable = copilot_command._manual_orig_enable or copilot_command.enable
+      local disable = copilot_command._manual_orig_disable or copilot_command.disable
       local default_should_attach = require('copilot.config.should_attach').default
+      copilot_command._manual_orig_enable = enable
+      copilot_command._manual_orig_disable = disable
       -- copilot.setup() implicitly calls command.enable(); swallow it until
       -- the user opts in. The `~= true` clause lets a config reload preserve
       -- a previously-enabled session.
