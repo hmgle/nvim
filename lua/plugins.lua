@@ -383,30 +383,6 @@ return {
   },
 
   {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    cmd = {
-      'CopilotChat',
-      'CopilotChatOpen',
-      'CopilotChatClose',
-      'CopilotChatToggle',
-      'CopilotChatStop',
-      'CopilotChatReset',
-      'CopilotChatSave',
-      'CopilotChatLoad',
-      'CopilotChatPrompts',
-      'CopilotChatModels',
-    },
-    dependencies = {
-      { 'zbirenbaum/copilot.lua' },
-      { 'nvim-lua/plenary.nvim' },
-    },
-    build = 'make tiktoken', -- Only on MacOS or Linux
-    opts = {
-      -- See Configuration section for options
-    },
-  },
-
-  {
     'giuxtaposition/blink-cmp-copilot',
     lazy = true,
     dependencies = {
