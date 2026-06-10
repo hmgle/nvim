@@ -173,6 +173,26 @@ if switch_to_en then
     pattern = '*',
     callback = switch_to_en,
   })
+  -- Returning to normal mode after typing Chinese in cmdline (e.g. /搜索)
+  vim.api.nvim_create_autocmd('CmdlineLeave', {
+    group = group,
+    pattern = '*',
+    callback = function()
+      vim.schedule(switch_to_en)
+    end,
+  })
+  -- Returning to normal mode from a terminal buffer (toggleterm, Aider)
+  vim.api.nvim_create_autocmd('TermLeave', {
+    group = group,
+    pattern = '*',
+    callback = switch_to_en,
+  })
+  -- Regaining focus after typing Chinese in another application
+  vim.api.nvim_create_autocmd('FocusGained', {
+    group = group,
+    pattern = '*',
+    callback = switch_to_en,
+  })
 end
 
 local function resolve_node_host_prog()
