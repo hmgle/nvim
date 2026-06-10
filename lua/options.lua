@@ -193,6 +193,30 @@ if switch_to_en then
     pattern = '*',
     callback = switch_to_en,
   })
+
+  -- Full-width punctuation commits instantly (no candidate window), so it
+  -- reaches normal mode as a multibyte keypress; remap it to the intended
+  -- half-width key and correct the input method on the way.
+  local fullwidth_keys = {
+    ['：'] = ':',
+    ['？'] = '?',
+    ['／'] = '/',
+    ['，'] = ',', -- leader
+  }
+  for fw, half in pairs(fullwidth_keys) do
+    map({ 'n', 'x' }, fw, function()
+      switch_to_en()
+      return half
+    end, { expr = true, remap = true })
+  end
+
+  -- Letters typed while the IM is composing are consumed by the IM and
+  -- never reach nvim, so they cannot be remapped. Pressing <Esc> cancels
+  -- the composition; the next <Esc> lands here and resets the IM.
+  map({ 'n', 'x' }, '<Esc>', function()
+    switch_to_en()
+    return '<Esc>'
+  end, { expr = true })
 end
 
 local function resolve_node_host_prog()
