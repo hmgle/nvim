@@ -187,11 +187,18 @@ if switch_to_en then
     pattern = '*',
     callback = switch_to_en,
   })
-  -- Regaining focus after typing Chinese in another application
+  -- Regaining focus after typing Chinese in another application. Skip
+  -- text-input modes (insert/replace/cmdline/terminal/select) so a quick
+  -- app switch does not interrupt ongoing Chinese input there.
   vim.api.nvim_create_autocmd('FocusGained', {
     group = group,
     pattern = '*',
-    callback = switch_to_en,
+    callback = function()
+      local mode = vim.api.nvim_get_mode().mode
+      if not mode:find '^[iRctsS\19]' then
+        switch_to_en()
+      end
+    end,
   })
 
   -- Full-width punctuation commits instantly (no candidate window), so it
