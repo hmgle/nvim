@@ -1,4 +1,4 @@
-require('nvim-lightbulb').setup({
+require('nvim-lightbulb').setup {
   sign = {
     enabled = false,
   },
@@ -7,15 +7,15 @@ require('nvim-lightbulb').setup({
   },
   virtual_text = {
     enabled = true,
-    text = "Ω",
+    text = 'Ω',
   },
   status_text = {
     enabled = false,
   },
   autocmd = {
     enabled = true,
-    events = {"CursorHold"}
-  }
-})
+    events = { 'CursorHold' },
+  },
+}
 
 vim.g.cursorhold_updatetime = 100

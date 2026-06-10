@@ -13,7 +13,9 @@ function M.termcodes(str)
 end
 
 function M.feedkeys(keys, mode)
-  if mode == nil then mode = 'in' end
+  if mode == nil then
+    mode = 'in'
+  end
   return vim.api.nvim_feedkeys(M.termcodes(keys), mode, true)
 end
 

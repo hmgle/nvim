@@ -35,8 +35,8 @@ end
 
 local function get_at_path(object, path)
   local result = object
-  for _, segment in ipairs(vim.split(path, ".", { plain = true })) do
-    if type(result) ~= "table" then
+  for _, segment in ipairs(vim.split(path, '.', { plain = true })) do
+    if type(result) ~= 'table' then
       return nil
     end
     result = result[segment]
@@ -82,7 +82,7 @@ local function get_query_matches(bufnr, query_group, root, lang)
       for id, nodes in pairs(match) do
         local capture = query.captures[id]
         if capture ~= nil then
-          local path = vim.split(capture, ".", { plain = true })
+          local path = vim.split(capture, '.', { plain = true })
           if metadata[id] and metadata[id].range then
             insert_to_path(prepared, path, add_bytes(bufnr, metadata[id].range))
           else
@@ -98,7 +98,7 @@ local function get_query_matches(bufnr, query_group, root, lang)
       end
 
       if metadata.range and metadata.range[7] then
-        local path = vim.split(metadata.range[7], ".", { plain = true })
+        local path = vim.split(metadata.range[7], '.', { plain = true })
         insert_to_path(prepared, path, add_bytes(bufnr, metadata.range))
       end
 
@@ -118,7 +118,7 @@ local function get_capture_ranges(bufnr, capture, query_group)
   parser:parse(true)
 
   local ranges = {}
-  local path = capture:gsub("^@", "")
+  local path = capture:gsub('^@', '')
   parser:for_each_tree(function(tree, lang_tree)
     local matches = get_query_matches(bufnr, query_group, tree:root(), lang_tree:lang())
     for _, match in ipairs(matches) do
@@ -182,13 +182,13 @@ function M.textobject_at_point(capture, query_group, bufnr, pos, opts)
 
   local row, col = pos[1] - 1, pos[2]
   local ranges = get_capture_ranges(bufnr, capture, query_group)
-  if vim.endswith(capture, ".outer") then
+  if vim.endswith(capture, '.outer') then
     return best_range_at_point(ranges, row, col, opts)
   end
 
-  local outer_capture = capture:gsub("%..*$", ".outer")
+  local outer_capture = capture:gsub('%..*$', '.outer')
   if outer_capture == capture then
-    outer_capture = capture .. ".outer"
+    outer_capture = capture .. '.outer'
   end
 
   local outer_ranges = get_capture_ranges(bufnr, outer_capture, query_group)
@@ -212,15 +212,14 @@ function M.textobject_at_point(capture, query_group, bufnr, pos, opts)
     return best_range_at_point(ranges, row, col, opts)
   end
 
-  return best_range_at_point(nested, row, col, opts)
-    or best_range_at_point(nested, outer[1], outer[2], { lookahead = true })
+  return best_range_at_point(nested, row, col, opts) or best_range_at_point(nested, outer[1], outer[2], { lookahead = true })
 end
 
 local function update_selection(range)
   local start_row, start_col, end_row, end_col = range[1], range[2], range[4], range[5]
   local mode = api.nvim_get_mode().mode
-  if mode ~= "v" then
-    vim.cmd.normal({ "v", bang = true })
+  if mode ~= 'v' then
+    vim.cmd.normal { 'v', bang = true }
   end
 
   if end_col == 0 then
@@ -228,14 +227,14 @@ local function update_selection(range)
     end_col = #api.nvim_buf_get_lines(0, end_row, end_row + 1, true)[1] + 1
   end
 
-  local end_col_offset = vim.o.selection == "exclusive" and 0 or 1
+  local end_col_offset = vim.o.selection == 'exclusive' and 0 or 1
   api.nvim_win_set_cursor(0, { start_row + 1, start_col })
-  vim.cmd("normal! o")
+  vim.cmd 'normal! o'
   api.nvim_win_set_cursor(0, { end_row + 1, end_col - end_col_offset })
 end
 
 local function select_textobject(capture)
-  local range = M.textobject_at_point(capture, "textobjects", 0, nil, config.select)
+  local range = M.textobject_at_point(capture, 'textobjects', 0, nil, config.select)
   if range then
     update_selection(range)
   end
@@ -247,7 +246,7 @@ local function motion_target(range, use_start)
   end
 
   if range[5] == 0 then
-    local line = api.nvim_buf_get_lines(0, range[4] - 1, range[4], true)[1] or ""
+    local line = api.nvim_buf_get_lines(0, range[4] - 1, range[4], true)[1] or ''
     return range[4] - 1, #line, range[6]
   end
 
@@ -257,7 +256,7 @@ end
 local function move_textobject(capture, opts)
   local cursor = api.nvim_win_get_cursor(0)
   local row, col = cursor[1] - 1, cursor[2]
-  local ranges = get_capture_ranges(0, capture, "textobjects")
+  local ranges = get_capture_ranges(0, capture, 'textobjects')
   local best
   local best_score
 
@@ -281,16 +280,16 @@ local function move_textobject(capture, opts)
   end
 
   if config.move.set_jumps then
-    vim.cmd("normal! m'")
+    vim.cmd "normal! m'"
   end
 
   api.nvim_win_set_cursor(0, { best.row + 1, best.col })
 end
 
 local function preview_textobject(capture)
-  local range = M.textobject_at_point(capture, "textobjects", 0, nil, { lookahead = true })
+  local range = M.textobject_at_point(capture, 'textobjects', 0, nil, { lookahead = true })
   if not range then
-    vim.notify(("No textobject found for %s"):format(capture), vim.log.levels.WARN)
+    vim.notify(('No textobject found for %s'):format(capture), vim.log.levels.WARN)
     return
   end
 
@@ -300,73 +299,73 @@ local function preview_textobject(capture)
   end
 
   vim.lsp.util.open_floating_preview(lines, vim.bo.filetype, {
-    border = "none",
+    border = 'none',
     focusable = true,
-    close_events = { "CursorMoved", "CursorMovedI", "InsertEnter", "BufHidden" },
+    close_events = { 'CursorMoved', 'CursorMovedI', 'InsertEnter', 'BufHidden' },
   })
 end
 
 function M.setup()
-  local map = require("utils").map
+  local map = require('utils').map
 
   local select_keymaps = {
-    ["af"] = "@function.outer",
-    ["if"] = "@function.inner",
-    ["ac"] = "@class.outer",
-    ["ic"] = "@class.inner",
-    ["aa"] = "@parameter.outer",
-    ["ia"] = "@parameter.inner",
-    ["as"] = "@statement.outer",
-    ["ib"] = "@block.inner",
-    ["ab"] = "@block.outer",
-    ["ak"] = "@comment.outer",
+    ['af'] = '@function.outer',
+    ['if'] = '@function.inner',
+    ['ac'] = '@class.outer',
+    ['ic'] = '@class.inner',
+    ['aa'] = '@parameter.outer',
+    ['ia'] = '@parameter.inner',
+    ['as'] = '@statement.outer',
+    ['ib'] = '@block.inner',
+    ['ab'] = '@block.outer',
+    ['ak'] = '@comment.outer',
   }
 
   for lhs, capture in pairs(select_keymaps) do
-    map("x", lhs, function()
+    map('x', lhs, function()
       select_textobject(capture)
     end)
-    map("o", lhs, function()
+    map('o', lhs, function()
       select_textobject(capture)
     end)
   end
 
-  map("n", "]]", function()
-    move_textobject("@function.outer", { forward = true, start = true })
+  map('n', ']]', function()
+    move_textobject('@function.outer', { forward = true, start = true })
   end)
-  map("n", "]m", function()
-    move_textobject("@class.outer", { forward = true, start = true })
+  map('n', ']m', function()
+    move_textobject('@class.outer', { forward = true, start = true })
   end)
-  map("n", ")", function()
-    move_textobject("@block.outer", { forward = true, start = true })
+  map('n', ')', function()
+    move_textobject('@block.outer', { forward = true, start = true })
   end)
-  map("n", "][", function()
-    move_textobject("@function.outer", { forward = true, start = false })
+  map('n', '][', function()
+    move_textobject('@function.outer', { forward = true, start = false })
   end)
-  map("n", "]M", function()
-    move_textobject("@class.outer", { forward = true, start = false })
+  map('n', ']M', function()
+    move_textobject('@class.outer', { forward = true, start = false })
   end)
-  map("n", "[[", function()
-    move_textobject("@function.outer", { forward = false, start = true })
+  map('n', '[[', function()
+    move_textobject('@function.outer', { forward = false, start = true })
   end)
-  map("n", "[m", function()
-    move_textobject("@class.outer", { forward = false, start = true })
+  map('n', '[m', function()
+    move_textobject('@class.outer', { forward = false, start = true })
   end)
-  map("n", "(", function()
-    move_textobject("@block.outer", { forward = false, start = true })
+  map('n', '(', function()
+    move_textobject('@block.outer', { forward = false, start = true })
   end)
-  map("n", "[]", function()
-    move_textobject("@function.outer", { forward = false, start = false })
+  map('n', '[]', function()
+    move_textobject('@function.outer', { forward = false, start = false })
   end)
-  map("n", "[M", function()
-    move_textobject("@class.outer", { forward = false, start = false })
+  map('n', '[M', function()
+    move_textobject('@class.outer', { forward = false, start = false })
   end)
-  map("n", "<leader>df", function()
-    preview_textobject("@function.outer")
-  end, "Preview function")
-  map("n", "<leader>dF", function()
-    preview_textobject("@class.outer")
-  end, "Preview class")
+  map('n', '<leader>df', function()
+    preview_textobject '@function.outer'
+  end, 'Preview function')
+  map('n', '<leader>dF', function()
+    preview_textobject '@class.outer'
+  end, 'Preview class')
 end
 
 return M

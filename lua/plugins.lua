@@ -213,8 +213,7 @@ return {
       local utils = require 'utils'
 
       local function set_hardline_statusline(active)
-        local statusline = active
-            and [[%{%luaeval('require("hardline").update_statusline(true)')%}]]
+        local statusline = active and [[%{%luaeval('require("hardline").update_statusline(true)')%}]]
           or [[%{%luaeval('require("hardline").update_statusline(false)')%}]]
         utils.set_local_window_option(0, 'statusline', statusline, { float_value = '' })
       end
@@ -296,7 +295,7 @@ return {
     lazy = false,
     build = ':TSUpdate',
     config = function()
-      local parser_dir = vim.fn.stdpath('data') .. '/treesitter'
+      local parser_dir = vim.fn.stdpath 'data' .. '/treesitter'
       vim.opt.runtimepath:prepend(parser_dir)
 
       require('nvim-treesitter').setup {
