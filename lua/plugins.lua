@@ -1,13 +1,6 @@
 return {
   'nvim-lua/plenary.nvim',
 
-  {
-    'preservim/tagbar',
-    cmd = 'TagbarToggle',
-    config = function()
-      vim.g.tagbar_silent = 1
-    end,
-  },
   'godlygeek/tabular',
   {
     'NMAC427/guess-indent.nvim',

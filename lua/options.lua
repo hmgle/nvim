@@ -13,18 +13,6 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 end)
 
--- https://github.com/preservim/tagbar/wiki#zig
-vim.g.tagbar_type_zig = {
-  ctagstype = 'zig',
-  kinds = {
-    'f:functions',
-    's:structs',
-    'e:enums',
-    'u:unions',
-    'E:errors',
-  },
-}
-
 local uv = vim.uv
 
 local function throttle(fn)
