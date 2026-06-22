@@ -2,6 +2,10 @@ local conform = require 'conform'
 
 conform.setup {
   formatters = {
+    ['jq-json'] = {
+      command = 'jq',
+      args = { '.' },
+    },
     ['biome-json'] = {
       command = 'biome',
       args = {
@@ -22,7 +26,7 @@ conform.setup {
     svelte = { 'prettier' },
     css = { 'biome', 'prettier', stop_after_first = true },
     html = { 'biome', 'prettier', stop_after_first = true },
-    json = { 'biome-json', 'prettier', stop_after_first = true },
+    json = { 'jq-json', 'biome-json', 'prettier', stop_after_first = true },
     jsonc = { 'biome-json', 'prettier', stop_after_first = true },
     yaml = { 'yamlfix', 'prettier', stop_after_first = true },
     markdown = { 'markdownlint', 'prettier' },
