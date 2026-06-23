@@ -31,17 +31,52 @@ local function throttle(fn)
   end
 end
 
+local function env_enabled(name)
+  local value = vim.env[name]
+  return value == '1' or value == 'true' or value == 'yes' or value == 'on'
+end
+
+local function is_remote_session()
+  if vim.env.SSH_CLIENT or vim.env.SSH_CONNECTION or vim.env.SSH_TTY or vim.env.MOSH_IP or vim.env.MOSH_CONNECTION then
+    return true
+  end
+
+  return false
+end
+
 local function make_switcher()
   local fallback
 
-  if vim.fn.executable 'xdotool' == 1 then
+  if env_enabled 'NVIM_DISABLE_IM_SWITCH' then
+    return nil
+  end
+
+  if is_remote_session() and not env_enabled 'NVIM_ALLOW_REMOTE_IM_SWITCH' then
+    return nil
+  end
+
+  local function can_use_xdotool()
+    if not env_enabled 'NVIM_ALLOW_XDOTOOL_IM_SWITCH' then
+      return false
+    end
+
+    -- xdotool sends synthetic X11 keyboard input, which can wake a DPMS-off
+    -- monitor. Keep it opt-in even on local graphical sessions.
+    return vim.fn.executable 'xdotool' == 1 and vim.env.DISPLAY ~= nil and vim.env.DISPLAY ~= ''
+  end
+
+  local function xdotool_switcher()
+    if not can_use_xdotool() then
+      return nil
+    end
+
     -- Use the custom rime keybinding to switch to English mode (Control+Alt+Shift+F12)
     -- rime config:
     -- patch:
     --   key_binder/bindings/+:
     --     - { when: always, accept: "Control+Alt+Shift+F12", set_option: ascii_mode }
     local command = { 'xdotool', 'key', 'ctrl+alt+shift+F12' }
-    fallback = throttle(function()
+    return throttle(function()
       vim.fn.jobstart(command, {
         on_exit = function(_, code)
           if code ~= 0 then
@@ -76,12 +111,16 @@ local function make_switcher()
     end)
   end
 
-  if not fallback and vim.fn.executable 'fcitx5-remote' == 1 then
+  if vim.fn.executable 'fcitx5-remote' == 1 then
     fallback = fcitx_switcher 'fcitx5-remote'
   end
 
   if not fallback and vim.fn.executable 'fcitx-remote' == 1 then
     fallback = fcitx_switcher 'fcitx-remote'
+  end
+
+  if not fallback then
+    fallback = xdotool_switcher()
   end
 
   if vim.fn.executable 'busctl' == 1 and vim.env.DBUS_SESSION_BUS_ADDRESS and (vim.env.DISPLAY or vim.env.WAYLAND_DISPLAY) then
