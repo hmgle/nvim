@@ -19,6 +19,9 @@ end
 require("options")
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins", {
+  git = {
+    timeout = 600,
+  },
   -- defaults = { lazy = true },
   -- install = { colorscheme = { "gruvbox-material" } },
   -- checker = { enabled = true },
