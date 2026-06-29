@@ -31,7 +31,7 @@ nvim_tree.setup {
 
   on_attach = function(bufnr)
     local map = function(lhs, rhs, desc)
-      require('utils').map('n', lhs, rhs, { buffer = bufnr, desc = desc })
+      require('utils').map('n', lhs, rhs, { buf = bufnr, desc = desc })
     end
 
     -- Custom mappings

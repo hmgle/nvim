@@ -4,6 +4,10 @@ function M.map(modes, lhs, rhs, opts)
   if type(opts) == 'string' then
     opts = { desc = opts }
   end
+  if opts and opts.buffer ~= nil and opts.buf == nil then
+    opts.buf = opts.buffer
+    opts.buffer = nil
+  end
   local options = vim.tbl_extend('keep', opts or {}, { noremap = true, silent = true })
   vim.keymap.set(modes, lhs, rhs, options)
 end

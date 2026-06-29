@@ -29,7 +29,7 @@ local function set_lsp_keymaps(bufnr)
     vim.notify(string.format('%s: %s', feature, enabled and 'ON' or 'OFF'), vim.log.levels.INFO)
   end
 
-  local opts = { buffer = bufnr, noremap = true, silent = true }
+  local opts = { buf = bufnr, noremap = true, silent = true }
 
   vim.keymap.set('n', 'gh', builtin.lsp_document_symbols, opts)
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -52,35 +52,35 @@ local function set_lsp_keymaps(bufnr)
     vim.lsp.buf.hover {
       border = 'rounded',
     }
-  end, { buffer = bufnr, silent = true })
+  end, { buf = bufnr, silent = true })
   vim.keymap.set('n', 'gs', function()
     vim.lsp.buf.signature_help {
       border = 'rounded',
     }
-  end, { buffer = bufnr, silent = true })
+  end, { buf = bufnr, silent = true })
   vim.keymap.set('n', '[d', function()
     vim.diagnostic.jump {
       count = -1,
     }
-  end, { buffer = bufnr, silent = true })
+  end, { buf = bufnr, silent = true })
   vim.keymap.set('n', ']d', function()
     vim.diagnostic.jump {
       count = 1,
     }
-  end, { buffer = bufnr, silent = true })
+  end, { buf = bufnr, silent = true })
 
   vim.keymap.set('n', '<leader>H', function()
     local enabled = vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }
     local next_enabled = not enabled
     vim.lsp.inlay_hint.enable(next_enabled, { bufnr = bufnr })
     notify_toggle('Inlay hints', next_enabled)
-  end, { buffer = bufnr, silent = true, desc = 'Toggle inlay hints' })
+  end, { buf = bufnr, silent = true, desc = 'Toggle inlay hints' })
   vim.keymap.set('n', '<leader>C', function()
     local enabled = vim.lsp.codelens.is_enabled { bufnr = bufnr }
     local next_enabled = not enabled
     vim.lsp.codelens.enable(next_enabled, { bufnr = bufnr })
     notify_toggle('Code lens', next_enabled)
-  end, { buffer = bufnr, silent = true, desc = 'Toggle code lens' })
+  end, { buf = bufnr, silent = true, desc = 'Toggle code lens' })
 end
 
 local attach_group = vim.api.nvim_create_augroup('native-lsp-attach', { clear = true })

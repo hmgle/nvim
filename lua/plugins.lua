@@ -924,7 +924,7 @@ return {
 
       vim.api.nvim_create_autocmd('TermOpen', {
         callback = function()
-          local opts = { buffer = 0 }
+          local opts = { buf = 0 }
           vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
         end,
       })
