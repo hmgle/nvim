@@ -291,9 +291,12 @@ return {
       local parser_dir = vim.fn.stdpath 'data' .. '/treesitter'
       vim.opt.runtimepath:prepend(parser_dir)
 
-      require('nvim-treesitter').setup {
+      local treesitter = require 'nvim-treesitter'
+
+      treesitter.setup {
         install_dir = parser_dir,
       }
+      treesitter.install { 'html' }
 
       require 'config.treesitter'
       require('config.treesitter-textobjects').setup()
