@@ -10,11 +10,58 @@ vim.opt.pumborder = 'rounded'
 vim.opt.pummaxwidth = 80
 vim.opt.mouse = 'a'
 
--- Long-lived tmux panes can keep stale DISPLAY/XAUTHORITY values, which makes
--- Neovim prefer xclip/wl-copy over tmux. In tmux, prefer tmux's OSC52 path so
--- yanks reach the attached terminal clipboard. Set
--- NVIM_CLIPBOARD_PROVIDER=native to opt out locally.
-if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 then
+local remote_env_names = { 'SSH_CLIENT', 'SSH_CONNECTION', 'SSH_TTY', 'MOSH_IP', 'MOSH_CONNECTION' }
+
+local function is_remote_session()
+  for _, name in ipairs(remote_env_names) do
+    if vim.env[name] then
+      return true
+    end
+  end
+
+  return false
+end
+
+-- A pane's own shell env is frozen at the moment the pane was created, so a
+-- long-lived pane that started locally and was later reattached over SSH
+-- still reports no SSH_* vars here even though the attached client is now
+-- remote. tmux itself refreshes a separate session-level environment on
+-- every attach (see the update-environment session option), so check that
+-- instead of the pane's env when deciding whether this tmux session is
+-- currently attached remotely.
+local function tmux_session_is_remote()
+  if not vim.env.TMUX or vim.fn.executable 'tmux' ~= 1 then
+    return false
+  end
+
+  local output = vim.fn.system { 'tmux', 'show-environment' }
+  if vim.v.shell_error ~= 0 or type(output) ~= 'string' then
+    return false
+  end
+
+  for line in output:gmatch '[^\n]+' do
+    local name = line:match '^(%u[%u_]*)='
+    if name then
+      for _, remote_name in ipairs(remote_env_names) do
+        if name == remote_name then
+          return true
+        end
+      end
+    end
+  end
+
+  return false
+end
+
+-- SSH sessions can attach to a long-lived tmux pane whose shell still has
+-- local desktop variables such as DISPLAY and XAUTHORITY. In that state
+-- Neovim may select xclip or wl-copy before its tmux clipboard provider, so
+-- yanks land on the target machine's graphical clipboard instead of the SSH
+-- client. Restrict the tmux provider override to remote sessions (checked
+-- via tmux's own session environment, which stays accurate across reattach)
+-- so local desktop tmux panes keep using the faster native provider. Set
+-- NVIM_CLIPBOARD_PROVIDER=native to opt out over SSH too.
+if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and (tmux_session_is_remote() or is_remote_session()) then
   vim.g.clipboard = 'tmux'
 end
 
@@ -41,14 +88,6 @@ end
 local function env_enabled(name)
   local value = vim.env[name]
   return value == '1' or value == 'true' or value == 'yes' or value == 'on'
-end
-
-local function is_remote_session()
-  if vim.env.SSH_CLIENT or vim.env.SSH_CONNECTION or vim.env.SSH_TTY or vim.env.MOSH_IP or vim.env.MOSH_CONNECTION then
-    return true
-  end
-
-  return false
 end
 
 local function make_switcher()
