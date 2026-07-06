@@ -833,7 +833,28 @@ return {
   {
     'numToStr/Comment.nvim',
     config = function()
-      require('Comment').setup()
+      local comment_ft = require 'Comment.ft'
+      local comment_utils = require 'Comment.utils'
+
+      require('Comment').setup {
+        pre_hook = function(ctx)
+          local ok, parser = pcall(vim.treesitter.get_parser, vim.api.nvim_get_current_buf())
+          if ok and parser then
+            return nil
+          end
+
+          local cstr = comment_ft.get(vim.bo.filetype, ctx.ctype)
+          if cstr then
+            return cstr
+          end
+
+          if ctx.ctype == comment_utils.ctype.blockwise then
+            error { msg = vim.bo.filetype .. " doesn't support block comments!" }
+          end
+
+          return vim.bo.commentstring
+        end,
+      }
       local opt = { expr = true, remap = true }
       -- Toggle using count
       vim.keymap.set('n', '<leader>cc', "v:count == 0 ? '<Plug>(comment_toggle_current_linewise)' : '<Plug>(comment_toggle_linewise_count)'", opt)
