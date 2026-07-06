@@ -57,11 +57,17 @@ end
 -- local desktop variables such as DISPLAY and XAUTHORITY. In that state
 -- Neovim may select xclip or wl-copy before its tmux clipboard provider, so
 -- yanks land on the target machine's graphical clipboard instead of the SSH
--- client. Restrict the tmux provider override to remote sessions (checked
--- via tmux's own session environment, which stays accurate across reattach)
--- so local desktop tmux panes keep using the faster native provider. Set
+-- client. Restrict the tmux provider override to remote sessions so local
+-- desktop tmux panes keep using the faster native provider. Set
 -- NVIM_CLIPBOARD_PROVIDER=native to opt out over SSH too.
-if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and (tmux_session_is_remote() or is_remote_session()) then
+--
+-- Check the pane's own env first: a pane created directly inside an SSH
+-- session already has SSH_* vars, so this is both correct and avoids
+-- spawning `tmux show-environment` on every such startup. Fall back to
+-- tmux's session-level env (kept fresh across reattach) only when the
+-- pane's own env doesn't already say remote, which is what makes an old
+-- pane reattached over SSH still detected correctly.
+if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and (is_remote_session() or tmux_session_is_remote()) then
   vim.g.clipboard = 'tmux'
 end
 
