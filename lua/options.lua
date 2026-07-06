@@ -9,9 +9,16 @@ vim.opt.completeopt = 'menu,menuone,noselect,popup'
 vim.opt.pumborder = 'rounded'
 vim.opt.pummaxwidth = 80
 vim.opt.mouse = 'a'
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
-end)
+
+-- Long-lived tmux panes can keep stale DISPLAY/XAUTHORITY values, which makes
+-- Neovim prefer xclip/wl-copy over tmux. In tmux, prefer tmux's OSC52 path so
+-- yanks reach the attached terminal clipboard. Set
+-- NVIM_CLIPBOARD_PROVIDER=native to opt out locally.
+if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 then
+  vim.g.clipboard = 'tmux'
+end
+
+vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
 
 local uv = vim.uv
 
