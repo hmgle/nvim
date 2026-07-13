@@ -7,6 +7,7 @@ A Lua-based Neovim configuration using lazy.nvim for plugin management.
 - Neovim >= 0.12.0 (built with LuaJIT)
 - Git >= 2.19.0
 - CMake, make, GCC/Clang (for telescope-fzf-native)
+- ripgrep (`rg`) and ast-grep (`ast-grep`) (for grug-far search/replace)
 - `tree-sitter-cli` (required for `:TSInstall*` / `:TSUpdate*`)
 - Node.js (for LSP servers and formatters)
 - Python 3 with pynvim: `uv tool install --upgrade pynvim`
@@ -160,8 +161,20 @@ Examples:
 | <kbd>,</kbd><kbd>f</kbd><kbd>b</kbd>                                         | Normal | Fuzzy find in current buffer    |
 | <kbd>,</kbd><kbd>f</kbd><kbd>z</kbd>                                         | Normal | Frecency/smart file finder      |
 | <kbd>,</kbd><kbd>f</kbd><kbd>r</kbd>                                         | Normal | Resume last telescope           |
+| <kbd>,</kbd><kbd>f</kbd><kbd>s</kbd>                                         | Normal | Tree-sitter symbols             |
+| <kbd>,</kbd><kbd>s</kbd><kbd>s</kbd>                                         | Normal | LSP document symbols            |
+| <kbd>,</kbd><kbd>s</kbd><kbd>S</kbd>                                         | Normal | LSP workspace symbols           |
+| <kbd>,</kbd><kbd>f</kbd><kbd>q</kbd> / <kbd>,</kbd><kbd>f</kbd><kbd>Q</kbd>   | Normal | Quickfix list/history           |
+| <kbd>,</kbd><kbd>f</kbd><kbd>d</kbd>                                         | Normal | Diagnostics                     |
+| <kbd>,</kbd><kbd>f</kbd><kbd>n</kbd>                                         | Normal | Notification history            |
+| <kbd>,</kbd><kbd>b</kbd>                                                     | Normal | Buffers, most recently used first |
 | <kbd>,</kbd><kbd>\*</kbd>                                                    | Normal | Grep word under cursor          |
 | <kbd>,</kbd><kbd>Enter</kbd>                                                 | Normal | Clear search highlight          |
+
+Inside Telescope pickers, use <kbd>Ctrl</kbd>+<kbd>j</kbd>/<kbd>k</kbd> to move,
+<kbd>Ctrl</kbd>+<kbd>x</kbd> or <kbd>Ctrl</kbd>+<kbd>]</kbd> to open in a horizontal
+or vertical split, and <kbd>Ctrl</kbd>+<kbd>q</kbd> to send all results to quickfix.
+<kbd>Alt</kbd>+<kbd>q</kbd> sends only selected results.
 
 ### LSP
 
@@ -181,6 +194,11 @@ Examples:
 | <kbd>[</kbd><kbd>d</kbd> / <kbd>]</kbd><kbd>d</kbd> | Normal        | Previous/Next diagnostic |
 | <kbd>g</kbd><kbd>l</kbd>                            | Normal        | All diagnostics          |
 | <kbd>g</kbd><kbd>p</kbd>                            | Normal        | Preview definition       |
+| <kbd>g</kbd><kbd>P</kbd>                            | Normal        | Close definition previews |
+| <kbd>Ctrl</kbd>+<kbd>w</kbd> <kbd>d</kbd>           | Normal        | Definition in a split    |
+| <kbd>,</kbd><kbd>g</kbd><kbd>t</kbd>                | Normal        | Go to type definition    |
+| <kbd>,</kbd><kbd>g</kbd><kbd>f</kbd>                | Normal        | Format current buffer    |
+| <kbd>g</kbd><kbd>c</kbd>                            | Normal        | Show incoming calls      |
 
 ### File Management
 
@@ -194,6 +212,11 @@ Examples:
 | <kbd>,</kbd><kbd>t</kbd><kbd>t</kbd>                      | Normal | Toggle file tree                 |
 | <kbd>,</kbd><kbd>t</kbd><kbd>f</kbd>                      | Normal | Reveal file in tree              |
 
+In the file tree, press <kbd>g</kbd><kbd>?</kbd> for all buffer-local mappings.
+Common actions include <kbd>a</kbd> create, <kbd>r</kbd> rename, <kbd>d</kbd> trash,
+<kbd>D</kbd> delete, <kbd>f</kbd> filter, and <kbd>H</kbd>/<kbd>I</kbd> toggle
+dotfiles or git-ignored files.
+
 ### Editing
 
 | Key                                                                         | Mode          | Action                              |
@@ -202,8 +225,11 @@ Examples:
 | <kbd>Ctrl</kbd>+<kbd>n</kbd>                                                | Normal        | Cycle yank history                  |
 | <kbd>,</kbd><kbd>y</kbd>                                                    | Normal        | Show yank history                   |
 | <kbd>,</kbd><kbd>r</kbd>                                                    | Normal/Visual | Substitute operator                 |
+| <kbd>,</kbd><kbd>r</kbd><kbd>s</kbd> / <kbd>,</kbd><kbd>r</kbd><kbd>S</kbd> | Normal        | Substitute line/to end of line      |
 | <kbd>,</kbd><kbd>c</kbd><kbd>c</kbd> / <kbd>,</kbd><kbd>c</kbd><kbd>b</kbd> | Normal/Visual | Toggle line/block comment           |
 | <kbd>Ctrl</kbd>+<kbd>a</kbd> / <kbd>Ctrl</kbd>+<kbd>x</kbd>                 | Normal        | Increment/Decrement (smart boolean) |
+| <kbd>,</kbd><kbd>n</kbd> / <kbd>,</kbd><kbd>N</kbd>                         | Normal        | Next/Previous reference             |
+| <kbd>,</kbd><kbd>L</kbd>                                                    | Normal        | Toggle automatic linting            |
 
 ### Search & Replace
 
@@ -211,6 +237,41 @@ Examples:
 | ------------------------------------ | ------------- | ------------------------- |
 | <kbd>,</kbd><kbd>s</kbd><kbd>r</kbd> | Normal/Visual | Search/Replace (ripgrep)  |
 | <kbd>,</kbd><kbd>s</kbd><kbd>a</kbd> | Normal/Visual | Search/Replace (ast-grep) |
+
+`grug-far.nvim` opens an editable search/replace buffer. Use `,sr` for textual
+or regular-expression searches and `,sa` for structural searches using
+ast-grep patterns. Invoking either mapping from Visual mode pre-fills the
+selected text; the ripgrep mapping also enables fixed-string matching.
+
+Fill in `Search`, `Replace`, and optional filters, then review the live diff
+before applying changes. (`Rules` replaces `Search` when using the optional
+ast-grep rules engine.) `Files Filter` accepts globs such as `*.lua` or
+`!vendor/**`; `Paths` limits the search roots; and `Flags` passes
+engine-specific options. With ripgrep, result lines are editable and can be
+synced back to source files. With either engine, use `Replace` to apply the
+replacement expression across all matches.
+
+The local leader is also comma, so these buffer-local grug-far actions use:
+
+| Key                                  | Action                                      |
+| ------------------------------------ | ------------------------------------------- |
+| <kbd>,</kbd><kbd>r</kbd>             | Apply replacement to all matches            |
+| <kbd>,</kbd><kbd>s</kbd>             | Sync all edited results (ripgrep only)        |
+| <kbd>,</kbd><kbd>l</kbd>             | Sync result under cursor (ripgrep only)       |
+| <kbd>,</kbd><kbd>v</kbd>             | Sync current result file (ripgrep only)       |
+| <kbd>,</kbd><kbd>j</kbd>/<kbd>k</kbd> | Apply next/previous individual replacement  |
+| <kbd>Enter</kbd>                     | Open the result under the cursor             |
+| <kbd>Down</kbd>/<kbd>Up</kbd>        | Open next/previous result                    |
+| <kbd>,</kbd><kbd>q</kbd>             | Send results to quickfix                     |
+| <kbd>,</kbd><kbd>t</kbd>             | Open search history                          |
+| <kbd>,</kbd><kbd>e</kbd>             | Switch between ripgrep and ast-grep engines  |
+| <kbd>,</kbd><kbd>f</kbd>             | Refresh the search                           |
+| <kbd>,</kbd><kbd>c</kbd>             | Close the grug-far buffer                    |
+| <kbd>g</kbd><kbd>?</kbd>             | Show all available actions                   |
+
+Use <kbd>Tab</kbd>/<kbd>Shift</kbd>+<kbd>Tab</kbd> to move between input fields.
+For a linewise Visual selection that should constrain replacement to that exact
+buffer range rather than pre-fill the search, run `:GrugFarWithin`.
 
 ### Terminal & Tools
 
