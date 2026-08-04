@@ -281,6 +281,11 @@ buffer range rather than pre-fill the search, run `:GrugFarWithin`.
 | <kbd>Esc</kbd>               | Terminal        | Exit terminal insert mode |
 | <kbd>,</kbd><kbd>q</kbd>     | Normal          | Toggle quickfix           |
 
+For SSH sessions inside tmux, see
+[SSH + tmux Clipboard Safety](docs/ssh-tmux-clipboard.md). The remote provider
+keeps Neovim yanks flowing to the outer terminal while avoiding automatic OSC 52
+clipboard-read queries that can be misinterpreted by tmux.
+
 ### AI Integration
 
 | Key                                                                         | Mode                   | Action               |

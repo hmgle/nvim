@@ -57,9 +57,27 @@ end
 -- local desktop variables such as DISPLAY and XAUTHORITY. In that state
 -- Neovim may select xclip or wl-copy before its tmux clipboard provider, so
 -- yanks land on the target machine's graphical clipboard instead of the SSH
--- client. Restrict the tmux provider override to remote sessions so local
--- desktop tmux panes keep using the faster native provider. Set
--- NVIM_CLIPBOARD_PROVIDER=native to opt out over SSH too.
+-- client. Restrict the provider override to remote sessions so local desktop
+-- tmux panes keep using the faster native provider. Set
+-- NVIM_CLIPBOARD_PROVIDER=native to skip this override. Neovim may still
+-- auto-detect tmux when no other provider is available.
+--
+-- The built-in tmux provider is intentionally not used for remote sessions.
+-- Its paste command runs `tmux refresh-client -l`, which asks the outer
+-- terminal for its clipboard through OSC 52. A slow or fragmented reply can
+-- hit tmux's partial-key timeout and be delivered to the active pane as
+-- literal keystrokes. This is the failure tracked in:
+-- https://github.com/tmux/tmux/issues/5388
+-- The related Neovim provider behavior is intentional and documented in:
+-- https://github.com/neovim/neovim/issues/36786
+--
+-- The custom provider keeps copy one-way through `load-buffer -w`, so remote
+-- yanks still reach the attached terminal's clipboard. Paste only reads
+-- tmux's own buffer and therefore does not initiate an OSC 52 query. Use the
+-- terminal's normal paste action for outer-client clipboard -> Neovim input.
+-- The trade-off is that outer-client clipboard contents are not imported into
+-- the `+` register automatically. See docs/ssh-tmux-clipboard.md for the
+-- background, security trade-offs, and Yanky startup behavior.
 --
 -- Check the pane's own env first: a pane created directly inside an SSH
 -- session already has SSH_* vars, so this is both correct and avoids
@@ -68,7 +86,30 @@ end
 -- pane's own env doesn't already say remote, which is what makes an old
 -- pane reattached over SSH still detected correctly.
 if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and (is_remote_session() or tmux_session_is_remote()) then
-  vim.g.clipboard = 'tmux'
+  -- `load-buffer -w` needs tmux >= 3.2. Older versions still get a local
+  -- tmux buffer, but cannot forward yanks to the outer terminal clipboard.
+  local load_buffer = { 'tmux', 'load-buffer', '-' }
+  local tmux_version = vim.version.parse(vim.fn.system { 'tmux', '-V' })
+  if tmux_version and not vim.version.lt(tmux_version, { 3, 2, 0 }) then
+    load_buffer = { 'tmux', 'load-buffer', '-w', '-' }
+  end
+
+  vim.g.clipboard = {
+    name = 'tmux-quiet',
+    copy = {
+      ['+'] = load_buffer,
+      ['*'] = load_buffer,
+    },
+    -- A new tmux server may have no paste buffer. Suppress that expected
+    -- error and expose an empty clipboard instead.
+    paste = {
+      ['+'] = { 'sh', '-c', 'tmux save-buffer - 2>/dev/null || true' },
+      ['*'] = { 'sh', '-c', 'tmux save-buffer - 2>/dev/null || true' },
+    },
+    -- Keep yanks asynchronous while allowing each paste to re-read tmux's
+    -- current buffer after the short-lived copy job has exited.
+    cache_enabled = true,
+  }
 end
 
 vim.opt.clipboard = 'unnamedplus' -- Sync with system clipboard
