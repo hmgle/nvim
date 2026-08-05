@@ -187,31 +187,40 @@ local function classify_im_client(environment)
 end
 
 local function read_client_environment(pid, callback)
-  if vim.fn.has 'linux' ~= 1 or not vim.system then
+  if vim.fn.has 'linux' ~= 1 or not vim.uv or not vim.uv.fs_open then
     callback(nil)
     return
   end
 
   local path = string.format('/proc/%d/environ', pid)
-  vim.system({ 'sh', '-c', "tr '\\000' '\\n' < \"$1\"", 'sh', path }, { text = true }, function(result)
-    if result.code ~= 0 then
+  vim.uv.fs_open(path, 'r', 0, function(open_error, fd)
+    if open_error or not fd then
       callback(nil)
       return
     end
 
-    local environment = {}
-    for entry in (result.stdout or ''):gmatch '[^\n]+' do
-      local name, value = entry:match '^([^=]+)=(.*)$'
-      if name then
-        environment[name] = value
-      end
-    end
+    vim.uv.fs_read(fd, 65536, 0, function(read_error, data)
+      vim.uv.fs_close(fd, function()
+        if read_error or type(data) ~= 'string' then
+          callback(nil)
+          return
+        end
 
-    if next(environment) == nil then
-      callback(nil)
-      return
-    end
-    callback(environment)
+        local environment = {}
+        for entry in data:gmatch '[^%z]+' do
+          local name, value = entry:match '^([^=]+)=(.*)$'
+          if name then
+            environment[name] = value
+          end
+        end
+
+        if next(environment) == nil then
+          callback(nil)
+          return
+        end
+        callback(environment)
+      end)
+    end)
   end)
 end
 
@@ -415,10 +424,16 @@ end
 local switch_to_en = make_switcher()
 
 if switch_to_en then
+  local allow_remote_im_switch = env_enabled 'NVIM_ALLOW_REMOTE_IM_SWITCH'
+  local allow_unknown_im_switch = env_enabled 'NVIM_ALLOW_UNKNOWN_IM_SWITCH'
   local client_resolution_pending = false
+  local client_resolution_replay = false
   local client_resolution_generation = 0
   local function switch_to_en_for_client()
     if client_resolution_pending then
+      -- Keep one follow-up request so an event that arrived while the
+      -- previous client lookup was in flight is not silently lost.
+      client_resolution_replay = true
       return
     end
     client_resolution_pending = true
@@ -431,6 +446,10 @@ if switch_to_en then
       if generation == client_resolution_generation then
         client_resolution_pending = false
         client_resolution_generation = client_resolution_generation + 1
+        if client_resolution_replay then
+          client_resolution_replay = false
+          vim.schedule(switch_to_en_for_client)
+        end
       end
     end, 1000)
 
@@ -439,16 +458,22 @@ if switch_to_en then
         return
       end
       client_resolution_pending = false
+      local replay = client_resolution_replay
+      client_resolution_replay = false
       if not client then
+        if replay then
+          vim.schedule(switch_to_en_for_client)
+        end
         return
       end
-      if client.kind == 'remote' and not env_enabled 'NVIM_ALLOW_REMOTE_IM_SWITCH' then
-        return
+      if (client.kind ~= 'remote' or allow_remote_im_switch) and (client.kind ~= 'unknown' or allow_unknown_im_switch) then
+        vim.schedule(function()
+          switch_to_en(client.env)
+        end)
       end
-      if client.kind == 'unknown' and not env_enabled 'NVIM_ALLOW_UNKNOWN_IM_SWITCH' then
-        return
+      if replay then
+        vim.schedule(switch_to_en_for_client)
       end
-      switch_to_en(client.env)
     end)
   end
 
