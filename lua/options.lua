@@ -298,6 +298,14 @@ local function has_graphical_dbus_environment(environment)
     and (environment_has_value(environment, 'DISPLAY') or environment_has_value(environment, 'WAYLAND_DISPLAY'))
 end
 
+local function notify_im_warning(message)
+  -- vim.system callbacks may run in fast-event context, where vim.notify
+  -- would call nvim_echo and raise E5560.
+  vim.schedule(function()
+    vim.notify(message, vim.log.levels.WARN)
+  end)
+end
+
 local function make_switcher()
   local fallback
 
@@ -326,7 +334,7 @@ local function make_switcher()
 
       vim.system(command, { env = child_environment(client_environment) }, function(result)
         if result.code ~= 0 then
-          vim.notify('Failed to switch input method', vim.log.levels.WARN)
+          notify_im_warning 'Failed to switch input method'
         end
       end)
     end)
@@ -342,7 +350,7 @@ local function make_switcher()
       local environment = child_environment(client_environment)
       vim.system({ executable }, { text = true, env = environment }, function(result)
         if result.code ~= 0 then
-          vim.notify(string.format('%s exited with code %d', bin, result.code or -1), vim.log.levels.WARN)
+          notify_im_warning(string.format('%s exited with code %d', bin, result.code or -1))
           return
         end
 
