@@ -12,14 +12,23 @@ vim.opt.mouse = 'a'
 
 local remote_env_names = { 'SSH_CLIENT', 'SSH_CONNECTION', 'SSH_TTY', 'MOSH_IP', 'MOSH_CONNECTION' }
 
-local function is_remote_session()
+local function environment_has_value(environment, name)
+  local value = environment[name]
+  return value ~= nil and value ~= ''
+end
+
+local function is_remote_environment(environment)
   for _, name in ipairs(remote_env_names) do
-    if vim.env[name] then
+    if environment_has_value(environment, name) then
       return true
     end
   end
 
   return false
+end
+
+local function is_remote_session()
+  return is_remote_environment(vim.env)
 end
 
 -- A pane's own shell env is frozen at the moment the pane was created, so a
@@ -137,6 +146,166 @@ local function env_enabled(name)
   return value == '1' or value == 'true' or value == 'yes' or value == 'on'
 end
 
+-- A tmux pane can outlive the client that created it. Resolve the current
+-- client at call time and carry its desktop environment into the backend
+-- command instead of relying on Nvim's frozen pane environment.
+local im_client_environment_names = {
+  'DBUS_SESSION_BUS_ADDRESS',
+  'DISPLAY',
+  'WAYLAND_DISPLAY',
+  'XDG_RUNTIME_DIR',
+  'XAUTHORITY',
+  'PATH',
+}
+
+local function child_environment(client_environment)
+  if not client_environment then
+    return nil
+  end
+
+  local environment = {}
+  for _, name in ipairs(im_client_environment_names) do
+    -- Empty values deliberately mask stale values inherited from the Nvim
+    -- pane when a freshly attached client does not provide that variable.
+    environment[name] = client_environment[name] or ''
+  end
+  return environment
+end
+
+local function classify_im_client(environment)
+  local marker = environment.TMUX_IM_CLIENT
+  if marker == 'local' then
+    return 'local'
+  end
+  if marker == 'ssh' or marker == 'remote' then
+    return 'remote'
+  end
+  if is_remote_environment(environment) then
+    return 'remote'
+  end
+  return 'local'
+end
+
+local function read_client_environment(pid, callback)
+  if vim.fn.has 'linux' ~= 1 or not vim.uv or not vim.uv.fs_open then
+    callback(nil)
+    return
+  end
+
+  local path = string.format('/proc/%d/environ', pid)
+  vim.uv.fs_open(path, 'r', 0, function(open_error, fd)
+    if open_error or not fd then
+      callback(nil)
+      return
+    end
+
+    vim.uv.fs_read(fd, 65536, 0, function(read_error, data)
+      vim.uv.fs_close(fd, function()
+        if read_error or type(data) ~= 'string' then
+          callback(nil)
+          return
+        end
+
+        local environment = {}
+        for entry in data:gmatch '[^%z]+' do
+          local name, value = entry:match '^([^=]+)=(.*)$'
+          if name then
+            environment[name] = value
+          end
+        end
+
+        if next(environment) == nil then
+          callback(nil)
+          return
+        end
+        callback(environment)
+      end)
+    end)
+  end)
+end
+
+local function resolve_tmux_im_client(callback)
+  local pane = vim.env.TMUX_PANE
+  if not pane or pane == '' or vim.fn.executable 'tmux' ~= 1 or not vim.system then
+    callback(nil)
+    return
+  end
+
+  vim.system({ 'tmux', 'display-message', '-p', '-t', pane, '#{session_id}' }, { text = true }, function(session_result)
+    if session_result.code ~= 0 then
+      callback { kind = 'unknown' }
+      return
+    end
+
+    local session_id = vim.trim(session_result.stdout or '')
+    if session_id == '' then
+      callback { kind = 'unknown' }
+      return
+    end
+
+    -- Let tmux compare activity timestamps instead of parsing a display
+    -- format. Reverse activity order puts the newest client first.
+    vim.system({
+      'tmux',
+      'list-clients',
+      '-t',
+      session_id,
+      '-O',
+      'activity',
+      '-r',
+      '-F',
+      '#{client_pid}',
+    }, { text = true }, function(clients_result)
+      if clients_result.code ~= 0 then
+        callback { kind = 'unknown' }
+        return
+      end
+
+      local pid = (clients_result.stdout or ''):match '^%s*(%d+)'
+      if not pid then
+        -- A detached session has no client, so there is no safe source to
+        -- attribute this Nvim callback to.
+        callback(nil)
+        return
+      end
+
+      read_client_environment(pid, function(environment)
+        if not environment then
+          callback { kind = 'unknown' }
+          return
+        end
+        callback { kind = classify_im_client(environment), env = environment }
+      end)
+    end)
+  end)
+end
+
+local function resolve_im_client(callback)
+  if vim.env.TMUX_PANE and vim.env.TMUX_PANE ~= '' then
+    resolve_tmux_im_client(callback)
+    return
+  end
+
+  if is_remote_session() then
+    callback { kind = 'remote' }
+  else
+    callback { kind = 'local' }
+  end
+end
+
+local function has_graphical_dbus_environment(environment)
+  return environment_has_value(environment, 'DBUS_SESSION_BUS_ADDRESS')
+    and (environment_has_value(environment, 'DISPLAY') or environment_has_value(environment, 'WAYLAND_DISPLAY'))
+end
+
+local function notify_im_warning(message)
+  -- vim.system callbacks may run in fast-event context, where vim.notify
+  -- would call nvim_echo and raise E5560.
+  vim.schedule(function()
+    vim.notify(message, vim.log.levels.WARN)
+  end)
+end
+
 local function make_switcher()
   local fallback
 
@@ -144,81 +313,70 @@ local function make_switcher()
     return nil
   end
 
-  if is_remote_session() and not env_enabled 'NVIM_ALLOW_REMOTE_IM_SWITCH' then
-    return nil
-  end
-
-  local function can_use_xdotool()
+  local function xdotool_switcher()
     if not env_enabled 'NVIM_ALLOW_XDOTOOL_IM_SWITCH' then
-      return false
+      return nil
+    end
+
+    local executable = vim.fn.exepath 'xdotool'
+    if executable == '' then
+      return nil
     end
 
     -- xdotool sends synthetic X11 keyboard input, which can wake a DPMS-off
     -- monitor. Keep it opt-in even on local graphical sessions.
-    return vim.fn.executable 'xdotool' == 1 and vim.env.DISPLAY ~= nil and vim.env.DISPLAY ~= ''
-  end
+    local command = { executable, 'key', 'ctrl+alt+shift+F12' }
+    return throttle(function(client_environment)
+      local environment = client_environment or vim.env
+      if not environment_has_value(environment, 'DISPLAY') then
+        return
+      end
 
-  local function xdotool_switcher()
-    if not can_use_xdotool() then
-      return nil
-    end
-
-    -- Use the custom rime keybinding to switch to English mode (Control+Alt+Shift+F12)
-    -- rime config:
-    -- patch:
-    --   key_binder/bindings/+:
-    --     - { when: always, accept: "Control+Alt+Shift+F12", set_option: ascii_mode }
-    local command = { 'xdotool', 'key', 'ctrl+alt+shift+F12' }
-    return throttle(function()
-      vim.fn.jobstart(command, {
-        on_exit = function(_, code)
-          if code ~= 0 then
-            vim.notify('Failed to switch input method', vim.log.levels.WARN)
-          end
-        end,
-      })
+      vim.system(command, { env = child_environment(client_environment) }, function(result)
+        if result.code ~= 0 then
+          notify_im_warning 'Failed to switch input method'
+        end
+      end)
     end)
   end
 
   local function fcitx_switcher(bin)
-    return throttle(function()
-      vim.fn.jobstart({ bin }, {
-        stdout_buffered = true,
-        on_stdout = function(_, data)
-          if type(data) ~= 'table' then
+    local executable = vim.fn.exepath(bin)
+    if executable == '' then
+      return nil
+    end
+
+    return throttle(function(client_environment)
+      local environment = child_environment(client_environment)
+      vim.system({ executable }, { text = true, env = environment }, function(result)
+        if result.code ~= 0 then
+          notify_im_warning(string.format('%s exited with code %d', bin, result.code or -1))
+          return
+        end
+
+        for line in (result.stdout or ''):gmatch '[^\r\n]+' do
+          if vim.trim(line) == '2' then -- 简体中文输入状态
+            vim.system({ executable, '-c' }, { env = environment })
             return
           end
-          for _, line in ipairs(data) do
-            if line == '2' then -- 简体中文输入状态
-              vim.fn.jobstart { bin, '-c' }
-              return
-            end
-          end
-        end,
-        on_exit = function(_, code)
-          if code ~= 0 then
-            vim.notify(string.format('%s exited with code %d', bin, code), vim.log.levels.WARN)
-          end
-        end,
-      })
+        end
+      end)
     end)
   end
 
-  if vim.fn.executable 'fcitx5-remote' == 1 then
-    fallback = fcitx_switcher 'fcitx5-remote'
-  end
-
-  if not fallback and vim.fn.executable 'fcitx-remote' == 1 then
+  fallback = fcitx_switcher 'fcitx5-remote'
+  if not fallback then
     fallback = fcitx_switcher 'fcitx-remote'
   end
-
   if not fallback then
     fallback = xdotool_switcher()
   end
 
-  if vim.fn.executable 'busctl' == 1 and vim.env.DBUS_SESSION_BUS_ADDRESS and (vim.env.DISPLAY or vim.env.WAYLAND_DISPLAY) then
+  local busctl = vim.fn.exepath 'busctl'
+  local busctl_switcher
+  if busctl ~= '' then
     local is_ascii_command = {
-      'busctl',
+      busctl,
       '--user',
       'call',
       'org.fcitx.Fcitx5',
@@ -227,7 +385,7 @@ local function make_switcher()
       'IsAsciiMode',
     }
     local set_ascii_command = {
-      'busctl',
+      busctl,
       '--user',
       'call',
       'org.fcitx.Fcitx5',
@@ -238,74 +396,125 @@ local function make_switcher()
       'true',
     }
 
-    return throttle(function()
-      local is_ascii = false
-
-      vim.fn.jobstart(is_ascii_command, {
-        stdout_buffered = true,
-        on_stdout = function(_, data)
-          if type(data) ~= 'table' then
-            return
+    busctl_switcher = throttle(function(client_environment)
+      local environment = child_environment(client_environment)
+      vim.system(is_ascii_command, { text = true, env = environment }, function(result)
+        if result.code ~= 0 then
+          if fallback then
+            fallback(client_environment)
           end
+          return
+        end
 
-          is_ascii = table.concat(data, '\n'):find('b true', 1, true) ~= nil
-        end,
-        on_exit = function(_, code)
-          if code ~= 0 then
-            if fallback then
-              fallback()
-            end
-            return
+        if (result.stdout or ''):find('b true', 1, true) then
+          return
+        end
+
+        vim.system(set_ascii_command, { env = environment }, function(set_result)
+          if set_result.code ~= 0 and fallback then
+            fallback(client_environment)
           end
-
-          if is_ascii then
-            return
-          end
-
-          vim.fn.jobstart(set_ascii_command, {
-            on_exit = function(_, set_code)
-              if set_code ~= 0 and fallback then
-                fallback()
-              end
-            end,
-          })
-        end,
-      })
+        end)
+      end)
     end)
   end
 
-  return fallback
+  return function(client_environment)
+    local environment = client_environment or vim.env
+    if busctl_switcher and has_graphical_dbus_environment(environment) then
+      busctl_switcher(client_environment)
+    elseif fallback then
+      fallback(client_environment)
+    end
+  end
 end
 
 local switch_to_en = make_switcher()
 
 if switch_to_en then
+  local allow_remote_im_switch = env_enabled 'NVIM_ALLOW_REMOTE_IM_SWITCH'
+  local allow_unknown_im_switch = env_enabled 'NVIM_ALLOW_UNKNOWN_IM_SWITCH'
+  local client_resolution_pending = false
+  local client_resolution_replay = false
+  local client_resolution_generation = 0
+  local function switch_to_en_for_client()
+    if client_resolution_pending then
+      -- Keep one follow-up request so an event that arrived while the
+      -- previous client lookup was in flight is not silently lost.
+      client_resolution_replay = true
+      return
+    end
+    client_resolution_pending = true
+    client_resolution_generation = client_resolution_generation + 1
+    local generation = client_resolution_generation
+
+    -- A broken tmux server or a stuck /proc read must not permanently disable
+    -- future switch requests. Ignore a late callback after this timeout.
+    vim.defer_fn(function()
+      if generation == client_resolution_generation then
+        client_resolution_pending = false
+        client_resolution_generation = client_resolution_generation + 1
+        if client_resolution_replay then
+          client_resolution_replay = false
+          vim.schedule(switch_to_en_for_client)
+        end
+      end
+    end, 1000)
+
+    resolve_im_client(function(client)
+      if generation ~= client_resolution_generation then
+        return
+      end
+      client_resolution_pending = false
+      local replay = client_resolution_replay
+      client_resolution_replay = false
+      if not client then
+        if replay then
+          vim.schedule(switch_to_en_for_client)
+        end
+        return
+      end
+      if (client.kind ~= 'remote' or allow_remote_im_switch) and (client.kind ~= 'unknown' or allow_unknown_im_switch) then
+        vim.schedule(function()
+          switch_to_en(client.env)
+        end)
+      end
+      if replay then
+        vim.schedule(switch_to_en_for_client)
+      end
+    end)
+  end
+
   local group = vim.api.nvim_create_augroup('fcitx', { clear = true })
   vim.api.nvim_create_autocmd('VimEnter', {
     group = group,
     pattern = '*',
     callback = function()
-      vim.schedule(switch_to_en)
+      -- VimEnter has no key source to attribute. In tmux, wait for a
+      -- client-scoped event instead of changing the desktop IM on startup.
+      if not vim.env.TMUX_PANE or vim.env.TMUX_PANE == '' then
+        vim.schedule(switch_to_en_for_client)
+      end
     end,
   })
   vim.api.nvim_create_autocmd('InsertLeave', {
     group = group,
     pattern = '*',
-    callback = switch_to_en,
+    callback = switch_to_en_for_client,
   })
   -- Returning to normal mode after typing Chinese in cmdline (e.g. /搜索)
   vim.api.nvim_create_autocmd('CmdlineLeave', {
     group = group,
     pattern = '*',
     callback = function()
-      vim.schedule(switch_to_en)
+      vim.schedule(switch_to_en_for_client)
     end,
   })
   -- Returning to normal mode from a terminal buffer (toggleterm, Aider)
   vim.api.nvim_create_autocmd('TermLeave', {
     group = group,
     pattern = '*',
-    callback = switch_to_en,
+    callback = switch_to_en_for_client,
   })
   -- Regaining focus after typing Chinese in another application. Skip
   -- text-input modes (insert/replace/cmdline/terminal/select) so a quick
@@ -316,7 +525,7 @@ if switch_to_en then
     callback = function()
       local mode = vim.api.nvim_get_mode().mode
       if not mode:find '^[iRctsS\19]' then
-        switch_to_en()
+        switch_to_en_for_client()
       end
     end,
   })
@@ -332,7 +541,7 @@ if switch_to_en then
   }
   for fw, half in pairs(fullwidth_keys) do
     map({ 'n', 'x' }, fw, function()
-      switch_to_en()
+      switch_to_en_for_client()
       return half
     end, { expr = true, remap = true })
   end
@@ -341,7 +550,7 @@ if switch_to_en then
   -- never reach nvim, so they cannot be remapped. Pressing <Esc> cancels
   -- the composition; the next <Esc> lands here and resets the IM.
   map({ 'n', 'x' }, '<Esc>', function()
-    switch_to_en()
+    switch_to_en_for_client()
     return '<Esc>'
   end, { expr = true })
 end

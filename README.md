@@ -286,6 +286,9 @@ For SSH sessions inside tmux, see
 keeps Neovim yanks flowing to the outer terminal while avoiding automatic OSC 52
 clipboard-read queries that can be misinterpreted by tmux.
 
+For tmux-aware Fcitx5 Rime switching, including mixed local and SSH clients,
+see [Input Method Switching](docs/input-method-switching.md).
+
 ### AI Integration
 
 | Key                                                                         | Mode                   | Action               |
