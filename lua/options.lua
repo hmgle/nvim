@@ -31,13 +31,96 @@ local function is_remote_session()
   return is_remote_environment(vim.env)
 end
 
--- A pane's own shell env is frozen at the moment the pane was created, so a
--- long-lived pane that started locally and was later reattached over SSH
--- still reports no SSH_* vars here even though the attached client is now
--- remote. tmux itself refreshes a separate session-level environment on
--- every attach (see the update-environment session option), so check that
--- instead of the pane's env when deciding whether this tmux session is
--- currently attached remotely.
+local function classify_remote_environment(environment)
+  local marker = environment.TMUX_IM_CLIENT
+  if marker == 'local' then
+    return false
+  end
+  if marker == 'ssh' or marker == 'remote' then
+    return true
+  end
+  return is_remote_environment(environment)
+end
+
+-- A tmux pane's shell environment is frozen when the pane is created. Read
+-- the attached client's environment when possible, so a local client does
+-- not inherit a stale SSH_* value from an older shell in the pane.
+local function read_process_environment(pid)
+  if vim.fn.has 'linux' ~= 1 then
+    return nil
+  end
+
+  local ok, lines = pcall(vim.fn.readfile, string.format('/proc/%d/environ', pid), 'b')
+  if not ok or type(lines) ~= 'table' then
+    return nil
+  end
+
+  local environment = {}
+  for entry in table.concat(lines, '\n'):gmatch '[^\n]+' do
+    local name, value = entry:match '^([^=]+)=(.*)$'
+    if name then
+      environment[name] = value
+    end
+  end
+
+  if next(environment) == nil then
+    return nil
+  end
+  return environment
+end
+
+local function tmux_client_is_remote()
+  if not vim.env.TMUX_PANE or vim.env.TMUX_PANE == '' or vim.fn.executable 'tmux' ~= 1 then
+    return nil
+  end
+
+  local session_output = vim.fn.system {
+    'tmux',
+    'display-message',
+    '-p',
+    '-t',
+    vim.env.TMUX_PANE,
+    '#{session_id}',
+  }
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+
+  local session_id = vim.trim(session_output)
+  if session_id == '' then
+    return nil
+  end
+
+  local clients_output = vim.fn.system {
+    'tmux',
+    'list-clients',
+    '-t',
+    session_id,
+    '-O',
+    'activity',
+    '-r',
+    '-F',
+    '#{client_pid}',
+  }
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+
+  local pid = clients_output:match '^%s*(%d+)'
+  if not pid then
+    return nil
+  end
+
+  local environment = read_process_environment(pid)
+  if not environment then
+    return nil
+  end
+  return classify_remote_environment(environment)
+end
+
+-- Keep a session-level fallback for non-Linux systems and unusual cases where
+-- the active client cannot be inspected. The client-level result above is
+-- authoritative whenever it is available.
 local function tmux_session_is_remote()
   if not vim.env.TMUX or vim.fn.executable 'tmux' ~= 1 then
     return false
@@ -60,6 +143,14 @@ local function tmux_session_is_remote()
   end
 
   return false
+end
+
+local function tmux_clipboard_is_remote()
+  local client_remote = tmux_client_is_remote()
+  if client_remote ~= nil then
+    return client_remote
+  end
+  return is_remote_session() or tmux_session_is_remote()
 end
 
 -- SSH sessions can attach to a long-lived tmux pane whose shell still has
@@ -88,13 +179,10 @@ end
 -- the `+` register automatically. See docs/ssh-tmux-clipboard.md for the
 -- background, security trade-offs, and Yanky startup behavior.
 --
--- Check the pane's own env first: a pane created directly inside an SSH
--- session already has SSH_* vars, so this is both correct and avoids
--- spawning `tmux show-environment` on every such startup. Fall back to
--- tmux's session-level env (kept fresh across reattach) only when the
--- pane's own env doesn't already say remote, which is what makes an old
--- pane reattached over SSH still detected correctly.
-if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and (is_remote_session() or tmux_session_is_remote()) then
+-- The attached client check handles both new SSH panes and old panes
+-- reattached over SSH. The fallback keeps the previous behavior when the
+-- client process cannot be inspected.
+if vim.env.TMUX and vim.env.NVIM_CLIPBOARD_PROVIDER ~= 'native' and vim.fn.executable 'tmux' == 1 and tmux_clipboard_is_remote() then
   -- `load-buffer -w` needs tmux >= 3.2. Older versions still get a local
   -- tmux buffer, but cannot forward yanks to the outer terminal clipboard.
   local load_buffer = { 'tmux', 'load-buffer', '-' }
@@ -173,17 +261,7 @@ local function child_environment(client_environment)
 end
 
 local function classify_im_client(environment)
-  local marker = environment.TMUX_IM_CLIENT
-  if marker == 'local' then
-    return 'local'
-  end
-  if marker == 'ssh' or marker == 'remote' then
-    return 'remote'
-  end
-  if is_remote_environment(environment) then
-    return 'remote'
-  end
-  return 'local'
+  return classify_remote_environment(environment) and 'remote' or 'local'
 end
 
 local function read_client_environment(pid, callback)
