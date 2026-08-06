@@ -74,28 +74,14 @@ local function tmux_client_is_remote()
     return nil
   end
 
-  local session_output = vim.fn.system {
-    'tmux',
-    'display-message',
-    '-p',
-    '-t',
-    vim.env.TMUX_PANE,
-    '#{session_id}',
-  }
-  if vim.v.shell_error ~= 0 then
-    return nil
-  end
-
-  local session_id = vim.trim(session_output)
-  if session_id == '' then
-    return nil
-  end
-
+  -- list-clients takes a target-session; tmux's generic target resolver
+  -- maps a pane id (%...) to the session containing it.
+  -- Reverse activity order puts the newest client first.
   local clients_output = vim.fn.system {
     'tmux',
     'list-clients',
     '-t',
-    session_id,
+    vim.env.TMUX_PANE,
     '-O',
     'activity',
     '-r',
