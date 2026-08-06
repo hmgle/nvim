@@ -74,9 +74,9 @@ end
 -- target resolver maps a pane id (%...) to the best session containing its
 -- window (a linked window can belong to several sessions). Let
 -- tmux compare activity timestamps instead of parsing a display format:
--- reverse activity order puts the newest client first.
+-- activity order puts the newest client first.
 local function tmux_active_client_command(pane)
-  return { 'tmux', 'list-clients', '-t', pane, '-O', 'activity', '-r', '-F', '#{client_pid}' }
+  return { 'tmux', 'list-clients', '-t', pane, '-O', 'activity', '-F', '#{client_pid}' }
 end
 
 local function parse_client_pid(output)
