@@ -295,51 +295,40 @@ local function resolve_tmux_im_client(callback)
     return
   end
 
-  vim.system({ 'tmux', 'display-message', '-p', '-t', pane, '#{session_id}' }, { text = true }, function(session_result)
-    if session_result.code ~= 0 then
+  -- list-clients takes a target-session; tmux's generic target resolver
+  -- maps a pane id (%...) to the session containing it. Let tmux compare
+  -- activity timestamps instead of parsing a display format. Reverse
+  -- activity order puts the newest client first.
+  vim.system({
+    'tmux',
+    'list-clients',
+    '-t',
+    pane,
+    '-O',
+    'activity',
+    '-r',
+    '-F',
+    '#{client_pid}',
+  }, { text = true }, function(clients_result)
+    if clients_result.code ~= 0 then
       callback { kind = 'unknown' }
       return
     end
 
-    local session_id = vim.trim(session_result.stdout or '')
-    if session_id == '' then
-      callback { kind = 'unknown' }
+    local pid = (clients_result.stdout or ''):match '^%s*(%d+)'
+    if not pid then
+      -- A detached session has no client, so there is no safe source to
+      -- attribute this Nvim callback to.
+      callback(nil)
       return
     end
 
-    -- Let tmux compare activity timestamps instead of parsing a display
-    -- format. Reverse activity order puts the newest client first.
-    vim.system({
-      'tmux',
-      'list-clients',
-      '-t',
-      session_id,
-      '-O',
-      'activity',
-      '-r',
-      '-F',
-      '#{client_pid}',
-    }, { text = true }, function(clients_result)
-      if clients_result.code ~= 0 then
+    read_client_environment(pid, function(environment)
+      if not environment then
         callback { kind = 'unknown' }
         return
       end
-
-      local pid = (clients_result.stdout or ''):match '^%s*(%d+)'
-      if not pid then
-        -- A detached session has no client, so there is no safe source to
-        -- attribute this Nvim callback to.
-        callback(nil)
-        return
-      end
-
-      read_client_environment(pid, function(environment)
-        if not environment then
-          callback { kind = 'unknown' }
-          return
-        end
-        callback { kind = classify_im_client(environment), env = environment }
-      end)
+      callback { kind = classify_im_client(environment), env = environment }
     end)
   end)
 end
