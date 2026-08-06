@@ -69,30 +69,34 @@ local function read_process_environment(pid)
   return environment
 end
 
+-- Shared by the clipboard startup check and the IM event path so the two
+-- cannot drift apart. list-clients takes a target-session; tmux's generic
+-- target resolver maps a pane id (%...) to the best session containing its
+-- window (a linked window can belong to several sessions). Let
+-- tmux compare activity timestamps instead of parsing a display format:
+-- reverse activity order puts the newest client first.
+local function tmux_active_client_command(pane)
+  return { 'tmux', 'list-clients', '-t', pane, '-O', 'activity', '-r', '-F', '#{client_pid}' }
+end
+
+local function parse_client_pid(output)
+  if type(output) ~= 'string' then
+    return nil
+  end
+  return output:match '^%s*(%d+)'
+end
+
 local function tmux_client_is_remote()
   if not vim.env.TMUX_PANE or vim.env.TMUX_PANE == '' or vim.fn.executable 'tmux' ~= 1 then
     return nil
   end
 
-  -- list-clients takes a target-session; tmux's generic target resolver
-  -- maps a pane id (%...) to the session containing it.
-  -- Reverse activity order puts the newest client first.
-  local clients_output = vim.fn.system {
-    'tmux',
-    'list-clients',
-    '-t',
-    vim.env.TMUX_PANE,
-    '-O',
-    'activity',
-    '-r',
-    '-F',
-    '#{client_pid}',
-  }
+  local clients_output = vim.fn.system(tmux_active_client_command(vim.env.TMUX_PANE))
   if vim.v.shell_error ~= 0 then
     return nil
   end
 
-  local pid = clients_output:match '^%s*(%d+)'
+  local pid = parse_client_pid(clients_output)
   if not pid then
     return nil
   end
@@ -295,27 +299,13 @@ local function resolve_tmux_im_client(callback)
     return
   end
 
-  -- list-clients takes a target-session; tmux's generic target resolver
-  -- maps a pane id (%...) to the session containing it. Let tmux compare
-  -- activity timestamps instead of parsing a display format. Reverse
-  -- activity order puts the newest client first.
-  vim.system({
-    'tmux',
-    'list-clients',
-    '-t',
-    pane,
-    '-O',
-    'activity',
-    '-r',
-    '-F',
-    '#{client_pid}',
-  }, { text = true }, function(clients_result)
+  vim.system(tmux_active_client_command(pane), { text = true }, function(clients_result)
     if clients_result.code ~= 0 then
       callback { kind = 'unknown' }
       return
     end
 
-    local pid = (clients_result.stdout or ''):match '^%s*(%d+)'
+    local pid = parse_client_pid(clients_result.stdout)
     if not pid then
       -- A detached session has no client, so there is no safe source to
       -- attribute this Nvim callback to.
