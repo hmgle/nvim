@@ -75,10 +75,12 @@ Escape, and full-width punctuation paths remain available.
 ## Verification
 
 With local and SSH clients attached to one session, test each client
-independently:
+independently. `-O activity` already puts the most recently active client
+first, matching `tmux_active_client_command()` in `lua/options.lua`. Do not add
+`-r`; it reverses the order and puts the least recently active client first.
 
 ~~~sh
-tmux list-clients -t "$SESSION_ID" -O activity -r \
+tmux list-clients -t "$SESSION_ID" -O activity \
   -F '#{client_pid} #{client_tty}'
 tr '\000' '\n' < /proc/$CLIENT_PID/environ
 ~~~
