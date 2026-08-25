@@ -2,7 +2,6 @@ set whichwrap+=<,>,h,l
 set ignorecase "Ignore case when searching
 set smartcase
 
-set tm=500
 set so=2
 
 set guicursor=i:block
@@ -21,7 +20,6 @@ set splitright
 " Bash like keys for the command line
 cnoremap <C-A> <Home>
 cnoremap <C-E> <End>
-cnoremap <C-K> <C-U>
 cnoremap <C-B> <Left>
 cnoremap <C-F> <right>
 cnoremap <C-P> <Up>
