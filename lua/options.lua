@@ -9,6 +9,8 @@ vim.opt.completeopt = 'menu,menuone,noselect,popup'
 vim.opt.pumborder = 'rounded'
 vim.opt.pummaxwidth = 80
 vim.opt.mouse = 'a'
+vim.opt.timeout = true
+vim.opt.timeoutlen = 300
 
 local remote_env_names = { 'SSH_CLIENT', 'SSH_CONNECTION', 'SSH_TTY', 'MOSH_IP', 'MOSH_CONNECTION' }
 
