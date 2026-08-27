@@ -1,5 +1,4 @@
 return {
-  cmd = { 'gopls', '-remote=auto' },
   settings = {
     gopls = {
       gofumpt = true,
