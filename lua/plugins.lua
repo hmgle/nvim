@@ -1,5 +1,9 @@
 local treesitter_languages = require 'config.treesitter-languages'
 
+local function is_bigfile(bufnr)
+  return vim.b[bufnr].bigfile_detected == 1
+end
+
 return {
   'nvim-lua/plenary.nvim',
 
@@ -358,6 +362,29 @@ return {
         method = 'popup',
         highlight = 'OffscreenPopup',
       }
+
+      local group = vim.api.nvim_create_augroup('matchup_filetype', { clear = true })
+      local function initialize(callback, bufnr)
+        if not is_bigfile(bufnr) then
+          vim.fn[callback]()
+        end
+      end
+
+      vim.api.nvim_create_autocmd('FileType', {
+        group = group,
+        callback = function(args)
+          initialize('matchup#loader#init_buffer', args.buf)
+        end,
+      })
+
+      if vim.g.matchup_delim_start_plaintext ~= 0 then
+        vim.api.nvim_create_autocmd({ 'BufWinEnter', 'CmdWinEnter' }, {
+          group = group,
+          callback = function(args)
+            initialize('matchup#loader#bufwinenter', args.buf)
+          end,
+        })
+      end
     end,
   },
 
@@ -825,7 +852,7 @@ return {
         -- Keep illuminate on LSP/regex providers to avoid startup errors when opening files.
         providers = { 'lsp', 'regex' },
         should_enable = function(bufnr)
-          return vim.b[bufnr].bigfile_detected ~= 1
+          return not is_bigfile(bufnr)
         end,
       }
 
@@ -853,6 +880,9 @@ return {
     config = function()
       vim.g.rainbow_delimiters = {
         whitelist = treesitter_languages.rainbow,
+        condition = function(bufnr)
+          return not is_bigfile(bufnr)
+        end,
       }
     end,
   },
@@ -1057,6 +1087,15 @@ return {
   {
     'LunarVim/bigfile.nvim',
     config = function()
+      local disable_matchup = {
+        name = 'matchup',
+        disable = function(bufnr)
+          vim.b[bufnr].matchup_matchparen_enabled = 0
+          vim.b[bufnr].matchup_matchparen_fallback = 0
+          vim.b[bufnr].matchup_treesitter_enabled = false
+        end,
+      }
+
       require('bigfile').setup {
         filesize = 2, -- size of the file in MiB, the plugin round file sizes to the closest MiB
         pattern = function(bufnr)
@@ -1074,7 +1113,7 @@ return {
           'lsp',
           'treesitter',
           'syntax',
-          'matchparen',
+          disable_matchup,
           'vimopts',
         },
       }
