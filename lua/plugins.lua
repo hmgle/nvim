@@ -1,7 +1,10 @@
 return {
   'nvim-lua/plenary.nvim',
 
-  'godlygeek/tabular',
+  {
+    'godlygeek/tabular',
+    cmd = { 'Tabularize', 'AddTabularPattern', 'AddTabularPipeline' },
+  },
   {
     'NMAC427/guess-indent.nvim',
     event = { 'BufReadPost', 'BufNewFile' },
@@ -9,16 +12,47 @@ return {
       require 'config.guess-indent'
     end,
   },
-  'tpope/vim-fugitive',
+  {
+    'tpope/vim-fugitive',
+    cmd = {
+      'G',
+      'Git',
+      'Gdiffsplit',
+      'Gvdiffsplit',
+      'Gedit',
+      'Gsplit',
+      'Gvsplit',
+      'Gwrite',
+      'Gread',
+      'Ggrep',
+      'GMove',
+      'GDelete',
+      'GBrowse',
+    },
+  },
   {
     'kylechui/nvim-surround',
+    keys = {
+      { '<C-g>s', mode = 'i' },
+      { '<C-g>S', mode = 'i' },
+      { 'ys', mode = 'n' },
+      { 'yS', mode = 'n' },
+      { 'ds', mode = 'n' },
+      { 'cs', mode = 'n' },
+      { 'S', mode = 'x' },
+      { 'gS', mode = 'x' },
+    },
     config = function()
       require('nvim-surround').setup {
         -- Configuration here, or leave empty to use defaults
       }
     end,
   },
-  'tpope/vim-abolish',
+  {
+    'tpope/vim-abolish',
+    cmd = { 'Abolish', 'Subvert' },
+    event = 'VeryLazy',
+  },
   'tpope/vim-repeat',
 
   {
@@ -179,12 +213,12 @@ return {
 
   {
     'ianva/vim-youdao-translater',
-    config = function()
-      local map = require('utils').map
-      map('v', '<leader>ee', ':<C-u>Ydv<CR>')
-      map('n', '<leader>ee', ':<C-u>Ydc<CR>')
-      map('n', '<leader>yd', ':<C-u>Yde<CR>')
-    end,
+    cmd = { 'Ydc', 'Ydv', 'Yde' },
+    keys = {
+      { '<leader>ee', '<cmd>Ydv<cr>', mode = 'x', desc = 'Translate selection' },
+      { '<leader>ee', '<cmd>Ydc<cr>', mode = 'n', desc = 'Translate word' },
+      { '<leader>yd', '<cmd>Yde<cr>', mode = 'n', desc = 'Open translator' },
+    },
   },
   {
     'Yggdroot/LeaderF',
@@ -716,6 +750,11 @@ return {
 
   {
     'gbprod/substitute.nvim',
+    keys = {
+      { '<leader>r', mode = { 'n', 'x' } },
+      { '<leader>rs', mode = 'n' },
+      { '<leader>rS', mode = 'n' },
+    },
     config = function()
       require('substitute').setup {}
       vim.keymap.set('n', '<leader>r', require('substitute').operator, { noremap = true })
@@ -744,6 +783,7 @@ return {
     --   vim.cmd("colorscheme dayfox")
     -- end,
     enabled = true,
+    lazy = true,
   },
 
   {
@@ -807,6 +847,7 @@ return {
 
   {
     'HiPhish/rainbow-delimiters.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
     config = function()
       vim.g.rainbow_delimiters = {
         whitelist = {
@@ -827,6 +868,7 @@ return {
 
   {
     'windwp/nvim-autopairs',
+    event = 'InsertEnter',
     config = function()
       require('nvim-autopairs').setup {}
     end,
@@ -834,6 +876,7 @@ return {
 
   {
     'numToStr/Comment.nvim',
+    event = 'VeryLazy',
     config = function()
       local comment_ft = require 'Comment.ft'
       local comment_utils = require 'Comment.utils'
@@ -1324,5 +1367,5 @@ return {
 
   -- plantUML preview for .uml
   'aklt/plantuml-syntax',
-  'scrooloose/vim-slumlord',
+  { 'scrooloose/vim-slumlord', ft = 'plantuml' },
 }
