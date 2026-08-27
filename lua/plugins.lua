@@ -902,8 +902,12 @@ return {
       }
       local opt = { expr = true, remap = true }
       -- Toggle using count
-      vim.keymap.set('n', '<leader>cc', "v:count == 0 ? '<Plug>(comment_toggle_current_linewise)' : '<Plug>(comment_toggle_linewise_count)'", opt)
-      vim.keymap.set('n', '<leader>cb', "v:count == 0 ? '<Plug>(comment_toggle_current_blockwise)' : '<Plug>(comment_toggle_blockwise_count)'", opt)
+      vim.keymap.set('n', '<leader>cc', function()
+        return vim.v.count == 0 and '<Plug>(comment_toggle_linewise_current)' or '<Plug>(comment_toggle_linewise_count)'
+      end, opt)
+      vim.keymap.set('n', '<leader>cb', function()
+        return vim.v.count == 0 and '<Plug>(comment_toggle_blockwise_current)' or '<Plug>(comment_toggle_blockwise_count)'
+      end, opt)
 
       -- Toggle in Op-pending mode
       vim.keymap.set('n', '<leader>cgc', '<Plug>(comment_toggle_linewise)')
