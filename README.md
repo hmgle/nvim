@@ -47,7 +47,8 @@ Verify that the installed `tree-sitter-cli` version satisfies the requirement of
 the currently pinned `nvim-treesitter` revision. If your distro package is too
 old, prefer the `cargo` install above or an upstream release binary.
 
-Plugins install automatically on first launch. LSP servers install on-demand via Mason.
+Plugins install automatically on first launch. Mason automatically enables LSP
+servers that are already installed; use `:Mason` to install or remove servers.
 
 Tree-sitter runtime now uses Neovim 0.12 built-ins for parsing/highlighting, while
 `nvim-treesitter` `main` and `nvim-treesitter-textobjects` are kept only as third-party
@@ -329,7 +330,9 @@ Runs on BufEnter, BufWritePost, InsertLeave. Toggle with `,L`.
 
 ## LSP
 
-Uses Mason + mason-lspconfig. Servers auto-install on demand.
+Uses Mason + mason-lspconfig. Installed servers are enabled automatically, but
+server installation is explicit through `:Mason`; this repository does not
+maintain an `ensure_installed` list.
 
 Global LSP behavior lives in `lua/config/lspconf.lua`. That file is responsible
 for shared `on_attach` behavior, keymaps, completion capabilities, and
@@ -339,14 +342,14 @@ On Neovim 0.12, use `:checkhealth vim.lsp` to inspect LSP status. The legacy
 `:LspInfo` alias is not guaranteed to exist because recent `nvim-lspconfig`
 skips registering it when Neovim's built-in `:lsp` command is present.
 
-Configured servers include:
+This repository provides local overrides for:
 
 - lua_ls (Lua)
 - clangd (C/C++)
 - gopls (Go, with gofumpt and staticcheck)
-- pyright/pylsp (Python)
-- rust-analyzer (Rust)
-- Various others via Mason
+
+Other servers, such as pyright and rust_analyzer, use their upstream
+nvim-lspconfig definitions when installed through Mason.
 
 ### Adding Or Overriding A Server
 
