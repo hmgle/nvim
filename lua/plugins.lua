@@ -783,6 +783,9 @@ return {
         -- nvim-treesitter.locals is currently unstable with newer Neovim releases.
         -- Keep illuminate on LSP/regex providers to avoid startup errors when opening files.
         providers = { 'lsp', 'regex' },
+        should_enable = function(bufnr)
+          return vim.b[bufnr].bigfile_detected ~= 1
+        end,
       }
 
       vim.keymap.set('n', '<leader>n', function()
@@ -1019,7 +1022,15 @@ return {
     config = function()
       require('bigfile').setup {
         filesize = 2, -- size of the file in MiB, the plugin round file sizes to the closest MiB
-        pattern = { '*.log', '*.txt', '*.csv', '*.tsv' },
+        pattern = function(bufnr)
+          local filetype = vim.filetype.match { buf = bufnr }
+          if filetype ~= 'go' then
+            return false
+          end
+
+          local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(bufnr))
+          return stat ~= nil and stat.size >= 100 * 1024
+        end,
         features = {
           'indent_blankline',
           'illuminate',
@@ -1028,7 +1039,6 @@ return {
           'syntax',
           'matchparen',
           'vimopts',
-          'filetype',
         },
       }
     end,

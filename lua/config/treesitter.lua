@@ -11,7 +11,7 @@ local function maybe_start(bufnr)
     return
   end
 
-  if vim.bo[bufnr].buftype ~= '' or disabled_highlights[vim.bo[bufnr].filetype] then
+  if vim.bo[bufnr].buftype ~= '' or vim.b[bufnr].bigfile_disable_treesitter or disabled_highlights[vim.bo[bufnr].filetype] then
     pcall(vim.treesitter.stop, bufnr)
     return
   end
