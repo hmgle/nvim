@@ -333,7 +333,7 @@ return {
       end
 
       -- too slow to load on startup for big files
-      local max_file_size = 1024 * 100 -- 100KB
+      local max_file_size = 1024 * 100 -- 100 KiB
       local file_size = vim.fn.getfsize(file)
       return file_size < 0 or file_size < max_file_size
     end,

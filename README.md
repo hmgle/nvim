@@ -420,6 +420,6 @@ export DEEPSEEK_API_KEY="your-key"
 ## Performance
 
 - Lazy loading for most plugins
-- bigfile.nvim disables expensive features for all files >=2 MiB and Go files
-  >=100 KiB while preserving filetype detection
-- go.nvim skips loading for large Go files (>100KB)
+- bigfile.nvim disables expensive features for files that round to >=2 MiB
+  (effectively >=1.5 MiB) and Go files >=100 KiB while preserving filetype detection
+- go.nvim skips loading for Go files >=100 KiB
