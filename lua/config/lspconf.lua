@@ -1,8 +1,5 @@
 vim.lsp.log.set_level 'WARN'
 
-vim.g.loaded_ruby_provider = 0
-vim.g.loaded_perl_provider = 0
-
 local masonlspconf_ok, masonlspconf = pcall(require, 'mason-lspconfig')
 if not masonlspconf_ok then
   return

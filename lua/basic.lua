@@ -1,6 +1,11 @@
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
+-- External Node, Ruby, and Perl hosts are not used by this configuration.
+vim.g.loaded_node_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+
 vim.o.fileencoding = 'utf-8'
 vim.opt.fileencodings = { 'utf-8', 'gbk', 'ucs-bom', 'cp936', 'gb18030' }
 
