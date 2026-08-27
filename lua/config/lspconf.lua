@@ -20,31 +20,33 @@ local function sync_builtin_lsp_features(client, bufnr)
 end
 
 local function set_lsp_keymaps(bufnr)
-  local builtin = require 'telescope.builtin'
-
   local function notify_toggle(feature, enabled)
     vim.notify(string.format('%s: %s', feature, enabled and 'ON' or 'OFF'), vim.log.levels.INFO)
   end
 
+  local function telescope_picker(name, picker_opts)
+    return function()
+      require('telescope.builtin')[name](picker_opts)
+    end
+  end
+
   local opts = { buf = bufnr, noremap = true, silent = true }
 
-  vim.keymap.set('n', 'gh', builtin.lsp_document_symbols, opts)
+  vim.keymap.set('n', 'gh', telescope_picker 'lsp_document_symbols', opts)
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
   vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation, opts)
-  vim.keymap.set('n', 'gi', builtin.lsp_implementations, opts)
+  vim.keymap.set('n', 'gi', telescope_picker 'lsp_implementations', opts)
   vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, opts)
-  vim.keymap.set('n', 'gr', function()
-    builtin.lsp_references { include_current_line = true }
-  end, opts)
+  vim.keymap.set('n', 'gr', telescope_picker('lsp_references', { include_current_line = true }), opts)
   vim.keymap.set('n', '<leader>gf', function()
     require('conform').format { async = true, lsp_format = 'fallback' }
   end, opts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
-  vim.keymap.set('n', 'gc', builtin.lsp_incoming_calls, opts)
+  vim.keymap.set('n', 'gc', telescope_picker 'lsp_incoming_calls', opts)
   vim.keymap.set('n', '<leader>gc', vim.lsp.buf.incoming_calls, opts)
-  vim.keymap.set('n', 'gl', builtin.diagnostics, opts)
+  vim.keymap.set('n', 'gl', telescope_picker 'diagnostics', opts)
   vim.keymap.set('n', '<leader>k', function()
     vim.lsp.buf.hover {
       border = 'rounded',

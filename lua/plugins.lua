@@ -253,7 +253,6 @@ return {
   {
     'ray-x/go.nvim',
     ft = { 'go', 'gomod' },
-    event = { 'CmdlineEnter' },
     config = function()
       require('go').setup {
         lsp_codelens = false,
@@ -1092,13 +1091,18 @@ return {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope.nvim' },
     },
-    event = 'LspAttach',
-    config = function()
-      require('tiny-code-action').setup {
-        vim.keymap.set({ 'n', 'v', 'x' }, '<leader>ca', function()
+    keys = {
+      {
+        '<leader>ca',
+        function()
           require('tiny-code-action').code_action()
-        end, { noremap = true, silent = true }),
-      }
+        end,
+        mode = { 'n', 'x' },
+        desc = 'Code action',
+      },
+    },
+    config = function()
+      require('tiny-code-action').setup {}
     end,
   },
 
@@ -1137,11 +1141,25 @@ return {
 
   {
     'rmagatti/goto-preview',
+    keys = {
+      {
+        'gp',
+        function()
+          require('goto-preview').goto_preview_definition()
+        end,
+        desc = 'Preview definition',
+      },
+      {
+        'gP',
+        function()
+          require('goto-preview').close_all_win()
+        end,
+        desc = 'Close preview windows',
+      },
+    },
     config = function()
       require('goto-preview').setup {
         default_mappings = false,
-        vim.keymap.set('n', 'gp', "<cmd>lua require('goto-preview').goto_preview_definition()<CR>", { noremap = true }),
-        vim.keymap.set('n', 'gP', "<cmd>lua require('goto-preview').close_all_win()<CR>", { noremap = true }),
       }
     end,
   },
