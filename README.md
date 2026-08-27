@@ -67,13 +67,18 @@ On a new machine, the bootstrap path is:
 
 ```bash
 nvim --headless "+Lazy! restore" +qa
-nvim --headless "+TSInstallSync lua go python javascript typescript html yaml markdown markdown_inline" +qa
+nvim --headless \
+  "+lua require('config.treesitter-languages').install():wait(300000)" \
+  +qa
 ```
 
 To sync upstream parser/query changes later:
 
 ```bash
-nvim --headless "+Lazy! update nvim-treesitter nvim-treesitter-textobjects" "+TSUpdateSync" +qa
+nvim --headless \
+  "+Lazy! update nvim-treesitter nvim-treesitter-textobjects" \
+  "+lua require('nvim-treesitter').update():wait(300000)" \
+  +qa
 ```
 
 If `:TSUpdate` fails with `ENOENT ... 'tree-sitter'`, the local `tree-sitter-cli`

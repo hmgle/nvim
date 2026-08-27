@@ -1,3 +1,5 @@
+local treesitter_languages = require 'config.treesitter-languages'
+
 return {
   'nvim-lua/plenary.nvim',
 
@@ -329,7 +331,7 @@ return {
       treesitter.setup {
         install_dir = parser_dir,
       }
-      treesitter.install { 'html' }
+      treesitter_languages.install()
 
       require 'config.treesitter'
       require('config.treesitter-textobjects').setup()
@@ -850,18 +852,7 @@ return {
     event = { 'BufReadPost', 'BufNewFile' },
     config = function()
       vim.g.rainbow_delimiters = {
-        whitelist = {
-          'c',
-          'go',
-          'erlang',
-          'javascript',
-          'lua',
-          'markdown',
-          'python',
-          'ruby',
-          'rust',
-          'zig',
-        },
+        whitelist = treesitter_languages.rainbow,
       }
     end,
   },
