@@ -11,13 +11,17 @@ require('toggleterm').setup {
   -- end,
 }
 
+local group = vim.api.nvim_create_augroup('toggleterm_config', { clear = true })
+
 vim.api.nvim_create_autocmd('TermEnter', {
+  group = group,
   callback = function()
     vim.o.background = 'dark'
   end,
 })
 
 vim.api.nvim_create_autocmd('TermLeave', {
+  group = group,
   callback = function()
     vim.o.background = 'light'
     vim.cmd 'hi Search guibg=None guifg=#ff2222'
@@ -28,12 +32,13 @@ vim.api.nvim_create_autocmd('TermLeave', {
   end,
 })
 
-function _G.set_terminal_keymaps()
-  local opts = { buf = 0 }
-  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
-  -- vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-  -- vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-  -- vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
-end
-
-vim.cmd 'autocmd! TermOpen term://* lua set_terminal_keymaps()'
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = group,
+  pattern = 'term://*',
+  callback = function(args)
+    vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], {
+      buffer = args.buf,
+      desc = 'Leave terminal mode',
+    })
+  end,
+})
