@@ -42,7 +42,7 @@ conform.setup {
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
   },
   format_on_save = {
-    lsp_fallback = true,
+    lsp_format = 'fallback',
     async = false,
     timeout_ms = 3000,
   },

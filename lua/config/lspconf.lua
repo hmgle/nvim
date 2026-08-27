@@ -39,7 +39,7 @@ local function set_lsp_keymaps(bufnr)
     builtin.lsp_references { include_current_line = true }
   end, opts)
   vim.keymap.set('n', '<leader>gf', function()
-    vim.lsp.buf.format { async = true }
+    require('conform').format { async = true, lsp_format = 'fallback' }
   end, opts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set('n', 'gc', builtin.lsp_incoming_calls, opts)
@@ -127,7 +127,9 @@ local function setup_lsp()
   }
   vim.lsp.config('*', default_options)
   masonlspconf.setup {
-    automatic_enable = true,
+    automatic_enable = {
+      exclude = { 'stylua' },
+    },
   }
 end
 
