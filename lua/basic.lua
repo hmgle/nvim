@@ -1,8 +1,9 @@
 vim.g.mapleader = ','
 vim.g.maplocalleader = ','
 
--- External Node, Ruby, and Perl hosts are not used by this configuration.
+-- External language hosts are not used by this configuration.
 vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_perl_provider = 0
 

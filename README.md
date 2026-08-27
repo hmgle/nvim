@@ -10,13 +10,11 @@ A Lua-based Neovim configuration using lazy.nvim for plugin management.
 - ripgrep (`rg`) and ast-grep (`ast-grep`) (for grug-far search/replace)
 - `tree-sitter-cli` (required for `:TSInstall*` / `:TSUpdate*`)
 - Node.js (for LSP servers and formatters)
-- Python 3 with pynvim: `uv tool install --upgrade pynvim`
 - A Nerd Font (optional, for icons)
 
 ## Installation
 
 ```bash
-uv tool install --upgrade pynvim
 git clone https://github.com/hmgle/nvim.git ~/.config/nvim
 nvim
 ```
