@@ -2,23 +2,23 @@ if vim.loader and vim.loader.enable then
   vim.loader.enable()
 end
 
-require("basic")
-vim.cmd("source $HOME/.config/nvim/viml/conf.vim")
+require 'basic'
+vim.cmd.source(vim.fn.stdpath 'config' .. '/viml/conf.vim')
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.uv.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
+  vim.fn.system {
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable',
     lazypath,
-  })
+  }
 end
-require("options")
+require 'options'
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup("plugins", {
+require('lazy').setup('plugins', {
   git = {
     timeout = 600,
   },
