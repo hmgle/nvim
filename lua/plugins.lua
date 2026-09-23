@@ -478,12 +478,7 @@ return {
         preset = 'default',
         ['<C-k>'] = { 'select_prev', 'fallback' },
         ['<C-j>'] = { 'select_next', 'fallback' },
-        ['<CR>'] = {
-          'accept',
-          function()
-            return require('nvim-autopairs').autopairs_cr()
-          end,
-        },
+        ['<CR>'] = { 'accept', 'fallback' },
         ['<C-h>'] = {
           function()
             local snippets = require('blink.cmp.config').snippets
@@ -908,9 +903,7 @@ return {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
     config = function()
-      require('nvim-autopairs').setup {
-        map_cr = false,
-      }
+      require('nvim-autopairs').setup {}
     end,
   },
 
