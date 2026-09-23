@@ -478,7 +478,12 @@ return {
         preset = 'default',
         ['<C-k>'] = { 'select_prev', 'fallback' },
         ['<C-j>'] = { 'select_next', 'fallback' },
-        ['<CR>'] = { 'accept', 'fallback' },
+        ['<CR>'] = {
+          'accept',
+          function()
+            return require('nvim-autopairs').autopairs_cr()
+          end,
+        },
         ['<C-h>'] = {
           function()
             local snippets = require('blink.cmp.config').snippets
