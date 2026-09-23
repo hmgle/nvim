@@ -752,13 +752,7 @@ return {
         end,
         desc = 'Live grep',
       },
-      {
-        '<leader>fb',
-        function()
-          require('telescope.builtin').buffers()
-        end,
-        desc = 'Buffers',
-      },
+      '<leader>fb',
       {
         '<leader>fh',
         function()
