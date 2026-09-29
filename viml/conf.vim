@@ -56,39 +56,3 @@ nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid")
 
 
 inoremap <C-d> <C-R>=strftime("%Y-%m-%d")<CR>
-
-let g:Lf_PopupPalette = {
-\    'light': {
-\       'Lf_hl_cursorline': {
-\               'gui': 'bold',
-\               'guifg': 'NONE',
-\               'guibg': '#d4ede8',
-\               'cterm': 'NONE',
-\               'ctermfg': '7',
-\               'ctermbg': '1'
-\       }
-\    }
-\}
-
-let g:Lf_NormalCommandMap = {
-            \ "*":      {
-            \               "<C-Down>": "<C-J>",
-            \               "<C-Up>":   "<C-K>",
-            \               "<Esc>": "<C-O>",
-            \           },
-            \ "File":   {
-            \               "q":     "<Esc>",
-            \               "a":     "<C-A>",
-            \           },
-            \ "Buffer": {},
-            \ "Mru":    {},
-            \ "Tag":    {},
-            \ "BufTag": {},
-            \ "Function": {},
-            \ "Line":   {},
-            \ "History":{},
-            \ "Help":   {},
-            \ "Rg":     {},
-            \ "Gtags":  {},
-            \ "Colorscheme": {}
-            \}
