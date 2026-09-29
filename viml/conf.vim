@@ -30,13 +30,18 @@ cnoremap <C-d> <Del>
 cnoremap <C-k> <C-\>e getcmdpos() == 1 ?
       \ '' : getcmdline()[:getcmdpos()-2]<CR>
 
-map <silent> <leader><cr> :noh<cr>
+nnoremap <silent> <leader><cr> <Cmd>nohlsearch<CR>
+xnoremap <silent> <leader><cr> <Cmd>nohlsearch<CR>
 
 " Smart way to move btw. windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
+xnoremap <C-j> <C-W>j
+xnoremap <C-k> <C-W>k
+xnoremap <C-h> <C-W>h
+xnoremap <C-l> <C-W>l
 
 au FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua set colorcolumn=81
 
