@@ -16,6 +16,7 @@ vim.wo.relativenumber = true
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
+vim.o.undofile = true
 vim.o.jumpoptions = 'stack'
 
 vim.keymap.set('n', '<leader>cp', function()
