@@ -333,7 +333,7 @@ return {
       end
 
       -- too slow to load on startup for big files
-      local max_file_size = 1024 * 100 -- 100 KiB
+      local max_file_size = 512 * 1024 -- 512 KiB
       local file_size = vim.fn.getfsize(file)
       return file_size < 0 or file_size < max_file_size
     end,
@@ -1117,7 +1117,7 @@ return {
           end
 
           local stat = vim.uv.fs_stat(vim.api.nvim_buf_get_name(bufnr))
-          return stat ~= nil and stat.size >= 100 * 1024
+          return stat ~= nil and stat.size >= 512 * 1024
         end,
         features = {
           'indent_blankline',
