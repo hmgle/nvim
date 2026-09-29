@@ -43,18 +43,19 @@ xnoremap <C-k> <C-W>k
 xnoremap <C-h> <C-W>h
 xnoremap <C-l> <C-W>l
 
-au FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua set colorcolumn=81
+augroup LegacyConfig
+    autocmd!
+    autocmd FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua setlocal colorcolumn=81
+    if exists('$TMUX')
+        autocmd VimResized * wincmd =
+    endif
+augroup END
 
 " https://www.reddit.com/r/neovim/comments/olp9lr/elegant_map_for_togglequikfixlist/
 nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid") != 0? "cclose" : "botright copen")."<cr>"
 
 
 inoremap <C-d> <C-R>=strftime("%Y-%m-%d")<CR>
-
-if exists('$TMUX')
-    au VimResized * wincmd =
-endif
-
 
 let g:Lf_PopupPalette = {
 \    'light': {
