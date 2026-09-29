@@ -43,13 +43,19 @@ xnoremap <C-k> <C-W>k
 xnoremap <C-h> <C-W>h
 xnoremap <C-l> <C-W>l
 
+function! s:UpdateColorColumn() abort
+    let l:filetypes = ['c', 'cpp', 'python', 'markdown', 'mkd', 'asciidoc', 'go', 'erlang', 'lua']
+    let &l:colorcolumn = index(l:filetypes, &l:filetype) >= 0 ? '81' : ''
+endfunction
+
 augroup LegacyConfig
     autocmd!
-    autocmd FileType c,cpp,python,markdown,mkd,asciidoc,go,erlang,lua setlocal colorcolumn=81
+    autocmd FileType,BufWinEnter,WinEnter * call s:UpdateColorColumn()
     if exists('$TMUX')
         autocmd VimResized * wincmd =
     endif
 augroup END
+call s:UpdateColorColumn()
 
 " https://www.reddit.com/r/neovim/comments/olp9lr/elegant_map_for_togglequikfixlist/
 nnoremap <silent><expr> <leader>q "<cmd>".(get(getqflist({"winid": 1}), "winid") != 0? "cclose" : "botright copen")."<cr>"
