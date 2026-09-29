@@ -41,9 +41,15 @@ conform.setup {
     cpp = { 'trim_whitespace', 'trim_newlines' }, -- didn't want LSP formatting on CPP
     ['_'] = { 'trim_whitespace', 'trim_newlines' },
   },
-  format_on_save = {
-    lsp_format = 'fallback',
-    async = false,
-    timeout_ms = 3000,
-  },
+  format_on_save = function(bufnr)
+    if vim.b[bufnr].bigfile_detected == 1 then
+      return
+    end
+
+    -- Format before writing; explicit formatting remains available for big files.
+    return {
+      lsp_format = 'fallback',
+      timeout_ms = 3000,
+    }
+  end,
 }
