@@ -1,6 +1,10 @@
 local M = {}
 
-local function apply_overrides()
+function M.apply_overrides()
+  if vim.g.colors_name ~= 'gruvbox-material' then
+    return
+  end
+
   local set_hl = vim.api.nvim_set_hl
   local groups = {
     Search = { bg = 'NONE', fg = '#ff2222' },
@@ -22,12 +26,10 @@ function M.setup()
   vim.api.nvim_create_autocmd('ColorScheme', {
     group = group,
     pattern = 'gruvbox-material',
-    callback = apply_overrides,
+    callback = M.apply_overrides,
   })
 
-  if vim.g.colors_name == 'gruvbox-material' then
-    apply_overrides()
-  end
+  M.apply_overrides()
 end
 
 return M
