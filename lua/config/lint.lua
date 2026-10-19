@@ -9,9 +9,11 @@ lint.linters_by_ft = {
   python = { 'ruff' },
   -- markdown = { 'markdownlint' },
   sh = { 'shellcheck' },
+  yaml = { 'yamllint' },
 }
 
 local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
+local yaml_validate_augroup = vim.api.nvim_create_augroup('yaml_validate', { clear = true })
 
 local lint_enabled = true
 
@@ -119,3 +121,56 @@ local function toggle_lint()
 end
 
 vim.keymap.set('n', '<leader>L', toggle_lint, { noremap = true, desc = 'Toggle Lint' })
+
+local function validate_yaml_before_write(bufnr)
+  if vim.fn.executable 'ruby' ~= 1 then
+    vim.notify('YAML write validation skipped: ruby is not executable', vim.log.levels.WARN)
+    return false
+  end
+
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local result = vim
+    .system({
+      'ruby',
+      '-e',
+      'require "yaml"; YAML.parse_stream($stdin)',
+    }, {
+      stdin = table.concat(lines, '\n'),
+      text = true,
+    })
+    :wait()
+
+  if result.code == 0 then
+    return true
+  end
+
+  vim.notify('YAML syntax error; write aborted:\n' .. result.stderr, vim.log.levels.ERROR)
+  return false
+end
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = yaml_validate_augroup,
+  pattern = 'yaml',
+  callback = function(event)
+    local bufnr = event.buf
+    if vim.b[bufnr].yaml_write_cmd_installed then
+      return
+    end
+    vim.b[bufnr].yaml_write_cmd_installed = true
+
+    vim.api.nvim_create_autocmd('BufWriteCmd', {
+      group = yaml_validate_augroup,
+      buffer = bufnr,
+      callback = function()
+        if not validate_yaml_before_write(bufnr) then
+          return
+        end
+
+        vim.api.nvim_buf_call(bufnr, function()
+          vim.cmd 'noautocmd write'
+        end)
+        run_lint(bufnr)
+      end,
+    })
+  end,
+})
