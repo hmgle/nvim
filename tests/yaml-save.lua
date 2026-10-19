@@ -59,7 +59,55 @@ local function rejects(command, message)
   assert(vim.bo.modified, 'failed write must retain unsaved edits')
 end
 
+local function check_native_writes()
+  local setup = scratch .. '/native-setup.lua'
+  vim.fn.writefile({
+    'vim.opt.runtimepath:prepend(' .. string.format('%q', config) .. ')',
+    "vim.opt.runtimepath:append(vim.fn.stdpath 'data' .. '/lazy/nvim-lint')",
+    "require 'config.lint'",
+    "require('lint').linters_by_ft = {}",
+    "vim.bo.filetype = 'yaml'",
+    "vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'key: [unterminated' })",
+    "vim.api.nvim_create_autocmd('BufWritePost', { callback = function() vim.g.yaml_write_post = true end })",
+  }, setup)
+
+  local target = scratch .. '/native-copy.yaml'
+  for i, command in ipairs { 'write', 'write!', 'write ' .. vim.fn.fnameescape(target), 'wq' } do
+    local path = scratch .. '/native-' .. i .. '.yaml'
+    local report = scratch .. '/native-' .. i .. '.json'
+    vim.fn.writefile({ 'key: old' }, path)
+    local result = vim
+      .system({
+        vim.v.progpath,
+        '--headless',
+        '-u',
+        'NONE',
+        '-i',
+        'NONE',
+        path,
+        '-c',
+        'luafile ' .. vim.fn.fnameescape(setup),
+        -- An Ex command here follows the same write path as typing :w. Wrapping
+        -- it in pcall(vim.cmd, ...) can abort writes that native Ex would allow.
+        '-c',
+        command,
+        '-c',
+        string.format('lua vim.fn.writefile({vim.json.encode({modified=vim.bo.modified,post=vim.g.yaml_write_post})}, %q)', report),
+        '-c',
+        'qa!',
+      }, { text = true })
+      :wait(10000)
+    assert(result.code == 0, result.stderr)
+    assert(read(path) == 'key: old\n', 'native :' .. command .. ' wrote invalid YAML:\n' .. result.stderr)
+    assert(vim.fn.filereadable(target) == 0, 'native :write-to-file must not create an invalid copy')
+    assert(vim.fn.filereadable(report) == 1, 'failed :wq must keep the editor open')
+    local state = vim.json.decode(read(report))
+    assert(state.modified and not state.post, 'native write must retain edits without running BufWritePost')
+  end
+end
+
 local function check()
+  check_native_writes()
   local path = edit 'normal.yaml'
   vim.cmd.write()
   assert(read(path) == 'key: new\n', 'save must run Conform')

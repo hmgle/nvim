@@ -168,9 +168,20 @@ local function validate_yaml_before_write(bufnr)
   end
 end
 
+local M = {}
+
+function M.yaml_write_pre_command(bufnr)
+  local ok, message = pcall(validate_yaml_before_write, bufnr)
+  return ok and '' or 'throw ' .. vim.fn.string(tostring(message))
+end
+
+-- A Lua callback error can leave native :write running. Throw from Ex itself
+-- to abort the write, rather than converting the exception back to a Lua error.
 vim.api.nvim_create_autocmd('BufWritePre', {
   group = yaml_validate_augroup,
-  callback = function(event)
-    validate_yaml_before_write(event.buf)
-  end,
+  command = [[execute v:lua.require'config.lint'.yaml_write_pre_command(str2nr(expand('<abuf>')))]],
 })
+
+-- Keep the Ex bridge current when this config is sourced again.
+package.loaded['config.lint'] = M
+return M
