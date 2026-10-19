@@ -18,16 +18,15 @@ local yaml_validate_augroup = vim.api.nvim_create_augroup('yaml_validate', { cle
 local lint_enabled = true
 
 local missing_linters = {}
+local missing_linter_messages = {
+  yamllint = 'YAML diagnostics and write validation skipped: install yamllint with :MasonInstall yamllint',
+}
 
-local function warn_missing_linter(name, cmd)
+local function warn_missing_linter(cmd, message)
   if missing_linters[cmd] then
     return
   end
   missing_linters[cmd] = true
-  local message = string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd)
-  if name == 'yamllint' then
-    message = 'YAML diagnostics and write validation skipped: install yamllint with :MasonInstall yamllint'
-  end
   vim.notify(message, vim.log.levels.WARN)
 end
 
@@ -79,7 +78,7 @@ local function available_linters(bufnr)
       if not cmd or vim.fn.executable(cmd) == 1 then
         table.insert(runnable, name)
       else
-        warn_missing_linter(name, cmd)
+        warn_missing_linter(cmd, missing_linter_messages[name] or string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd))
       end
     end
   end
@@ -146,7 +145,7 @@ local function validate_yaml_before_write(bufnr)
     return
   end
   if vim.fn.executable 'yamllint' ~= 1 then
-    warn_missing_linter('yamllint', 'yamllint')
+    warn_missing_linter('yamllint', missing_linter_messages.yamllint)
     return
   end
 
