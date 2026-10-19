@@ -647,6 +647,8 @@ return {
   {
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
+    -- Run save-time validation after Conform has formatted the buffer.
+    dependencies = { 'stevearc/conform.nvim' },
     config = function()
       require 'config.lint'
     end,

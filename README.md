@@ -330,6 +330,21 @@ Runs on BufEnter, BufWritePost, InsertLeave. Toggle with `,L`.
 | JavaScript/TypeScript | biomejs    |
 | Python                | ruff       |
 | Shell                 | shellcheck |
+| YAML                  | yamllint   |
+
+Install `yamllint` with `:MasonInstall yamllint` or your package manager.
+YAML buffers are checked synchronously for syntax errors after save-time
+formatting, before writing. Syntax errors or a three-second validation timeout
+abort the write; style diagnostics remain asynchronous. If `yamllint` is
+unavailable, a warning is shown once and saving remains available.
+
+Helm chart files under `templates/` skip YAML linting and write validation;
+check their rendered YAML instead. Other templates can opt out of write
+validation with `:lua vim.b.yaml_validate_on_save = false`. The `,L` toggle
+only controls asynchronous diagnostics, not write validation.
+
+With the plugins and `yamllint` installed, run the save regression checks with
+`nvim --headless -u NONE -i NONE -l tests/yaml-save.lua`.
 
 ## LSP
 

@@ -19,6 +19,23 @@ local lint_enabled = true
 
 local missing_linters = {}
 
+local function warn_missing_linter(name, cmd)
+  if missing_linters[cmd] then
+    return
+  end
+  missing_linters[cmd] = true
+  local message = string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd)
+  if name == 'yamllint' then
+    message = 'YAML diagnostics and write validation skipped: install yamllint with :MasonInstall yamllint'
+  end
+  vim.notify(message, vim.log.levels.WARN)
+end
+
+local function is_helm_template(bufnr)
+  local chart = vim.fs.root(bufnr, 'Chart.yaml')
+  return chart ~= nil and vim.fs.relpath(vim.fs.joinpath(chart, 'templates'), vim.api.nvim_buf_get_name(bufnr)) ~= nil
+end
+
 local function resolve_linter(name)
   local linter = lint.linters[name]
   if type(linter) == 'function' then
@@ -46,6 +63,9 @@ local function available_linters(bufnr)
     return nil
   end
   local ft = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
+  if ft == 'yaml' and is_helm_template(bufnr) then
+    return nil
+  end
   local configured = lint.linters_by_ft[ft]
   if not configured then
     return nil
@@ -58,9 +78,8 @@ local function available_linters(bufnr)
       local cmd = resolve_cmd(linter)
       if not cmd or vim.fn.executable(cmd) == 1 then
         table.insert(runnable, name)
-      elseif not missing_linters[cmd] then
-        missing_linters[cmd] = true
-        vim.notify(string.format('nvim-lint: skipping `%s` because `%s` is not executable', name, cmd), vim.log.levels.WARN)
+      else
+        warn_missing_linter(name, cmd)
       end
     end
   end
@@ -123,54 +142,36 @@ end
 vim.keymap.set('n', '<leader>L', toggle_lint, { noremap = true, desc = 'Toggle Lint' })
 
 local function validate_yaml_before_write(bufnr)
-  if vim.fn.executable 'ruby' ~= 1 then
-    vim.notify('YAML write validation skipped: ruby is not executable', vim.log.levels.WARN)
-    return false
+  if vim.bo[bufnr].filetype ~= 'yaml' or vim.bo[bufnr].buftype ~= '' or vim.b[bufnr].yaml_validate_on_save == false or is_helm_template(bufnr) then
+    return
+  end
+  if vim.fn.executable 'yamllint' ~= 1 then
+    warn_missing_linter('yamllint', 'yamllint')
+    return
   end
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  -- A yamllint style opt-out must not disable syntax validation.
+  if lines[1] and lines[1]:match '^#%s*yamllint disable%-file%s*$' then
+    lines[1] = '#'
+  end
   local result = vim
-    .system({
-      'ruby',
-      '-e',
-      'require "yaml"; YAML.parse_stream($stdin)',
-    }, {
-      stdin = table.concat(lines, '\n'),
+    .system({ 'yamllint', '-d', '{rules: {}}', '-' }, {
+      stdin = table.concat(lines, '\n') .. (vim.bo[bufnr].endofline and '\n' or ''),
       text = true,
     })
-    :wait()
+    :wait(3000)
 
-  if result.code == 0 then
-    return true
+  if result.code == 124 then
+    error('YAML write validation timed out after 3000 ms; write aborted', 0)
+  elseif result.code ~= 0 then
+    error('YAML syntax check failed; write aborted:\n' .. (result.stdout or '') .. (result.stderr or ''), 0)
   end
-
-  vim.notify('YAML syntax error; write aborted:\n' .. result.stderr, vim.log.levels.ERROR)
-  return false
 end
 
-vim.api.nvim_create_autocmd('FileType', {
+vim.api.nvim_create_autocmd('BufWritePre', {
   group = yaml_validate_augroup,
-  pattern = 'yaml',
   callback = function(event)
-    local bufnr = event.buf
-    if vim.b[bufnr].yaml_write_cmd_installed then
-      return
-    end
-    vim.b[bufnr].yaml_write_cmd_installed = true
-
-    vim.api.nvim_create_autocmd('BufWriteCmd', {
-      group = yaml_validate_augroup,
-      buffer = bufnr,
-      callback = function()
-        if not validate_yaml_before_write(bufnr) then
-          return
-        end
-
-        vim.api.nvim_buf_call(bufnr, function()
-          vim.cmd 'noautocmd write'
-        end)
-        run_lint(bufnr)
-      end,
-    })
+    validate_yaml_before_write(event.buf)
   end,
 })
