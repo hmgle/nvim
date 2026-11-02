@@ -396,7 +396,7 @@ return {
       })
 
       if vim.g.matchup_delim_start_plaintext ~= 0 then
-        vim.api.nvim_create_autocmd({ 'BufWinEnter', 'CmdWinEnter' }, {
+        vim.api.nvim_create_autocmd({ 'BufWinEnter', 'CmdwinEnter' }, {
           group = group,
           callback = function(args)
             initialize('matchup#loader#bufwinenter', args.buf)
